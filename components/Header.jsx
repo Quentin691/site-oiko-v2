@@ -1,5 +1,5 @@
 import ButtonLink from "@/components/ButtonLink";
-
+import Link from "next/link";
 export default function Header() {
   return (
     <header className="border-b">
@@ -7,7 +7,7 @@ export default function Header() {
         
         {/* Logo à gauche */}
         <div>
-          <p>LOGO</p>
+          <p><Link href="/">LOGO</Link></p>
         </div>
 
         {/* Bloc à droite : connexion + réseaux */}
