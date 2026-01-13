@@ -1,87 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 
 export default function Navbar() {
-  const pathname = usePathname();
+  return( 
+<nav className="fixed top-0 left-0 w-full bg-white border-b border-gray-200">
+  <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
 
-  const [openMenu, setOpenMenu] = useState(null);
+    
+    <a href="/" className="font-semibold text-lg">
+      LOGO
+    </a>
 
-  const toggleMenu = (menuName) => {
-    setOpenMenu(openMenu === menuName ? null : menuName);
-  };
-  useEffect(() => {
-    setOpenMenu(null);
-  }, [pathname]);
-  
-  return (
-    <nav style={{
-      padding: "16px 24px",
-      borderBottom: "1px solid #ddd",
-      marginBottom: "32px"
-    }}>
-      <ul style={{
-    display: "flex",
-    gap: "20px",
-    alignItems: "center",
-    listStyle: "none",
-    padding: 0,
-    margin: 0
-  }}>
-        <li>
-          <Link href="/">Accueil</Link>
-        </li>
 
-        {/* activité */}
-        <li>
-          <button onClick={() => toggleMenu("cat1")}>
-            activité
-          </button>
+    <ul className="flex gap-8 text-sm">
+      <li><Link href="/" className="hover:text-gray-500">Accueil</Link></li>
+      <li><Link href="/activites" className="hover:text-gray-500">Activités</Link></li>
+      <li><Link href="/a-propos" className="hover:text-gray-500">À propos</Link></li>
+      <li><Link href="/annonces" className="hover:text-gray-500">Annonces</Link></li>
+      <li><Link href="/contact" className="hover:text-gray-500">Contact</Link></li>
+    </ul>
 
-          {openMenu === "cat1" && (
-            <ul>
-              <li><Link href="/activites/property-management">Property Management</Link></li>
-              <li><Link href="/activites/asset-management">Asset Management</Link></li>
-              <li><Link href="/activites/project-management">Project Management</Link></li>
-              <li><Link href="/activites/transaction">Transaction</Link></li>
-            </ul>
-          )}
-        </li>
+    <a
+      href="/connexion"
+      className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-100"
+    >
+      Connexion
+    </a>
 
-        {/* A propos de nous */}
-        <li>
-                <button onClick={() => toggleMenu("cat2")}>
-                    A propos de nous
-                </button>
-
-                {openMenu === "cat2" && (
-                    <ul>
-                    <li><Link href="/a-propos-de-nous/notre-histoire">Notre histoire</Link></li>
-                    <li><Link href="/a-propos-de-nous/nos-outils">Nos outils</Link></li>
-                    <li><Link href="/a-propos-de-nous/carriere">Carrière</Link></li>
-                    <li><Link href="/a-propos-de-nous/contactez-nous">Contactez-nous</Link></li>
-                    </ul>
-                )}
-                </li>
-
-        {/* Annonces */}
-        <li>
-          <button onClick={() => toggleMenu("cat3")}>
-            Annonces
-          </button>
-
-          {openMenu === "cat3" && (
-            <ul>
-              <li><Link href="/annonces/annonce-de-bien-a-la-location">Annonces de biens à la location</Link></li>
-              <li><Link href="/annonces/annonce-de-bien-a-la-vente">Annonces de biens à la vente</Link></li>
-            </ul>
-          )}
-        </li>
-      </ul>
-    </nav>
-  );
+  </div>
+</nav>
+);
 }
