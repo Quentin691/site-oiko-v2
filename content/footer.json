@@ -1,0 +1,47 @@
+{
+  "sections": {
+    "navigation": {
+      "title": "Navigation",
+      "links": [
+        "Accueil",
+        "Activités",
+        "À propos",
+        "Vente",
+        "Location",
+        "Contact"
+      ]
+    },
+    "activites": {
+      "title": "Nos activités",
+      "links": [
+        "Property Management",
+        "Asset Management",
+        "Project Management",
+        "Transaction"
+      ]
+    },
+    "locataires": {
+      "title": "Locataires",
+      "links": [
+        "Espace locataire",
+        "Trouver un bien à louer"
+      ]
+    }
+  },
+  "adresses": [
+    {
+      "ville": "Paris",
+      "rue": "14-16-18 rue Ballu",
+      "codePostal": "75009",
+      "pays": "France",
+      "telephone": "01.40.57.69.80"
+    },
+    {
+      "ville": "Marseille",
+      "rue": "17 rue de la République",
+      "codePostal": "13002",
+      "pays": "France",
+      "telephone": "04.85.80.00.26"
+    }
+  ]
+}
