@@ -1,0 +1,227 @@
+# OIKO v2 - Règles de développement
+
+## 📋 Contexte du projet
+Refonte du site web OIKO (secteur immobilier) en Next.js avec TypeScript.
+Projet destiné à être maintenu par des développeurs juniors et des non-développeurs.
+
+---
+
+## 🎯 Stack technique obligatoire
+
+- **Next.js** 16.1.1 avec App Router
+- **React** 19.2.3
+- **TypeScript** 5 en mode strict
+- **Tailwind CSS** 4 (configuration inline dans globals.css)
+- **ESLint** 9
+- **Pas de bibliothèque de composants externe** (tout custom)
+
+---
+
+## 🎨 Design System
+
+### Couleurs obligatoires
+- **Fond global** : `#F5F5F5` (gris très clair)
+- **Texte** : `#1F1F1F` (quasi noir)
+- **Sections/Cards** : `#FFFFFF` (blanc)
+
+### Structure de navigation
+- **Header** : Logo à gauche, réseaux sociaux centre-droite, bouton connexion à droite
+- **Navbar** : Sticky, 6 liens (Accueil, Activités, À propos, Vente, Location, Contact), logo apparaît au scroll
+- **PageAnchors** : Navigation interne non-sticky pour pages longues (Activités, À propos)
+- **Footer** : Sobre, délimité, fond blanc
+
+### Responsive
+- **Mobile-first** obligatoire
+- Tester toujours sur mobile, tablette et desktop
+
+---
+
+## 📁 Architecture du projet
+
+### Structure des dossiers
+```
+app/                    # Pages Next.js (App Router)
+├── activites/
+├── a-propos-de-nous/
+├── contactez-nous/
+├── connexion/
+├── location/
+├── vente/
+├── layout.tsx
+└── page.tsx
+
+components/             # Composants React
+├── ui/                # Composants UI de base (Button, Card, Section, etc.)
+├── layout/            # Header, Navbar, Footer, PageAnchors
+└── [nom-page]/        # Composants spécifiques aux pages
+
+content/               # Fichiers JSON de contenu (modifiable par non-devs)
+├── accueil.json
+├── activites.json
+├── a-propos.json
+├── contact.json
+├── footer.json
+├── location.json
+└── vente.json
+
+types/                 # Types TypeScript (à créer si besoin)
+
+lib/                   # Utilitaires et services (à créer quand nécessaire)
+└── api/
+```
+
+---
+
+## 💻 Conventions de code TypeScript
+
+### Composants React
+- **Toujours** utiliser des arrow functions pour les composants
+- **Toujours** typer les props avec des interfaces explicites
+- **Jamais** utiliser `any` en TypeScript
+- Utiliser `"use client"` uniquement quand nécessaire (interactivité)
+
+Exemple :
+```typescript
+interface ButtonProps {
+  href: string;
+  children: React.ReactNode;
+  variant?: "primary" | "secondary";
+}
+
+export default function Button({ href, children, variant = "primary" }: ButtonProps) {
+  return <Link href={href}>{children}</Link>;
+}
+```
+
+### Imports
+- **Toujours** utiliser les imports absolus avec `@/`
+- Exemple : `import Header from "@/components/layout/Header"`
+
+### Nommage
+- **Composants** : PascalCase (`Header.tsx`, `ButtonLink.tsx`)
+- **Fichiers utilitaires** : camelCase (`formatDate.ts`)
+- **Constantes** : UPPER_SNAKE_CASE (`API_BASE_URL`)
+- **Types/Interfaces** : PascalCase (`interface PropertyCardProps`)
+
+---
+
+## 📄 Gestion du contenu
+
+### Principe de séparation
+- **Contenu textuel** → Fichiers JSON (modifiable par non-devs)
+- **Structure et liens** → Composants TypeScript (contrôlé par devs)
+
+### Règles pour les fichiers JSON
+- **Contenu autorisé** : Textes, labels, descriptions, adresses, téléphones, emails
+- **Contenu interdit** : URLs, liens de navigation, structure de routing
+- Les non-devs doivent pouvoir modifier le contenu sans risque de casser le site
+
+### Mapping dans les composants
+Les développeurs créent un mapping entre les labels (JSON) et les liens (code) :
+```typescript
+const linkMapping = {
+  "Accueil": "/",
+  "Activités": "/activites",
+  // etc.
+};
+```
+
+---
+
+## 🚫 À éviter absolument
+
+### Over-engineering
+- **Ne pas** créer de fonctionnalités non demandées
+- **Ne pas** ajouter de dépendances externes sans raison valable
+- **Ne pas** sur-architecturer : garder les choses simples
+
+### Documentation
+- **Ne jamais** créer de fichiers Markdown (.md) de documentation sans demande explicite
+- **Ne pas** utiliser d'emojis dans le code (sauf si explicitement demandé)
+
+### Fichiers sensibles
+- **Ne jamais** commiter de fichiers contenant des secrets (.env, credentials.json)
+- Toujours avertir si l'utilisateur demande de commiter ces fichiers
+
+---
+
+## ✅ Best practices
+
+### Composants
+- **Réutilisabilité** : Créer des composants réutilisables autant que possible
+- **Composition** : Préférer la composition à la duplication
+- **Nommage** : Nommer selon la fonction, pas l'apparence
+  - ✅ `Hero`, `ServicesGrid`, `ContactForm`
+  - ❌ `BlueSection`, `BigTitle`
+
+### Commentaires
+- **Uniquement** pour la logique complexe
+- Le code doit être auto-explicatif
+- Pas de commentaires évidents comme `// Créer un bouton`
+
+### Performance
+- Optimiser les images avec Next.js Image
+- Utiliser le lazy loading quand approprié
+- Éviter les re-renders inutiles
+
+---
+
+## 🧪 Plan d'implémentation en cours
+
+### Phase actuelle : Phase 1 - Configuration et fondations
+Voir le plan complet dans README.md et le fichier de plan.
+
+### Ordre de priorité
+1. 🔴 Phase 1 : Configuration et fondations
+2. 🟠 Phase 2 : Layout global (Header, Navbar, Footer, PageAnchors)
+3. 🟡 Phase 3-6 : Pages principales et secondaires
+4. 🟢 Phase 7-8 : Connexion et pages Vente/Location
+5. ⚪ Phase 9 : Intégration API (quand disponible)
+
+---
+
+## 🎓 Contexte utilisateur
+
+- **Niveau** : Débutant avec Next.js
+- **Préférences** :
+  - Discuter point par point, pas trop d'informations d'un coup
+  - Expliquer les concepts au fur et à mesure
+  - Préférer les solutions simples aux solutions complexes
+  - Besoin de comprendre le "pourquoi" des choix techniques
+
+---
+
+## 📝 Workflow Git
+
+### Commits
+- Créer des commits **uniquement** quand l'utilisateur le demande explicitement
+- Message de commit clair et concis (1-2 phrases)
+- Toujours inclure `Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>`
+- **Ne jamais** utiliser `--amend` sauf si conditions très spécifiques remplies
+
+### Pull Requests
+- Analyser **tous** les commits depuis la divergence de la branche
+- Créer un résumé complet et un test plan
+- Inclure `Generated with Claude Code` dans la description
+
+---
+
+## 🔄 Résumé rapide
+
+**À faire** :
+- Code simple et maintenable
+- TypeScript strict
+- Mobile-first
+- Séparer contenu (JSON) et structure (code)
+- Composants réutilisables
+
+**À ne pas faire** :
+- Over-engineering
+- Utiliser `any` en TypeScript
+- Créer de la doc non demandée
+- Mettre des liens dans les fichiers JSON
+- Ajouter des fonctionnalités non demandées
+
+---
+
+*Ce fichier sera lu au début de chaque conversation Claude pour garantir la cohérence du développement.*
