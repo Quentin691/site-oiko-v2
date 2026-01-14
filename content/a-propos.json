@@ -1,0 +1,158 @@
+{
+  "pageTitle": "À propos de nous",
+  "sections": [
+    {
+      "id": "histoire",
+      "title": "Histoire",
+      "subtitle": "Charles, Claire et Henri, les fondateurs de OIKO GESTION.",
+      "timeline": [
+        {
+          "year": "2017",
+          "title": "Création",
+          "description": "Notre entreprise est née du rachat d'AIBO GESTION et d'une joint-venture entre les sociétés Primonial et eRE.\nPortefeuille de 550 lots sous gestion, gérés par une équipe de 5 personnes.\nCréation d'une filiale travaux - ABAK."
+        },
+        {
+          "year": "2018",
+          "title": "Développement",
+          "description": "1 ere implémentation de notre objectif de digitalisation : mise en place de la signature électronique, visite virtuelle, système de ticketing pour les incidents et communications.\nOuverture d'un pôle gestion privé et nouvelles clientèle foncière sur la gestion tertiaire.\nNouveaux clients et mandats, l'équipe passe à 16 personnes pour 1400 lots sous gestion."
+        },
+        {
+          "year": "2019",
+          "title": "Consolidation",
+          "description": "Ouverture d'un bureau à Lyon et développement du portefeuille – 1700 lots.\nDéveloppement digital renforcé avec de nouveaux outils pour améliorer notre performance.\nCréation de Wellcome, filiale dédiée à la location d'appartements prêts à vivre aux entreprises, pour\nleurs collaborateurs en déplacement professionnel"
+        },
+        {
+          "year": "2020",
+          "title": "Expansion",
+          "description": "Création d'un bureau à Marseille\nRéorganisation et renforcement des équipes pour s'adapter au nombre croissant de clients et de lots sous gestion, désormais à 3000 lots gérés par 33 collaborateurs."
+        },
+        {
+          "year": "2021",
+          "title": "Diversification",
+          "description": "Création de nouveaux services pour compléter notre offre - 3300 lots gérés par 53 collaborateurs).\n- Asset Management pour répondre aux besoins de valorisation du patrimoine\n- Innovation afin de lancer l'application dédiée aux locataires et pour la mise en place de nouveaux services dans les immeubles. Renforcement des équipes RH et Juridique."
+        },
+        {
+          "year": "2022",
+          "title": "Engagement",
+          "description": "Formation Carbone : 2tonnes + fresque du climat – création service HSE."
+        },
+        {
+          "year": "2023",
+          "title": "Croissance",
+          "description": "Développement des équipes et des portefeuilles clients."
+        },
+        {
+          "year": "2024",
+          "title": "Innovation",
+          "description": "Création de notre propre logiciel de gestion ainsi que du département de transaction."
+        }
+      ]
+    },
+    {
+      "id": "outils",
+      "title": "Les outils",
+      "subtitle": "Notre approche",
+      "description": "Depuis sa création, OIKO GESTION repense les métiers de la gestion pour diminuer les tâches administratives et pouvoir se concentrer sur des actions à plus fortes valeurs ajoutées.\n\nLe parcours client est construit autour de la digitalisation des outils pour fluidifier les interactions, apporter des services innovants et permettre de répondre au mieux au besoin des locataires, bailleurs et fournisseurs :",
+      "tools": [
+        {
+          "name": "UBIFLOW",
+          "description": "Multidiffusion d'annonces de locations en ligne via UBIFLOW"
+        },
+        {
+          "name": "Signature électronique",
+          "description": "Solution de signature électronique légale, simple et sécurisée des baux"
+        },
+        {
+          "name": "PROPERTIZ",
+          "description": "PROPERTIZ est notre outil de gestion sur mesure, développé en interne, créant le lien avec tous les métiers du property manager, et permettant à nos équipes de se recentrer sur notre cœur de métier et des missions à forte valeur ajoutée"
+        },
+        {
+          "name": "AIRCALL",
+          "description": "Tous nos appels sont monitorés via AIRCALL, solution innovante permettant de mieux gérer les flux d'appels et de répondre au mieux aux demandes."
+        },
+        {
+          "name": "INCH",
+          "description": "Lorsqu'un incident sur un appartement ou en parties communes nous est déclaré, nous utilisons la plateforme INCH pour que nos fournisseurs et locataires reçoivent automatiquement des confirmations e-mail et texto concernant les demandes de devis et/ou interventions, puis les mises à jour sur leur statut de traitement."
+        },
+        {
+          "name": "DocuWare",
+          "description": "DocuWare est un outil de traitement des factures dématérialisées."
+        },
+        {
+          "name": "QLIKSENSE",
+          "description": "QLIKSENSE est notre outil de reporting. Il apporte une vision instantanée et synthétique de tous les indicateurs de performance indispensable à la bonne gestion de nos immeubles et qui facilite notre stratégie de valorisation des actifs."
+        }
+      ]
+    },
+    {
+      "id": "presentation",
+      "title": "OIKO GESTION, en quelques mots?",
+      "description": "OIKO GESTION est un property manager (société de services de gestion immobilière) complet, agile et innovant.\n\nLe projet OIKO GESTION est de repenser la gestion locative, notamment via la digitalisation, pour apporter un service innovant aux propriétaires et aux locataires en alignant au maximum les intérêts des parties.\n\nNée d'une joint-venture entre les groupes Primonial et eRE en novembre 2016, OIKO GESTION compte aujourd'hui une 100aines de collaborateurs et continue sans cesse de s'étoffer en accueillant de nouveaux talents.\n\nL'équipe gère plus de 8 500 biens principalement en Ile-de-France, résidentiels et tertiaires et les projets d'acquisitions offrent des perspectives dynamiques aux collaborateurs qui les rejoignent.\n\nIls se retrouvent dans les valeurs d'entraide, de professionnalisme, d'écoute et d'ouverture d'esprit.",
+      "video": {
+        "title": "Claire, Directrice Générale, présente OIKO GESTION et sa vision de l'activité."
+      }
+    },
+    {
+      "id": "temoignages",
+      "title": "Témoignages",
+      "testimonials": [
+        "C'est très plaisant de travailler dans un environnement de travail soucieux de faire progresser ses collaborateurs. L'expérience et l'appui des collaborateurs permet une meilleure adaptation dans l'entreprise.",
+        "OIKO GESTION m'a permis d'apprendre et de développer mes compétences dans le secteur de l'immobilier. Une agence humaine et à l'écoute de ses collaborateurs, et surtout, tournée vers l'avenir.",
+        "J'ai commencé en alternance au sein de la société OIKO GESTION, qui m'a par la suite permis d'évoluer, j'ai été embauchée après mes études, avec de nouveaux défis qui me permettent d'acquérir sans cesse de nouvelles compétences.",
+        "OIKO GESTION est une entreprise jeune, innovante et dynamique dans un environnement de plus en plus digitalisé. Chaque collaborateur est indispensable et participe activement à l'évolution de l'entreprise."
+      ],
+      "barometre": {
+        "title": "Baromètre \"Expérience salarié\"",
+        "locations": "Paris & Marseille",
+        "note": "Note sur 5"
+      }
+    },
+    {
+      "id": "recrutement",
+      "title": "Rejoignez notre équipe !",
+      "cta": "Voir toutes nos offres sur :"
+    },
+    {
+      "id": "metiers",
+      "title": "Les métiers d'OIKO",
+      "jobs": [
+        {
+          "name": "Grégoire",
+          "title": "Asset Manager",
+          "description": "L'Asset Manager à pour objectif de valoriser des actifs au travers d'une gestion locative, technique et financière efficace.",
+          "link": "En savoir plus sur le métier d'Asset Manager"
+        },
+        {
+          "name": "Mélanie",
+          "title": "Gestionnaire locatif",
+          "description": "Le Gestionnaire Locatif assure la production d'un service cohérent et de qualité.",
+          "link": "En savoir plus sur le métier de Gestionnaire locatif"
+        },
+        {
+          "name": "Nathalie",
+          "title": "Comptable immobilière",
+          "description": "Le Comptable immobilier opère un suivi financier, comptable, mais aussi administratif d'un portefeuille immobilier.",
+          "link": "En savoir plus sur le métier de Comptable immobilière"
+        },
+        {
+          "name": "Amandine",
+          "title": "Responsable innovation",
+          "description": "",
+          "link": "En savoir plus sur le métier de Responsable innovation"
+        },
+        {
+          "name": "Pauline",
+          "title": "Responsable commerciale",
+          "description": "",
+          "link": "En savoir plus sur le métier de Responsable commercial"
+        },
+        {
+          "name": "Louis",
+          "title": "Responsable technique",
+          "description": "",
+          "link": "En savoir plus sur le métier de Responsable technique"
+        }
+      ]
+    }
+  ]
+}

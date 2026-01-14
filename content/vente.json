@@ -1,0 +1,24 @@
+{
+  "pageTitle": "Vente",
+  "searchSection": {
+    "title": "Trouver votre bien",
+    "filters": {
+      "location": {
+        "label": "Localisation",
+        "placeholder": "Ville, quartier..."
+      },
+      "propertyType": {
+        "label": "Select Options",
+        "placeholder": "Type de bien"
+      },
+      "rooms": {
+        "label": "Pièces",
+        "placeholder": "Nombre de pièces"
+      },
+      "budget": {
+        "label": "Budget",
+        "placeholder": "Budget maximum"
+      }
+    }
+  }
+}

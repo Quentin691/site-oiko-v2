@@ -1,0 +1,128 @@
+{
+  "pageTitle": "Accueil",
+  "hero": {
+    "title": "OIKO GESTION",
+    "description": "OIKO GESTION accompagne ses clients sur l'ensemble du cycle immobilier – property / asset / project management / transaction avec une approche agile, innovante et responsable.",
+    "mission": "Notre ambition est d'améliorer l'empreinte carbone de nos immeubles sous gestion en plaçant la performance environnementale au cœur de nos actions.",
+    "values": "Nous formons une équipe de professionnels engagés, autonomes et responsables, attachés à construire une relation de confiance avec nos clients institutionnels."
+  },
+  "services": [
+    {
+      "id": "property-management",
+      "title": "Property Management",
+      "subtitle": "Administration de biens ( Résidentiel et Tertiaire)",
+      "description": "100% des services sont intégrés : gestion, location, suivi technique, contentieux, comptabilité."
+    },
+    {
+      "id": "asset-management",
+      "title": "Asset Management",
+      "subtitle": "Valorisation",
+      "description": "Optimisation de la performance et de la création de valeur des actifs gérés."
+    },
+    {
+      "id": "project-management",
+      "title": "Project Management",
+      "subtitle": "Maitrise d'ouvrage déléguée",
+      "description": "Réalisation d'opérations de promotion, rénovation, surélévation ou transformation d'immeubles."
+    },
+    {
+      "id": "transaction-location",
+      "title": "Transaction et Location",
+      "subtitle": "",
+      "description": "Réalisation de ventes immobilières et de relocations, pour accompagner nos clients investisseurs professionnels et particuliers."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "OIKO TECH",
+      "description": "OIKO GESTION investit sans cesse pour proposer plus d'innovation à ses clients et collaborateurs.",
+      "cta": "En savoir plus sur nos outils"
+    },
+    {
+      "title": "OIKO CARRIERE",
+      "description": "Nos équipes s'investissent chaque jour pour améliorer la gestion locative. Rejoignez-nous !",
+      "cta": "Vivez l'experience OIKO GESTION"
+    },
+    {
+      "title": "OIKO À LA UNE",
+      "description": "Venez découvrir les dernières actualités concernant OIKO GESTION.",
+      "cta": "Voir nos dernières actus"
+    }
+  ],
+  "activitiesPreview": {
+    "title": "Nos activités",
+    "activities": [
+      {
+        "id": "property-management",
+        "title": "Property Management",
+        "subtitle": "Administration de biens",
+        "description": "Maillon essentiel de la chaîne de gestion immobilière, le property management est l'activité historique d'OIKO GESTION et conserve une place centrale dans notre organisation.",
+        "stats": [
+          {
+            "number": "77",
+            "label": "Professionnels"
+          },
+          {
+            "number": "8 500",
+            "label": "Lots"
+          }
+        ],
+        "cta": "En savoir plus"
+      },
+      {
+        "id": "asset-management",
+        "title": "Asset Management",
+        "subtitle": "Valorisation",
+        "description": "Complétant l'activité de Property management, l'asset management vise à valoriser les investissements de nos clients en s'appuyant sur les actions courantes de gestion.",
+        "stats": [
+          {
+            "number": "6",
+            "label": "Professionnels"
+          },
+          {
+            "number": "1,2",
+            "label": "Md€"
+          }
+        ],
+        "cta": "En savoir plus"
+      },
+      {
+        "id": "project-management",
+        "title": "Project Management",
+        "subtitle": "Maîtrise d'ouvrage déléguée",
+        "description": "Nous mettons au service de nos clients l'expertise développée sur nos opérations de promotion, rénovation ou transformation d'immeubles.",
+        "stats": [
+          {
+            "number": "7",
+            "label": "Professionnels"
+          },
+          {
+            "number": "35",
+            "label": "Opérations"
+          }
+        ],
+        "cta": "En savoir plus"
+      },
+      {
+        "id": "transaction-location",
+        "title": "Transaction et Location",
+        "subtitle": "Vente et location",
+        "description": "Cette activité s'appuie sur notre volonté d'offrir à nos clients une solution immobilière complète.",
+        "stats": [
+          {
+            "number": "12",
+            "label": "Professionnels"
+          },
+          {
+            "number": "Plus de 1000",
+            "label": "Lots/an"
+          }
+        ],
+        "cta": "En savoir plus"
+      }
+    ]
+  },
+  "clients": {
+    "title": "Nos clients"
+  }
+}

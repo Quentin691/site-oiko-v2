@@ -1,0 +1,83 @@
+{
+  "pageTitle": "Contactez-nous",
+  "hero": {
+    "title": "N'hésitez pas à nous contacter",
+    "subtitle": "Remplissez le formulaire ci-dessous, nos équipes traiteront rapidement vos demandes."
+  },
+  "form": {
+    "fields": {
+      "firstName": {
+        "label": "Prénom",
+        "placeholder": "Votre prénom",
+        "required": true
+      },
+      "lastName": {
+        "label": "Nom",
+        "placeholder": "Votre nom",
+        "required": true
+      },
+      "email": {
+        "label": "Adresse Email",
+        "placeholder": "votre@email.com",
+        "required": true
+      },
+      "phone": {
+        "label": "Téléphone",
+        "placeholder": "06 12 34 56 78",
+        "required": false
+      },
+      "subject": {
+        "label": "Objet",
+        "placeholder": "Objet de votre demande",
+        "required": true
+      },
+      "message": {
+        "label": "Votre message",
+        "placeholder": "Décrivez votre demande...",
+        "required": true
+      }
+    },
+    "callback": {
+      "label": "Souhaitez-vous être rappelé?",
+      "options": ["Oui", "Non"]
+    },
+    "gdpr": {
+      "label": "Données personnelles",
+      "text": "J'accepte que mes données personnelles saisies dans ce formulaire soient utilisées par OIKO GESTION, responsable de traitement, pour traiter et répondre à ma demande. Pour connaître et exercer vos droits, notamment de retrait de votre consentement à l'utilisation des données collectées par ce formulaire, consultez nos CGU.",
+      "linkText": "Voir nos CGU"
+    },
+    "captcha": {
+      "question": "14 + 14 = "
+    },
+    "submitButton": "Envoi"
+  },
+  "addresses": {
+    "title": "Addresses",
+    "company": "OIKO GESTION",
+    "offices": [
+      {
+        "city": "Paris",
+        "address": "14-16-18 rue Ballu",
+        "postalCode": "75009",
+        "country": "France"
+      },
+      {
+        "city": "Marseille",
+        "address": "17 rue de la République",
+        "postalCode": "13002",
+        "country": "France",
+        "phone": "04.85.80.00.26"
+      }
+    ]
+  },
+  "contact": {
+    "email": {
+      "label": "Email",
+      "value": "contact@oikogestion.fr"
+    },
+    "phone": {
+      "label": "Téléphone",
+      "value": "01 40 57 69 80"
+    }
+  }
+}
