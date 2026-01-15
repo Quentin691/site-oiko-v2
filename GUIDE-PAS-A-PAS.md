@@ -12,12 +12,12 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase | Progression | Statut |
 |-------|-------------|--------|
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
-| Phase 2 - Layout global | 0/54 (0%) | ⏳ À faire |
+| Phase 2 - Layout global | 14/62 (23%) | 🔄 En cours |
 | Phase 3 - Page Accueil | 0/44 (0%) | ⏳ À faire |
 | Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **65/317 (21%)** | |
+| **Total** | **79/325 (24%)** | |
 
 ---
 
@@ -514,10 +514,10 @@ import { Button, Card, Section } from "@/components/ui";
 
 ### Étape 2.1.1 : Créer un dossier layout
 
-- [ ] Dans `components/`, créer un dossier `layout`
-- [ ] Déplacer `Header.tsx` dans `components/layout/`
-- [ ] Déplacer `Navbar.tsx` dans `components/layout/`
-- [ ] Mettre à jour les imports dans `app/layout.tsx` :
+- [x] Dans `components/`, créer un dossier `layout`
+- [x] Déplacer `Header.tsx` dans `components/layout/`
+- [x] Déplacer `Navbar.tsx` dans `components/layout/`
+- [x] Mettre à jour les imports dans `app/layout.tsx` :
   - Remplacer `import Header from "@/components/Header"` par `import Header from "@/components/layout/Header"`
   - Remplacer `import Navbar from "@/components/Navbar"` par `import Navbar from "@/components/layout/Navbar"`
 
@@ -528,11 +528,11 @@ import { Button, Card, Section } from "@/components/ui";
 ### Étape 2.1.2 : Ajouter les réseaux sociaux au Header
 
 #### Sous-étape A : Préparer la structure
-- [ ] Ouvrir `components/layout/Header.tsx`
-- [ ] Identifier la div avec les réseaux sociaux (ligne 18)
+- [x] Ouvrir `components/layout/Header.tsx`
+- [x] Identifier la div avec les réseaux sociaux (ligne 18)
 
 #### Sous-étape B : Créer le composant d'icône social
-- [ ] Avant la fonction `Header`, ajouter un composant helper :
+- [x] Avant la fonction `Header`, ajouter un composant helper :
 ```typescript
 interface SocialLinkProps {
   href: string;
@@ -556,7 +556,7 @@ function SocialLink({ href, label, children }: SocialLinkProps) {
 ```
 
 #### Sous-étape C : Remplacer le placeholder réseaux sociaux
-- [ ] Remplacer `<p>réseaux sociaux</p>` par :
+- [x] Remplacer `<p>réseaux sociaux</p>` par :
 ```typescript
 <div className="flex items-center gap-4">
   <SocialLink href="https://linkedin.com" label="LinkedIn">
@@ -580,25 +580,25 @@ function SocialLink({ href, label, children }: SocialLinkProps) {
 ```
 
 #### Sous-étape D : Ajouter l'import React
-- [ ] En haut du fichier, vérifier que React est importé :
+- [x] En haut du fichier, vérifier que React est importé :
 ```typescript
 import React from "react";
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ⚠️ **Note :** Les URLs des réseaux sociaux sont des placeholders. Remplacer par les vraies URLs OIKO plus tard.
 
 ### Étape 2.1.3 : Améliorer le responsive
 
-- [ ] Dans `Header.tsx`, modifier la div principale :
+- [x] Dans `Header.tsx`, modifier la div principale :
 ```typescript
 <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
 ```
 
 💡 **Explication :** `flex-wrap sm:flex-nowrap` permet de passer à la ligne sur mobile si nécessaire.
 
-- [ ] Pour la section réseaux + connexion, ajouter un wrapper responsive :
+- [x] Pour la section réseaux + connexion, ajouter un wrapper responsive :
 ```typescript
 <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">
   {/* réseaux sociaux */}
@@ -614,7 +614,7 @@ import React from "react";
 
 💡 **Explication :** `hidden sm:flex` cache les réseaux sociaux sur mobile mais les affiche sur écrans >= 640px.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -966,6 +966,158 @@ import Footer from "@/components/layout/Footer";
 
 ---
 
+## 2.5 Responsive Navbar (Menu Hamburger)
+
+### Étape 2.5.1 : Ajouter l'état pour le menu mobile
+
+- [ ] Ouvrir `components/layout/Navbar.tsx`
+- [ ] Ajouter l'import useState si pas déjà présent :
+```typescript
+import { useState, useEffect } from "react";
+```
+- [ ] Ajouter un état pour gérer l'ouverture du menu :
+```typescript
+const [isMenuOpen, setIsMenuOpen] = useState(false);
+```
+
+### Étape 2.5.2 : Créer le bouton hamburger
+
+- [ ] Ajouter le bouton hamburger (visible uniquement sur mobile) :
+```typescript
+{/* Bouton hamburger - visible sur mobile */}
+<button
+  className="sm:hidden p-2 text-gray-600 hover:text-foreground"
+  onClick={() => setIsMenuOpen(!isMenuOpen)}
+  aria-label="Menu"
+>
+  {isMenuOpen ? (
+    {/* Icône X pour fermer */}
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  ) : (
+    {/* Icône hamburger */}
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  )}
+</button>
+```
+
+### Étape 2.5.3 : Cacher la navigation desktop sur mobile
+
+- [ ] Modifier la `<ul>` des liens pour la cacher sur mobile :
+```typescript
+<ul className="hidden sm:flex gap-16 text-sm">
+```
+
+### Étape 2.5.4 : Créer le menu mobile déroulant
+
+- [ ] Après la div principale, ajouter le menu mobile :
+```typescript
+{/* Menu mobile */}
+{isMenuOpen && (
+  <div className="sm:hidden border-t border-gray-200">
+    <ul className="flex flex-col py-4">
+      <li>
+        <Link
+          href="/"
+          className="block px-6 py-3 hover:bg-gray-50"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Accueil
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/activites"
+          className="block px-6 py-3 hover:bg-gray-50"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Activités
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/a-propos-de-nous"
+          className="block px-6 py-3 hover:bg-gray-50"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          À propos
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/vente"
+          className="block px-6 py-3 hover:bg-gray-50"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Vente
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/location"
+          className="block px-6 py-3 hover:bg-gray-50"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Location
+        </Link>
+      </li>
+      <li>
+        <Link
+          href="/contactez-nous"
+          className="block px-6 py-3 hover:bg-gray-50"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Contact
+        </Link>
+      </li>
+    </ul>
+  </div>
+)}
+```
+
+### Étape 2.5.5 : Fermer le menu au changement de page
+
+- [ ] Ajouter un useEffect pour fermer le menu quand on scroll :
+```typescript
+// Fermer le menu mobile au scroll
+useEffect(() => {
+  const handleScroll = () => {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [isMenuOpen]);
+```
+
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :**
+- `sm:hidden` cache le bouton hamburger sur écran >= 640px
+- `hidden sm:flex` cache les liens desktop sur mobile
+- `onClick={() => setIsMenuOpen(false)}` ferme le menu quand on clique sur un lien
+
+### Étape 2.5.6 : Tester le responsive de la page
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000
+- [ ] Ouvrir les outils de développement (F12)
+- [ ] Activer le mode responsive (Ctrl+Shift+M ou icône mobile)
+- [ ] Tester les différentes tailles :
+  - [ ] Mobile (320px) : Menu hamburger visible, réseaux sociaux cachés
+  - [ ] Tablette (768px) : Navigation desktop visible
+  - [ ] Desktop (1024px+) : Tout visible correctement
+- [ ] Vérifier que le menu hamburger s'ouvre et se ferme
+- [ ] Vérifier que les liens du menu mobile fonctionnent
+- [ ] Vérifier que le menu se ferme au scroll
+
+---
+
 ## ✅ Checkpoint Phase 2
 
 À ce stade, vous devriez avoir :
@@ -974,6 +1126,7 @@ import Footer from "@/components/layout/Footer";
 - [x] Composant PageAnchors fonctionnel
 - [x] Footer complet avec mapping des liens
 - [x] Tous les composants dans `components/layout/`
+- [x] Menu hamburger responsive sur mobile
 
 **Test visuel :**
 - [ ] Lancer `npm run dev`
@@ -981,6 +1134,7 @@ import Footer from "@/components/layout/Footer";
 - [ ] Vérifier que Header et Footer s'affichent
 - [ ] Scroller et vérifier que le logo apparaît dans la navbar
 - [ ] Vérifier le responsive (réduire la fenêtre)
+- [ ] Tester le menu hamburger sur mobile (< 640px)
 
 ---
 
