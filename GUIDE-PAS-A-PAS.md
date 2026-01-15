@@ -12,12 +12,12 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase | Progression | Statut |
 |-------|-------------|--------|
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
-| Phase 2 - Layout global | 22/68 (32%) | 🔄 En cours |
+| Phase 2 - Layout global | 28/68 (41%) | 🔄 En cours |
 | Phase 3 - Page Accueil | 0/44 (0%) | ⏳ À faire |
 | Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **87/331 (26%)** | |
+| **Total** | **93/331 (28%)** | |
 
 ---
 
@@ -613,7 +613,7 @@ import React from "react";
 
 - [x] Pour la section réseaux + connexion, ajouter un wrapper responsive :
 ```typescript
-<div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
+<div className="flex items-center gap-2 sm:gap-6 shrink-0">
   <Button href="/connexion" variant="secondary">
     Connexion
   </Button>
@@ -636,21 +636,21 @@ import React from "react";
 ### Étape 2.2.1 : Ajouter la logique de scroll
 
 #### Sous-étape A : Préparer les imports
-- [ ] Ouvrir `components/layout/Navbar.tsx`
-- [ ] Vérifier que `"use client"` est en première ligne
-- [ ] Ajouter les imports nécessaires :
+- [x] Ouvrir `components/layout/Navbar.tsx`
+- [x] Vérifier que `"use client"` est en première ligne
+- [x] Ajouter les imports nécessaires :
 ```typescript
 import { useState, useEffect } from "react";
 ```
 
 #### Sous-étape B : Ajouter le state pour le scroll
-- [ ] Dans la fonction `Navbar`, avant le `return`, ajouter :
+- [x] Dans la fonction `Navbar`, avant le `return`, ajouter :
 ```typescript
 const [showLogo, setShowLogo] = useState(false);
 ```
 
 #### Sous-étape C : Ajouter le useEffect pour détecter le scroll
-- [ ] Après le state, ajouter :
+- [x] Après le state, ajouter :
 ```typescript
 useEffect(() => {
   const handleScroll = () => {
@@ -673,7 +673,7 @@ useEffect(() => {
 💡 **Explication :** Le logo apparaît quand on scroll plus de 100px.
 
 #### Sous-étape D : Ajouter le logo dans la navbar
-- [ ] Modifier la div principale de la navbar pour inclure le logo :
+- [x] Modifier la div principale de la navbar pour inclure le logo :
 ```typescript
 <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
   {/* Logo qui apparaît au scroll */}
@@ -692,7 +692,7 @@ useEffect(() => {
 </div>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 2.2.2 : Améliorer le responsive de la navbar
 
@@ -714,7 +714,7 @@ useEffect(() => {
 - `whitespace-nowrap` : empêche les retours à la ligne
 - `overflow-x-auto` : permet le scroll horizontal si besoin
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -761,7 +761,7 @@ export default function PageAnchors({ anchors }: PageAnchorsProps) {
       <div className="max-w-7xl mx-auto px-6">
         <ul className="flex gap-8 overflow-x-auto py-4">
           {anchors.map((anchor) => (
-            <li key={anchor.id} className="flex-shrink-0">
+            <li key={anchor.id} className="shrink-0">
               <Link
                 href={`#${anchor.id}`}
                 className={`text-sm font-medium transition-colors ${
@@ -1585,7 +1585,7 @@ export default function ActivitySection({
               {features.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <svg
-                    className="w-6 h-6 text-foreground flex-shrink-0 mt-1"
+                    className="w-6 h-6 text-foreground shrink-0 mt-1"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1930,7 +1930,7 @@ export default function ToolsGrid({ tools }: ToolsGridProps) {
         <Card key={tool.name} hover>
           <div className="flex items-start gap-4">
             {/* Icône placeholder */}
-            <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
               <svg
                 className="w-6 h-6 text-background"
                 fill="none"
@@ -2769,7 +2769,7 @@ export default function AddressCard({ address }: AddressCardProps) {
     <Card>
       <div className="flex items-start gap-4">
         {/* Icône localisation */}
-        <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
           <svg
             className="w-6 h-6 text-background"
             fill="none"
@@ -2838,7 +2838,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
       {/* Email */}
       <Card hover>
         <a href={`mailto:${email}`} className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
             <svg
               className="w-6 h-6 text-background"
               fill="none"
@@ -2863,7 +2863,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
       {/* Téléphone */}
       <Card hover>
         <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
             <svg
               className="w-6 h-6 text-background"
               fill="none"
