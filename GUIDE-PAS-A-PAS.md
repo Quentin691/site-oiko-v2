@@ -23,14 +23,14 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 4 premi�
 
 ### Étape 1.1.1 : Mettre à jour globals.css
 
-- [ ] Ouvrir le fichier `app/globals.css`
-- [ ] Localiser la section `:root` (lignes 3-6)
-- [ ] Remplacer `--background: #ffffff;` par `--background: #F5F5F5;`
-- [ ] Remplacer `--foreground: #171717;` par `--foreground: #1F1F1F;`
-- [ ] Ajouter une nouvelle ligne : `--card: #FFFFFF;`
-- [ ] Localiser la section `@theme inline` (lignes 8-13)
-- [ ] Ajouter dans cette section : `--color-card: var(--card);`
-- [ ] Sauvegarder le fichier
+- [x] Ouvrir le fichier `app/globals.css`
+- [x] Localiser la section `:root` (lignes 3-6)
+- [x] Remplacer `--background: #ffffff;` par `--background: #F5F5F5;`
+- [x] Remplacer `--foreground: #171717;` par `--foreground: #1F1F1F;`
+- [x] Ajouter une nouvelle ligne : `--card: #FFFFFF;`
+- [x] Localiser la section `@theme inline` (lignes 8-13)
+- [x] Ajouter dans cette section : `--color-card: var(--card);`
+- [x] Sauvegarder le fichier
 
 **Résultat attendu :**
 ```css
@@ -51,76 +51,42 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 4 premi�
 
 ### Étape 1.1.2 : Configurer scroll-margin
 
-- [ ] Dans `app/globals.css`, après la section `body { ... }`
-- [ ] Ajouter une nouvelle section pour les ancres :
+- [x] Dans `app/globals.css`, après la section `body { ... }`
+- [x] Ajouter une nouvelle section pour les ancres :
 ```css
 /* Scroll offset pour les ancres (évite que navbar cache les titres) */
 [id] {
   scroll-margin-top: 80px;
 }
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 💡 **Conseil :** 80px correspond à la hauteur approximative de la navbar sticky.
 
 ---
 
-## 1.2 Conversion TypeScript
+## 1.2 Vérification TypeScript
 
-### Étape 1.2.1 : Ajouter types à ButtonLink.tsx
+### Étape 1.2.1 : Supprimer ButtonLink.tsx
 
 - [x] ~~Les fichiers sont déjà en .tsx~~
-- [ ] Ouvrir `components/ButtonLink.tsx`
-- [ ] Ajouter l'import React en haut du fichier :
-```typescript
-import Link from "next/link";
-import { ReactNode } from "react";
-```
-- [ ] Avant la fonction, ajouter l'interface des props :
-```typescript
-interface ButtonLinkProps {
-  href: string;
-  children: ReactNode;
-}
-```
-- [ ] Modifier la signature de la fonction :
-```typescript
-export default function ButtonLink({ href, children }: ButtonLinkProps) {
-```
-- [ ] Sauvegarder le fichier
+- [x] Supprimer le fichier `components/ButtonLink.tsx`
 
-**Fichier complet attendu :**
-```typescript
-import Link from "next/link";
-import { ReactNode } from "react";
-
-interface ButtonLinkProps {
-  href: string;
-  children: ReactNode;
-}
-
-export default function ButtonLink({ href, children }: ButtonLinkProps) {
-  return (
-    <Link href={href} className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-100 transition">
-      {children}
-    </Link>
-  );
-}
-```
+💡 **Explication :** Le composant `Button.tsx` (créé à l'étape 1.3.2) remplace `ButtonLink.tsx`. Il est plus complet car il supporte les liens ET les boutons avec plusieurs variants.
 
 ### Étape 1.2.2 : Vérifier Header.tsx
 
-- [ ] Ouvrir `components/Header.tsx`
-- [ ] Vérifier que les imports sont corrects
-- [ ] Le fichier est déjà en TypeScript, pas de modification nécessaire pour l'instant
-- [ ] Fermer le fichier
+- [x] Ouvrir `components/Header.tsx`
+- [x] Vérifier que le fichier est en TypeScript
+- [x] ⚠️ L'import de `ButtonLink` sera mis à jour après la création de `Button.tsx` (étape 1.3.2)
+- [x] Fermer le fichier
 
 ### Étape 1.2.3 : Vérifier Navbar.tsx
 
-- [ ] Ouvrir `components/Navbar.tsx`
-- [ ] Vérifier que `"use client"` est présent en première ligne
-- [ ] Le fichier est déjà en TypeScript, pas de modification nécessaire pour l'instant
-- [ ] Fermer le fichier
+- [x] Ouvrir `components/Navbar.tsx`
+- [x] Vérifier que `"use client"` est présent en première ligne
+- [x] Le fichier est déjà en TypeScript, pas de modification nécessaire pour l'instant
+- [x] Fermer le fichier
 
 ---
 
@@ -128,22 +94,22 @@ export default function ButtonLink({ href, children }: ButtonLinkProps) {
 
 ### Étape 1.3.1 : Créer le dossier ui
 
-- [ ] Dans l'explorateur de fichiers, aller dans le dossier `components/`
-- [ ] Créer un nouveau dossier nommé `ui`
-- [ ] Vérifier que le chemin est : `components/ui/`
+- [x] Dans l'explorateur de fichiers, aller dans le dossier `components/`
+- [x] Créer un nouveau dossier nommé `ui`
+- [x] Vérifier que le chemin est : `components/ui/`
 
 ### Étape 1.3.2 : Créer Button.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/ui/`, créer un nouveau fichier `Button.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/ui/`, créer un nouveau fichier `Button.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import Link from "next/link";
 import { ReactNode } from "react";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface des props :
+- [x] Ajouter l'interface des props :
 ```typescript
 interface ButtonProps {
   href?: string;
@@ -161,7 +127,7 @@ interface ButtonProps {
 - `type?` : type HTML du bouton
 
 #### Sous-étape C : Créer la fonction getVariantStyles
-- [ ] Ajouter une fonction helper pour les styles :
+- [x] Ajouter une fonction helper pour les styles :
 ```typescript
 const getVariantStyles = (variant: "primary" | "secondary" | "outline") => {
   switch (variant) {
@@ -178,7 +144,7 @@ const getVariantStyles = (variant: "primary" | "secondary" | "outline") => {
 ```
 
 #### Sous-étape D : Implémenter le composant
-- [ ] Ajouter le composant principal :
+- [x] Ajouter le composant principal :
 ```typescript
 export default function Button({
   href,
@@ -209,13 +175,59 @@ export default function Button({
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 💡 **Conseil :** Ce composant peut être utilisé comme lien OU comme bouton selon si `href` est fourni.
 
-⚠️ **Note importante :** Le composant `ButtonLink.tsx` existant est conservé. On garde les deux composants :
-- **ButtonLink** : Pour les liens simples (style minimaliste, bordure grise)
-- **Button** : Pour les boutons avec variants (primary, secondary, outline) et plus d'options
+#### Sous-étape E : Mettre à jour Header.tsx
+
+🔗 **Dépendance :** Cette sous-étape met à jour l'import supprimé à l'étape 1.2.1
+
+- [x] Ouvrir `components/Header.tsx`
+- [x] Remplacer l'import :
+```typescript
+// Avant
+import ButtonLink from "@/components/ButtonLink";
+
+// Après
+import Button from "@/components/ui/Button";
+```
+- [x] Remplacer l'utilisation de `ButtonLink` par `Button` avec variant `secondary` :
+```typescript
+<Button href="/connexion" variant="secondary">
+  Connexion
+</Button>
+```
+- [x] Sauvegarder le fichier
+
+**Header.tsx complet attendu :**
+```typescript
+import Button from "@/components/ui/Button";
+import Link from "next/link";
+
+export default function Header() {
+  return (
+    <header className="border-b">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+
+        {/* Logo à gauche */}
+        <div>
+          <p><Link href="/">LOGO</Link></p>
+        </div>
+
+        {/* Bloc à droite : connexion + réseaux */}
+        <div className="flex items-center gap-6">
+          <Button href="/connexion" variant="secondary">
+            Connexion
+          </Button>
+          <p>réseaux sociaux</p>
+        </div>
+
+      </div>
+    </header>
+  );
+}
+```
 
 ### Étape 1.3.3 : Créer Section.tsx
 
