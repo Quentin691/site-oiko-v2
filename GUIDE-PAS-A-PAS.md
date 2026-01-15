@@ -213,6 +213,10 @@ export default function Button({
 
 💡 **Conseil :** Ce composant peut être utilisé comme lien OU comme bouton selon si `href` est fourni.
 
+⚠️ **Note importante :** Le composant `ButtonLink.tsx` existant est conservé. On garde les deux composants :
+- **ButtonLink** : Pour les liens simples (style minimaliste, bordure grise)
+- **Button** : Pour les boutons avec variants (primary, secondary, outline) et plus d'options
+
 ### Étape 1.3.3 : Créer Section.tsx
 
 #### Sous-étape A : Créer le fichier
@@ -487,8 +491,13 @@ import { Button, Card, Section } from "@/components/ui";
 - [ ] Dans `components/`, créer un dossier `layout`
 - [ ] Déplacer `Header.tsx` dans `components/layout/`
 - [ ] Déplacer `Navbar.tsx` dans `components/layout/`
+- [ ] Mettre à jour les imports dans `app/layout.tsx` :
+  - Remplacer `import Header from "@/components/Header"` par `import Header from "@/components/layout/Header"`
+  - Remplacer `import Navbar from "@/components/Navbar"` par `import Navbar from "@/components/layout/Navbar"`
 
 💡 **Organisation :** On groupe tous les composants de layout ensemble.
+
+⚠️ **Important :** Les imports doivent être mis à jour en même temps que le déplacement des fichiers, sinon le site ne compilera pas.
 
 ### Étape 2.1.2 : Ajouter les réseaux sociaux au Header
 
