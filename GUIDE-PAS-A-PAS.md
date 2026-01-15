@@ -1,9 +1,23 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 4
-**Dernière mise à jour :** 14 janvier 2026
+**Phases couvertes :** 1 à 6
+**Dernière mise à jour :** 15 janvier 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 4 premières phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+
+---
+
+## 📊 Progression
+
+| Phase | Progression | Statut |
+|-------|-------------|--------|
+| Phase 1 - Configuration et fondations | 39/65 (60%) | 🔄 En cours |
+| Phase 2 - Layout global | 0/54 (0%) | ⏳ À faire |
+| Phase 3 - Page Accueil | 0/44 (0%) | ⏳ À faire |
+| Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
+| Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
+| Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
+| **Total** | **39/317 (12%)** | |
 
 ---
 
