@@ -1,0 +1,25 @@
+import {ReactNode} from "react";
+
+interface CardProps {
+  children: ReactNode;
+  className?: string;
+  hover?: boolean;
+}
+
+export default function Card({
+  children,
+  className = "",
+  hover = false,
+}: CardProps) {
+  const hoverStyles = hover
+    ? "hover:shadow-lg hover:scale-105 cursor-pointer"
+    : "";
+
+  return (
+    <div
+      className={`bg-card rounded-lg border border-gray-200 p-6 shadow-sm transition-all duration-200 ${hoverStyles} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
