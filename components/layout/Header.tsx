@@ -26,15 +26,15 @@ function SocialLink({ href, label, children }: SocialLinkProps) {
 export default function Header() {
   return (
     <header className="border-b">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
 
         {/* Logo à gauche */}
-        <div>
-          <p><Link href="/">LOGO</Link></p>
-        </div>
+        <Link href="/">
+          <img src="/logo.png" alt="Oikogestion" className="h-12 sm:h-20 w-auto" />
+        </Link>
 
         {/* Bloc à droite : connexion + réseaux */}
-        <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
           <Button href="/connexion" variant="secondary">
             Connexion
           </Button>
