@@ -12,12 +12,12 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase | Progression | Statut |
 |-------|-------------|--------|
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
-| Phase 2 - Layout global | 28/68 (41%) | 🔄 En cours |
+| Phase 2 - Layout global | 50/68 (74%) | 🔄 En cours |
 | Phase 3 - Page Accueil | 0/44 (0%) | ⏳ À faire |
 | Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **93/331 (28%)** | |
+| **Total** | **115/331 (35%)** | |
 
 ---
 
@@ -722,9 +722,9 @@ useEffect(() => {
 
 ### Étape 2.3.1 : Créer le fichier
 
-- [ ] Dans `components/layout/`, créer `PageAnchors.tsx`
-- [ ] Ajouter `"use client"` en première ligne
-- [ ] Ajouter les imports :
+- [x] Dans `components/layout/`, créer `PageAnchors.tsx`
+- [x] Ajouter `"use client"` en première ligne
+- [x] Ajouter les imports :
 ```typescript
 "use client";
 
@@ -734,7 +734,7 @@ import Link from "next/link";
 
 ### Étape 2.3.2 : Définir l'interface
 
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface Anchor {
   id: string;
@@ -749,7 +749,7 @@ interface PageAnchorsProps {
 ### Étape 2.3.3 : Implémenter le composant
 
 #### Sous-étape A : Structure de base
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function PageAnchors({ anchors }: PageAnchorsProps) {
   const [activeId, setActiveId] = useState<string>("");
@@ -782,7 +782,7 @@ export default function PageAnchors({ anchors }: PageAnchorsProps) {
 ```
 
 #### Sous-étape B : Ajouter la détection de scroll
-- [ ] Remplacer le `// TODO` par :
+- [x] Remplacer le `// TODO` par :
 ```typescript
 useEffect(() => {
   const handleScroll = () => {
@@ -821,7 +821,7 @@ useEffect(() => {
 
 💡 **Explication :** On détecte quelle section est visible à ~100px du haut de la fenêtre.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -829,8 +829,8 @@ useEffect(() => {
 
 ### Étape 2.4.1 : Créer le fichier
 
-- [ ] Dans `components/layout/`, créer `Footer.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/layout/`, créer `Footer.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import Link from "next/link";
 import footerData from "@/content/footer.json";
@@ -838,7 +838,7 @@ import footerData from "@/content/footer.json";
 
 ### Étape 2.4.2 : Créer le mapping des liens
 
-- [ ] Ajouter le mapping avant le composant :
+- [x] Ajouter le mapping avant le composant :
 ```typescript
 // Mapping des labels vers les URLs (contrôlé par les devs)
 const linkMapping: Record<string, string> = {
@@ -865,7 +865,7 @@ const linkMapping: Record<string, string> = {
 ### Étape 2.4.3 : Implémenter le composant Footer
 
 #### Sous-étape A : Structure principale
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function Footer() {
   return (
@@ -889,7 +889,7 @@ export default function Footer() {
 ```
 
 #### Sous-étape B : Créer un composant helper FooterColumn
-- [ ] Avant le composant Footer, ajouter :
+- [x] Avant le composant Footer, ajouter :
 ```typescript
 interface FooterColumnProps {
   title: string;
@@ -918,7 +918,7 @@ function FooterColumn({ title, links }: FooterColumnProps) {
 ```
 
 #### Sous-étape C : Remplir les colonnes
-- [ ] Remplacer les commentaires par les vraies colonnes :
+- [x] Remplacer les commentaires par les vraies colonnes :
 ```typescript
 {/* Colonne 1 : Navigation */}
 <FooterColumn
@@ -955,7 +955,7 @@ function FooterColumn({ title, links }: FooterColumnProps) {
 ```
 
 #### Sous-étape D : Ajouter les réseaux sociaux (mobile)
-- [ ] Avant le copyright, ajouter les réseaux sociaux (visibles uniquement sur mobile) :
+- [x] Avant le copyright, ajouter les réseaux sociaux (visibles uniquement sur mobile) :
 ```typescript
 {/* Réseaux sociaux (mobile uniquement) */}
 <div className="mt-8 flex sm:hidden justify-center gap-6">
@@ -982,31 +982,31 @@ function FooterColumn({ title, links }: FooterColumnProps) {
 </div>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 2.4.4 : Ajouter Footer au layout principal
 
-- [ ] Ouvrir `app/layout.tsx`
-- [ ] Ajouter l'import :
+- [x] Ouvrir `app/layout.tsx`
+- [x] Ajouter l'import :
 ```typescript
 import Footer from "@/components/layout/Footer";
 ```
-- [ ] Avant la balise fermante `</body>`, ajouter :
+- [x] Avant la balise fermante `</body>`, ajouter :
 ```typescript
 <Footer />
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 2.4.5 : Mettre à jour les imports du Header et Navbar
 
-- [ ] Ouvrir `app/layout.tsx`
-- [ ] Modifier les imports :
+- [x] Ouvrir `app/layout.tsx`
+- [x] Modifier les imports :
 ```typescript
 import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
