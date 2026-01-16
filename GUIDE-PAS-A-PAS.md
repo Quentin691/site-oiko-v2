@@ -12,12 +12,12 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase | Progression | Statut |
 |-------|-------------|--------|
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
-| Phase 2 - Layout global | 50/68 (74%) | 🔄 En cours |
+| Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
 | Phase 3 - Page Accueil | 0/44 (0%) | ⏳ À faire |
 | Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **115/331 (35%)** | |
+| **Total** | **133/331 (40%)** | |
 
 ---
 
@@ -1014,19 +1014,19 @@ import Footer from "@/components/layout/Footer";
 
 ### Étape 2.5.1 : Ajouter l'état pour le menu mobile
 
-- [ ] Ouvrir `components/layout/Navbar.tsx`
-- [ ] Ajouter l'import useState si pas déjà présent :
+- [x] Ouvrir `components/layout/Navbar.tsx`
+- [x] Ajouter l'import useState si pas déjà présent :
 ```typescript
 import { useState, useEffect } from "react";
 ```
-- [ ] Ajouter un état pour gérer l'ouverture du menu :
+- [x] Ajouter un état pour gérer l'ouverture du menu :
 ```typescript
 const [isMenuOpen, setIsMenuOpen] = useState(false);
 ```
 
 ### Étape 2.5.2 : Créer le bouton hamburger
 
-- [ ] Ajouter le bouton hamburger (visible uniquement sur mobile) :
+- [x] Ajouter le bouton hamburger (visible uniquement sur mobile) :
 ```typescript
 {/* Bouton hamburger - visible sur mobile */}
 <button
@@ -1050,14 +1050,14 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 ### Étape 2.5.3 : Cacher la navigation desktop sur mobile
 
-- [ ] Modifier la `<ul>` des liens pour la cacher sur mobile :
+- [x] Modifier la `<ul>` des liens pour la cacher sur mobile :
 ```typescript
 <ul className="hidden sm:flex gap-16 text-sm">
 ```
 
 ### Étape 2.5.4 : Créer le menu mobile déroulant
 
-- [ ] Après la div principale, ajouter le menu mobile :
+- [x] Après la div principale, ajouter le menu mobile :
 ```typescript
 {/* Menu mobile */}
 {isMenuOpen && (
@@ -1124,7 +1124,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 ### Étape 2.5.5 : Fermer le menu au changement de page
 
-- [ ] Ajouter un useEffect pour fermer le menu quand on scroll :
+- [x] Ajouter un useEffect pour fermer le menu quand on scroll :
 ```typescript
 // Fermer le menu mobile au scroll
 useEffect(() => {
@@ -1139,7 +1139,7 @@ useEffect(() => {
 }, [isMenuOpen]);
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 💡 **Explication :**
 - `sm:hidden` cache le bouton hamburger sur écran >= 640px
@@ -1148,17 +1148,17 @@ useEffect(() => {
 
 ### Étape 2.5.6 : Tester le responsive de la page
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000
-- [ ] Ouvrir les outils de développement (F12)
-- [ ] Activer le mode responsive (Ctrl+Shift+M ou icône mobile)
-- [ ] Tester les différentes tailles :
-  - [ ] Mobile (320px) : Menu hamburger visible, réseaux sociaux cachés
-  - [ ] Tablette (768px) : Navigation desktop visible
-  - [ ] Desktop (1024px+) : Tout visible correctement
-- [ ] Vérifier que le menu hamburger s'ouvre et se ferme
-- [ ] Vérifier que les liens du menu mobile fonctionnent
-- [ ] Vérifier que le menu se ferme au scroll
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000
+- [x] Ouvrir les outils de développement (F12)
+- [x] Activer le mode responsive (Ctrl+Shift+M ou icône mobile)
+- [x] Tester les différentes tailles :
+  - [x] Mobile (320px) : Menu hamburger visible, réseaux sociaux cachés
+  - [x] Tablette (768px) : Navigation desktop visible
+  - [x] Desktop (1024px+) : Tout visible correctement
+- [x] Vérifier que le menu hamburger s'ouvre et se ferme
+- [x] Vérifier que les liens du menu mobile fonctionnent
+- [x] Vérifier que le menu se ferme au scroll
 
 ---
 
