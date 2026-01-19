@@ -15,9 +15,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
 | Phase 3 - Page Accueil | 44/44 (100%) | ✅ Terminée |
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
-| Phase 5 - Page À propos | 24/62 (39%) | 🔄 En cours |
+| Phase 5 - Page À propos | 42/52 (81%) | 🔄 En cours |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **241/331 (73%)** | |
+| **Total** | **259/321 (81%)** | |
 
 ---
 
@@ -1982,14 +1982,14 @@ export default function VideoSection({ title, description }: VideoSectionProps) 
 ### Étape 5.1.5 : Créer TestimonialsGrid.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `TestimonialsGrid.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/a-propos/`, créer `TestimonialsGrid.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface (basée sur `content/a-propos.json` où les témoignages sont de simples strings) :
+- [x] Ajouter l'interface (basée sur `content/a-propos.json` où les témoignages sont de simples strings) :
 ```typescript
 interface TestimonialsGridProps {
   testimonials: string[];
@@ -1997,7 +1997,7 @@ interface TestimonialsGridProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function TestimonialsGrid({ testimonials }: TestimonialsGridProps) {
   if (testimonials.length === 0) {
@@ -2030,19 +2030,19 @@ export default function TestimonialsGrid({ testimonials }: TestimonialsGridProps
 
 💡 **Explication :** Grille simple 2x2 sur desktop, colonne sur mobile. Tous les témoignages sont visibles d'un coup.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 5.1.6 : Créer JobsGrid.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `JobsGrid.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/a-propos/`, créer `JobsGrid.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces (basées sur `content/a-propos.json`) :
+- [x] Ajouter les interfaces (basées sur `content/a-propos.json`) :
 ```typescript
 interface Job {
   name: string;
@@ -2057,7 +2057,7 @@ interface JobsGridProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function JobsGrid({ jobs }: JobsGridProps) {
   return (
@@ -2087,71 +2087,12 @@ export default function JobsGrid({ jobs }: JobsGridProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
-
-### Étape 5.1.7 : Créer BarometreCard.tsx
-
-#### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `BarometreCard.tsx`
-- [ ] Ajouter les imports :
-```typescript
-import { Card } from "@/components/ui";
-```
-
-#### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface :
-```typescript
-interface BarometreCardProps {
-  score: number;
-  description: string;
-  year: string;
-}
-```
-
-#### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
-```typescript
-export default function BarometreCard({ score, description, year }: BarometreCardProps) {
-  return (
-    <div className="max-w-2xl mx-auto">
-      <Card>
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-4">
-            Baromètre de l'expérience salarié
-          </h3>
-
-          <div className="inline-flex items-baseline gap-2 mb-4">
-            <span className="text-6xl font-bold text-foreground">{score}</span>
-            <span className="text-3xl text-gray-600">/ 100</span>
-          </div>
-
-          <p className="text-gray-600 mb-2">
-            {description}
-          </p>
-          <p className="text-sm text-gray-500">
-            Année {year}
-          </p>
-
-          {/* Barre de progression */}
-          <div className="mt-6 w-full bg-gray-200 rounded-full h-3">
-            <div
-              className="bg-foreground h-3 rounded-full transition-all duration-500"
-              style={{ width: `${score}%` }}
-            />
-          </div>
-        </div>
-      </Card>
-    </div>
-  );
-}
-```
-
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 5.1.7 : Créer index.ts
 
-- [ ] Dans `components/a-propos/`, créer `index.ts`
-- [ ] Ajouter tous les exports :
+- [x] Dans `components/a-propos/`, créer `index.ts`
+- [x] Ajouter tous les exports :
 ```typescript
 export { default as Timeline } from "./Timeline";
 export { default as ToolsGrid } from "./ToolsGrid";
@@ -2159,7 +2100,7 @@ export { default as VideoSection } from "./VideoSection";
 export { default as TestimonialsGrid } from "./TestimonialsGrid";
 export { default as JobsGrid } from "./JobsGrid";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
