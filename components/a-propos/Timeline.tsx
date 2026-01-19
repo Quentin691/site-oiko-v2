@@ -23,7 +23,7 @@ export default function Timeline({ events }: TimelineProps) {
           return (
             <div key={event.year} className="relative">
               {/* Desktop: alternance gauche/droite */}
-              <div className={`md:flex md:items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+              <div className={`hidden md:flex md:items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 <div className="md:w-5/12"></div>
 
                 {/* Point central */}

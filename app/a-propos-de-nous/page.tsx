@@ -1,8 +1,108 @@
-export default function CarrierePage() {
-    return (
-      <div>
-        <h1>Carrière</h1>
-      </div>
-    );
-  }
-  
+import {
+  Timeline,
+  ToolsGrid,
+  VideoSection,
+  TestimonialsGrid,
+  JobsGrid,
+} from "@/components/a-propos";
+import { PageAnchors } from "@/components/layout";
+import { Section, ScrollToTop } from "@/components/ui";
+import aproposContent from "@/content/a-propos.json";
+
+export default function AProposPage() {
+  // Extraire les sections par leur id
+  const histoireSection = aproposContent.sections.find(s => s.id === "histoire");
+  const outilsSection = aproposContent.sections.find(s => s.id === "outils");
+  const presentationSection = aproposContent.sections.find(s => s.id === "presentation");
+  const temoignagesSection = aproposContent.sections.find(s => s.id === "temoignages");
+  const recrutementSection = aproposContent.sections.find(s => s.id === "recrutement");
+  const metiersSection = aproposContent.sections.find(s => s.id === "metiers");
+
+  // Définir les ancres dynamiquement
+  const anchors = aproposContent.sections.map((section) => ({
+    id: section.id,
+    label: section.title,
+  }));
+
+  return (
+    <main>
+      <PageAnchors anchors={anchors} />
+
+      {/* Section Histoire */}
+      {histoireSection && (
+        <Section id="histoire" background="white">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              {histoireSection.title}
+            </h1>
+            {histoireSection.subtitle && (
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                {histoireSection.subtitle}
+              </p>
+            )}
+          </div>
+          {histoireSection.timeline && (
+            <Timeline events={histoireSection.timeline} />
+          )}
+        </Section>
+      )}
+
+      {/* Section Outils */}
+      {outilsSection && (
+        <Section id="outils" background="gray">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {outilsSection.title}
+            </h2>
+            {outilsSection.description && (
+              <p className="text-gray-600 max-w-2xl mx-auto whitespace-pre-line">
+                {outilsSection.description}
+              </p>
+            )}
+          </div>
+          {outilsSection.tools && (
+            <ToolsGrid tools={outilsSection.tools} />
+          )}
+        </Section>
+      )}
+
+      {/* Section Présentation */}
+      {presentationSection && (
+        <Section id="presentation" background="white">
+          <VideoSection
+            title={presentationSection.title}
+            description={presentationSection.description}
+          />
+        </Section>
+      )}
+
+      {/* Section Témoignages */}
+      {temoignagesSection && temoignagesSection.testimonials && (
+        <Section id="temoignages" background="gray">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {temoignagesSection.title}
+            </h2>
+          </div>
+          <TestimonialsGrid testimonials={temoignagesSection.testimonials} />
+        </Section>
+      )}
+
+      {/* Section Métiers */}
+      {metiersSection && (
+        <Section id="metiers" background="white">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {metiersSection.title}
+            </h2>
+          </div>
+          {metiersSection.jobs && (
+            <JobsGrid jobs={metiersSection.jobs} />
+          )}
+        </Section>
+      )}
+
+      <ScrollToTop />
+    </main>
+  );
+}

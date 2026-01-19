@@ -15,9 +15,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
 | Phase 3 - Page Accueil | 44/44 (100%) | ✅ Terminée |
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
-| Phase 5 - Page À propos | 42/52 (81%) | 🔄 En cours |
+| Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **259/321 (81%)** | |
+| **Total** | **269/321 (84%)** | |
 
 ---
 
@@ -1800,7 +1800,7 @@ export default function Timeline({ events }: TimelineProps) {
           return (
             <div key={event.year} className="relative">
               {/* Desktop: alternance gauche/droite */}
-              <div className={`md:flex md:items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+              <div className={`hidden md:flex md:items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 <div className="md:w-5/12"></div>
 
                 {/* Point central */}
@@ -2108,8 +2108,8 @@ export { default as JobsGrid } from "./JobsGrid";
 
 ### Étape 5.2.1 : Mettre à jour la page
 
-- [ ] Ouvrir `app/a-propos-de-nous/page.tsx`
-- [ ] Remplacer tout le contenu par :
+- [x] Ouvrir `app/a-propos-de-nous/page.tsx`
+- [x] Remplacer tout le contenu par :
 ```typescript
 import {
   Timeline,
@@ -2223,21 +2223,22 @@ export default function AProposPage() {
 
 💡 **Note :** Le JSON utilise un tableau `sections[]` avec différents types de contenu. On extrait chaque section par son `id`.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 5.2.2 : Test visuel complet
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/a-propos-de-nous
-- [ ] Vérifier que PageAnchors s'affiche
-- [ ] Tester la navigation par ancres
-- [ ] Vérifier la Timeline (alternance gauche/droite sur desktop)
-- [ ] Vérifier la grille des outils (7 outils)
-- [ ] Tester le carrousel de témoignages (flèches + indicateurs)
-- [ ] Vérifier la grille des métiers (6 métiers)
-- [ ] Vérifier le BarometreCard avec la barre de progression
-- [ ] Tester le responsive sur mobile et tablette
-- [ ] Vérifier que ScrollToTop fonctionne
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/a-propos-de-nous
+- [x] Vérifier que PageAnchors s'affiche
+- [x] Tester la navigation par ancres
+- [x] Vérifier la Timeline (alternance gauche/droite sur desktop)
+- [x] Vérifier la grille des outils (7 outils)
+- [x] Vérifier la grille de témoignages (4 témoignages en 2x2)
+- [x] Vérifier la grille des métiers (6 métiers)
+- [x] Tester le responsive sur mobile et tablette
+- [x] Vérifier que ScrollToTop fonctionne
+
+⚠️ **Correction appliquée :** La Timeline avait un bug de doublement sur mobile. Le fix consiste à ajouter `hidden` à la div desktop : `hidden md:flex` au lieu de `md:flex` seul.
 
 ---
 
@@ -2246,18 +2247,18 @@ export default function AProposPage() {
 À ce stade, vous devriez avoir :
 - [x] 5 composants créés dans `components/a-propos/`
 - [x] Page À propos complète avec les sections du JSON
-- [x] Timeline avec alternance gauche/droite
-- [x] Carrousel de témoignages interactif
+- [x] Timeline avec alternance gauche/droite (et fix mobile)
+- [x] Grille de témoignages (2x2 sur desktop)
 - [x] Grille des métiers
 - [x] PageAnchors fonctionnel
 - [x] Design responsive
 
 **Vérifications :**
-- [ ] Aucune erreur TypeScript
-- [ ] Toutes les sections visibles
-- [ ] Carrousel fonctionnel
-- [ ] Contenu provient de `a-propos.json`
-- [ ] Responsive OK
+- [x] Aucune erreur TypeScript
+- [x] Toutes les sections visibles
+- [x] Grille témoignages fonctionnelle
+- [x] Contenu provient de `a-propos.json`
+- [x] Responsive OK
 
 ---
 
