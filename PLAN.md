@@ -19,15 +19,16 @@ Refonte complète du site web OIKO (secteur immobilier) avec une architecture mo
 
 ### Progression globale
 
-- [ ] Phase 1 - Configuration et fondations (2-3h)
-- [ ] Phase 2 - Layout global (3-4h)
-- [ ] Phase 3 - Page Accueil (2-3h)
-- [ ] Phase 4 - Page Activités (2-3h)
-- [ ] Phase 5 - Page À propos (4-5h)
-- [ ] Phase 6 - Page Contact (2-3h)
-- [ ] Phase 7 - Page Connexion (1h)
-- [ ] Phase 8 - Pages Vente/Location (2h - quand API disponible)
-- [ ] Phase 9 - Intégration API (TBD - futur)
+- [x] Phase 1 - Configuration et fondations (2-3h) ✅
+- [x] Phase 2 - Layout global (3-4h) ✅
+- [x] Phase 3 - Page Accueil (2-3h) ✅
+- [x] Phase 4 - Page Activités (2-3h) ✅
+- [x] Phase 5 - Page À propos (4-5h) ✅
+- [x] Phase 6 - Page Contact (2-3h) ✅
+- [ ] Phase 7 - Esthétique / Thème (2-3h)
+- [ ] Phase 8 - Intégration API (TBD - en attente)
+- [ ] Phase 9 - Pages Vente/Location (2h - dépend Phase 8)
+- [ ] Phase 10 - Authentification / Connexion (TBD - dépend Phase 8)
 
 ---
 
@@ -279,65 +280,28 @@ Refonte complète du site web OIKO (secteur immobilier) avec une architecture mo
 
 ---
 
-## Phase 7 - Page Connexion 🟢
+## Phase 7 - Esthétique / Thème 🟢
 
-**Priorité :** Basse
-**Durée estimée :** 1h
+**Priorité :** Moyenne
+**Durée estimée :** 2-3h
 **Statut :** ⏳ À faire
 
 ### Tâches
 
-- [ ] Créer `app/connexion/page.tsx`
-- [ ] Formulaire simple (email + mot de passe)
-- [ ] Design cohérent avec le reste du site
-- [ ] Bouton "Se connecter"
-- [ ] Lien "Mot de passe oublié ?"
-- [ ] Note : Fonctionnalité réelle à implémenter plus tard
+- [ ] Ajouter la couleur verte OIKO (`#2ECC71`) comme accent
+- [ ] Boutons, icônes, focus, hover en vert
+- [ ] Thème sombre (optionnel)
+- [ ] Animations et transitions
 
-**Note :** Cette page est un placeholder pour l'instant. L'authentification réelle sera implémentée ultérieurement.
+**Note :** Cette phase peut être réalisée indépendamment de l'API.
 
 ---
 
-## Phase 8 - Pages Vente/Location 🟢 ⏸️
+## Phase 8 - Intégration API 🟡
 
-**Priorité :** Basse
-**Durée estimée :** 2h
-**Statut :** ⏸️ En pause (en attente de l'API)
-
-### 8.1 Composants spécifiques (2 composants)
-
-- [ ] **SearchFilters** - Filtres de recherche
-  - Localisation
-  - Type de bien
-  - Pièces
-  - Budget
-- [ ] **EmptyState** - Message "Connectez l'API pour voir les biens"
-
-**Localisation :** `components/recherche/`
-
-### 8.2 Implémentation pages
-
-- [ ] Page Vente : importer `vente.json`
-- [ ] Page Location : importer `location.json`
-- [ ] Formulaire de recherche avec tous les filtres
-- [ ] Message temporaire en attendant l'API
-- [ ] Vérifier responsive
-
-**Fichiers concernés :**
-- `app/vente/page.tsx`
-- `app/location/page.tsx`
-- `content/vente.json` ✅
-- `content/location.json` ✅
-
-**Bloquant :** API externe pour les biens immobiliers
-
----
-
-## Phase 9 - Intégration API ⚪
-
-**Priorité :** Futur
+**Priorité :** Haute
 **Durée estimée :** TBD
-**Statut :** ⏸️ Futur
+**Statut :** ⏳ En attente de l'API
 
 ### Prérequis
 
@@ -361,16 +325,91 @@ Refonte complète du site web OIKO (secteur immobilier) avec une architecture mo
   }
   ```
 - [ ] Fonction `getProperties(filters)` pour fetch API
-- [ ] Composant **PropertyCard** - Carte bien immobilier
-- [ ] Composant **PropertyList** - Liste de biens
-- [ ] Intégrer dans pages Vente/Location
 - [ ] Gestion du loading et des erreurs
 - [ ] Tests avec données réelles
 
 **Localisation :**
 - `lib/api/properties.ts` (nouveau)
 - `types/property.ts` (nouveau)
-- `components/property/` (nouveau dossier)
+
+**Note :** Cette phase est le socle pour les phases 9 et 10. Elle doit être complétée en premier.
+
+---
+
+## Phase 9 - Pages Vente/Location 🟢
+
+**Priorité :** Moyenne
+**Durée estimée :** 2h
+**Statut :** ⏳ En attente de la Phase 8
+
+### 9.1 Composants spécifiques (4 composants)
+
+- [ ] **SearchFilters** - Filtres de recherche
+  - Localisation
+  - Type de bien
+  - Pièces
+  - Budget
+- [ ] **PropertyCard** - Carte bien immobilier
+- [ ] **PropertyList** - Liste de biens
+- [ ] **EmptyState** - Message si aucun résultat
+
+**Localisation :** `components/recherche/`
+
+### 9.2 Implémentation pages
+
+- [ ] Page Vente : importer `vente.json` + données API
+- [ ] Page Location : importer `location.json` + données API
+- [ ] Formulaire de recherche avec tous les filtres
+- [ ] Affichage des biens depuis l'API
+- [ ] Vérifier responsive
+
+**Fichiers concernés :**
+- `app/vente/page.tsx`
+- `app/location/page.tsx`
+- `content/vente.json` ✅
+- `content/location.json` ✅
+
+**Dépendance :** Phase 8 (API) doit être terminée
+
+---
+
+## Phase 10 - Authentification / Connexion 🟢
+
+**Priorité :** Moyenne
+**Durée estimée :** TBD
+**Statut :** ⏳ En attente de la Phase 8
+
+### 10.1 Pages à créer
+
+- [ ] `/connexion` - Page de connexion
+- [ ] `/inscription` - Page d'inscription
+- [ ] `/mot-de-passe-oublie` - Page de récupération
+
+### 10.2 Composants spécifiques
+
+- [ ] **LoginForm** - Formulaire de connexion (email + mot de passe)
+- [ ] **RegisterForm** - Formulaire d'inscription (prénom, nom, email, téléphone, mot de passe)
+- [ ] **ResetPasswordForm** - Formulaire de récupération (email ou téléphone)
+- [ ] **AuthCard** - Card centrée pour les formulaires d'auth
+
+**Localisation :** `components/auth/`
+
+### 10.3 Fonctionnalités
+
+- [ ] Connexion avec email + mot de passe
+- [ ] Inscription avec téléphone obligatoire (pour récupération)
+- [ ] Récupération par email OU par téléphone
+- [ ] Intégration avec l'API d'authentification
+
+**Fichiers concernés :**
+- `app/connexion/page.tsx`
+- `app/inscription/page.tsx`
+- `app/mot-de-passe-oublie/page.tsx`
+- `content/auth.json` (labels)
+
+**Dépendance :** Phase 8 (API) doit être terminée
+
+**Note :** Les détails du parcours de récupération de compte sont encore à définir.
 
 ---
 
