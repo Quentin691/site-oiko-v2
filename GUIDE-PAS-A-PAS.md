@@ -13,11 +13,11 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 |-------|-------------|--------|
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
 | Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
-| Phase 3 - Page Accueil | 0/44 (0%) | ⏳ À faire |
+| Phase 3 - Page Accueil | 22/44 (50%) | 🔄 En cours |
 | Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **133/331 (40%)** | |
+| **Total** | **155/331 (47%)** | |
 
 ---
 
@@ -1188,20 +1188,20 @@ useEffect(() => {
 
 ### Étape 3.1.1 : Créer le dossier
 
-- [ ] Dans `components/`, créer un dossier `accueil`
-- [ ] Vérifier le chemin : `components/accueil/`
+- [x] Dans `components/`, créer un dossier `accueil`
+- [x] Vérifier le chemin : `components/accueil/`
 
 ### Étape 3.1.2 : Créer Hero.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/accueil/`, créer `Hero.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/accueil/`, créer `Hero.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Button } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface :
+- [x] Ajouter l'interface :
 ```typescript
 interface HeroProps {
   title: string;
@@ -1212,7 +1212,7 @@ interface HeroProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function Hero({ title, subtitle, ctaText, ctaLink }: HeroProps) {
   return (
@@ -1233,20 +1233,20 @@ export default function Hero({ title, subtitle, ctaText, ctaLink }: HeroProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 3.1.3 : Créer ServicesGrid.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/accueil/`, créer `ServicesGrid.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/accueil/`, créer `ServicesGrid.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 import Link from "next/link";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface Service {
   title: string;
@@ -1260,7 +1260,7 @@ interface ServicesGridProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ServicesGrid({ services }: ServicesGridProps) {
   return (
@@ -1289,19 +1289,19 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 3.1.4 : Créer HighlightsSection.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/accueil/`, créer `HighlightsSection.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/accueil/`, créer `HighlightsSection.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface Highlight {
   title: string;
@@ -1314,7 +1314,7 @@ interface HighlightsSectionProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function HighlightsSection({ highlights }: HighlightsSectionProps) {
   return (
@@ -1341,19 +1341,19 @@ export default function HighlightsSection({ highlights }: HighlightsSectionProps
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 3.1.5 : Créer ActivitiesPreview.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/accueil/`, créer `ActivitiesPreview.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/accueil/`, créer `ActivitiesPreview.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Stats, Button } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface Stat {
   value: string;
@@ -1370,7 +1370,7 @@ interface ActivitiesPreviewProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ActivitiesPreview({
   title,
@@ -1408,19 +1408,19 @@ export default function ActivitiesPreview({
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 3.1.6 : Créer index.ts pour les exports
 
-- [ ] Dans `components/accueil/`, créer `index.ts`
-- [ ] Ajouter les exports :
+- [x] Dans `components/accueil/`, créer `index.ts`
+- [x] Ajouter les exports :
 ```typescript
 export { default as Hero } from "./Hero";
 export { default as ServicesGrid } from "./ServicesGrid";
 export { default as HighlightsSection } from "./HighlightsSection";
 export { default as ActivitiesPreview } from "./ActivitiesPreview";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
