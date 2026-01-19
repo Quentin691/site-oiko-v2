@@ -13,11 +13,11 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 |-------|-------------|--------|
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
 | Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
-| Phase 3 - Page Accueil | 22/44 (50%) | 🔄 En cours |
+| Phase 3 - Page Accueil | 44/44 (100%) | ✅ Terminée |
 | Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **155/331 (47%)** | |
+| **Total** | **177/331 (53%)** | |
 
 ---
 
@@ -1428,8 +1428,8 @@ export { default as ActivitiesPreview } from "./ActivitiesPreview";
 
 ### Étape 3.2.1 : Mettre à jour page.tsx
 
-- [ ] Ouvrir `app/page.tsx`
-- [ ] Remplacer tout le contenu par :
+- [x] Ouvrir `app/page.tsx`
+- [x] Remplacer tout le contenu par :
 ```typescript
 import {
   Hero,
@@ -1468,17 +1468,17 @@ export default function HomePage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 3.2.2 : Test visuel
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000
-- [ ] Vérifier que toutes les sections s'affichent
-- [ ] Vérifier le responsive (mobile, tablette, desktop)
-- [ ] Tester les liens des cartes services
-- [ ] Scroller et vérifier que le bouton "Retour en haut" apparaît
-- [ ] Cliquer sur le bouton pour tester le scroll vers le haut
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000
+- [x] Vérifier que toutes les sections s'affichent
+- [x] Vérifier le responsive (mobile, tablette, desktop)
+- [x] Tester les liens des cartes services
+- [x] Scroller et vérifier que le bouton "Retour en haut" apparaît
+- [x] Cliquer sur le bouton pour tester le scroll vers le haut
 
 ---
 
@@ -1492,10 +1492,10 @@ export default function HomePage() {
 - [x] Tous les liens fonctionnels
 
 **Vérifications :**
-- [ ] Aucune erreur TypeScript
-- [ ] Toutes les sections s'affichent correctement
-- [ ] Le contenu provient bien de `accueil.json`
-- [ ] Le responsive fonctionne sur tous les écrans
+- [x] Aucune erreur TypeScript
+- [x] Toutes les sections s'affichent correctement
+- [x] Le contenu provient bien de `accueil.json`
+- [x] Le responsive fonctionne sur tous les écrans
 
 ---
 
