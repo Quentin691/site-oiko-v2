@@ -1,9 +1,9 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 6
+**Phases couvertes :** 1 à 7
 **Dernière mise à jour :** 19 janvier 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
 ---
 
@@ -17,7 +17,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
-| **Total** | **321/321 (100%)** | |
+| Phase 7 - Esthétique / Thème | 0/52 (0%) | ⏳ À faire |
+| **Total** | **321/373 (86%)** | |
 
 ---
 
@@ -2822,9 +2823,9 @@ export default function ContactPage() {
 
 ---
 
-## 🎉 Toutes les phases terminées !
+## 🎉 Phases 1-6 terminées !
 
-Félicitations ! Vous avez maintenant complété les 6 phases du projet :
+Vous avez complété les 6 premières phases du projet :
 - ✅ Phase 1 - Configuration et fondations
 - ✅ Phase 2 - Layout global
 - ✅ Phase 3 - Page Accueil
@@ -2839,6 +2840,474 @@ Félicitations ! Vous avez maintenant complété les 6 phases du projet :
 - Design system cohérent
 - Formulaire de contact avec validation
 - Timeline visuelle
+
+**Prochaine étape :** Phase 7 - Esthétique / Thème (dark mode + couleur verte)
+
+---
+
+# Phase 7 - Esthétique / Thème
+
+## 7.1 Configurer les variables CSS
+
+### Étape 7.1.1 : Ajouter les variables de couleur primaire
+
+#### Sous-étape A : Ouvrir globals.css
+- [ ] Ouvrir le fichier `app/globals.css`
+- [ ] Localiser la section `:root` (début du fichier)
+
+#### Sous-étape B : Ajouter les couleurs primaires
+- [ ] Dans `:root`, ajouter ces lignes :
+```css
+--primary: #2ECC71;
+--primary-dark: #27AE60;
+--card-foreground: #1F1F1F;
+--muted: #6B7280;
+```
+
+#### Sous-étape C : Ajouter dans @theme inline
+- [ ] Localiser la section `@theme inline`
+- [ ] Ajouter ces lignes :
+```css
+--color-primary: var(--primary);
+--color-primary-dark: var(--primary-dark);
+--color-card-foreground: var(--card-foreground);
+--color-muted: var(--muted);
+```
+
+**Résultat attendu pour :root :**
+```css
+:root {
+  --background: #F5F5F5;
+  --foreground: #1F1F1F;
+  --card: #FFFFFF;
+  --card-foreground: #1F1F1F;
+  --muted: #6B7280;
+  --primary: #2ECC71;
+  --primary-dark: #27AE60;
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+### Étape 7.1.2 : Ajouter les variables pour le thème sombre
+
+#### Sous-étape A : Créer la classe .dark
+- [ ] Dans `app/globals.css`, après la section `:root`, ajouter :
+```css
+.dark {
+  --background: #121212;
+  --foreground: #F5F5F5;
+  --card: #1E1E1E;
+  --card-foreground: #F5F5F5;
+  --muted: #9CA3AF;
+}
+```
+
+💡 **Explication :** Les variables `--primary` et `--primary-dark` restent identiques dans les deux thèmes (le vert fonctionne bien sur fond clair et foncé).
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 7.2 Créer le système de thème
+
+### Étape 7.2.1 : Créer le dossier providers
+
+- [ ] Dans `components/`, créer un dossier `providers`
+- [ ] Vérifier le chemin : `components/providers/`
+
+### Étape 7.2.2 : Créer ThemeProvider.tsx
+
+#### Sous-étape A : Créer le fichier
+- [ ] Dans `components/providers/`, créer `ThemeProvider.tsx`
+- [ ] Ajouter `"use client"` en première ligne
+- [ ] Ajouter les imports :
+```typescript
+"use client";
+
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+```
+
+#### Sous-étape B : Définir les types
+- [ ] Ajouter les types :
+```typescript
+type Theme = "light" | "dark";
+
+interface ThemeContextType {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+```
+
+#### Sous-étape C : Créer le context
+- [ ] Ajouter le context :
+```typescript
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+```
+
+#### Sous-étape D : Implémenter le provider
+- [ ] Ajouter le composant provider :
+```typescript
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Vérifier localStorage
+    const savedTheme = localStorage.getItem("theme") as Theme | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      // Vérifier la préférence système
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(prefersDark ? "dark" : "light");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      // Appliquer la classe au document
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(theme);
+      // Sauvegarder dans localStorage
+      localStorage.setItem("theme", theme);
+    }
+  }, [theme, mounted]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  // Éviter le flash de contenu
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+#### Sous-étape E : Ajouter le hook personnalisé
+- [ ] Ajouter le hook à la fin du fichier :
+```typescript
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+### Étape 7.2.3 : Créer l'index des providers
+
+- [ ] Dans `components/providers/`, créer `index.ts`
+- [ ] Ajouter :
+```typescript
+export { ThemeProvider, useTheme } from "./ThemeProvider";
+```
+- [ ] Sauvegarder le fichier
+
+### Étape 7.2.4 : Intégrer le ThemeProvider dans le layout
+
+#### Sous-étape A : Ouvrir le layout
+- [ ] Ouvrir `app/layout.tsx`
+
+#### Sous-étape B : Ajouter l'import
+- [ ] Ajouter l'import en haut du fichier :
+```typescript
+import { ThemeProvider } from "@/components/providers";
+```
+
+#### Sous-étape C : Envelopper le contenu
+- [ ] Dans le return, envelopper `{children}` avec le ThemeProvider :
+```tsx
+<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+  <ThemeProvider>
+    {children}
+  </ThemeProvider>
+</body>
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 7.3 Créer le bouton de toggle
+
+### Étape 7.3.1 : Créer ThemeToggle.tsx
+
+#### Sous-étape A : Créer le fichier
+- [ ] Dans `components/ui/`, créer `ThemeToggle.tsx`
+- [ ] Ajouter `"use client"` en première ligne
+- [ ] Ajouter les imports :
+```typescript
+"use client";
+
+import { useTheme } from "@/components/providers";
+```
+
+#### Sous-étape B : Implémenter le composant
+- [ ] Ajouter le composant :
+```typescript
+export default function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+      aria-label={theme === "light" ? "Activer le mode sombre" : "Activer le mode clair"}
+    >
+      {theme === "light" ? (
+        // Icône lune
+        <svg
+          className="w-5 h-5 text-foreground"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          />
+        </svg>
+      ) : (
+        // Icône soleil
+        <svg
+          className="w-5 h-5 text-foreground"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+      )}
+    </button>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+### Étape 7.3.2 : Exporter ThemeToggle
+
+- [ ] Ouvrir `components/ui/index.ts`
+- [ ] Ajouter l'export :
+```typescript
+export { default as ThemeToggle } from "./ThemeToggle";
+```
+- [ ] Sauvegarder le fichier
+
+### Étape 7.3.3 : Ajouter ThemeToggle dans la Navbar
+
+#### Sous-étape A : Ouvrir Navbar.tsx
+- [ ] Ouvrir `components/layout/Navbar.tsx`
+
+#### Sous-étape B : Ajouter l'import
+- [ ] Ajouter à la ligne des imports UI :
+```typescript
+import { ThemeToggle } from "@/components/ui";
+```
+
+#### Sous-étape C : Placer le toggle
+- [ ] Localiser la section avec les liens de navigation
+- [ ] Ajouter le ThemeToggle à droite des liens (avant ou après le bouton CTA) :
+```tsx
+<ThemeToggle />
+```
+
+💡 **Conseil :** Placer le toggle juste avant le bouton "Contactez-nous" pour une bonne disposition.
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 7.4 Adapter les composants pour le dark mode
+
+### Étape 7.4.1 : Adapter Card.tsx
+
+- [ ] Ouvrir `components/ui/Card.tsx`
+- [ ] Remplacer `bg-card` par `bg-card text-card-foreground`
+- [ ] Sauvegarder le fichier
+
+### Étape 7.4.2 : Adapter Section.tsx
+
+- [ ] Ouvrir `components/ui/Section.tsx`
+- [ ] Modifier le mapping des backgrounds :
+```typescript
+const bgClasses = {
+  white: "bg-card",
+  gray: "bg-background",
+};
+```
+- [ ] Sauvegarder le fichier
+
+### Étape 7.4.3 : Adapter Header.tsx
+
+- [ ] Ouvrir `components/layout/Header.tsx`
+- [ ] Remplacer les classes `bg-white` par `bg-card`
+- [ ] Remplacer les `text-gray-xxx` par `text-foreground` ou `text-muted`
+- [ ] Sauvegarder le fichier
+
+### Étape 7.4.4 : Adapter Footer.tsx
+
+- [ ] Ouvrir `components/layout/Footer.tsx`
+- [ ] Remplacer `bg-gray-900` par `bg-foreground dark:bg-card`
+- [ ] Ajuster les couleurs de texte pour les deux thèmes
+- [ ] Sauvegarder le fichier
+
+### Étape 7.4.5 : Adapter les textes gris
+
+Dans tous les composants, les classes `text-gray-xxx` doivent être adaptées :
+- `text-gray-600` → `text-muted`
+- `text-gray-500` → `text-muted`
+- `bg-gray-100` → `bg-background`
+- `bg-gray-50` → `bg-background`
+
+⚠️ **Attention :** Ne pas tout remplacer aveuglément. Certains gris sont volontairement fixes.
+
+---
+
+## 7.5 Ajouter les accents verts
+
+### Étape 7.5.1 : Modifier Button.tsx
+
+- [ ] Ouvrir `components/ui/Button.tsx`
+- [ ] Localiser la variante `primary`
+- [ ] Remplacer `bg-foreground hover:bg-gray-800` par `bg-primary hover:bg-primary-dark`
+- [ ] Garder `text-white` (le blanc fonctionne sur le vert)
+- [ ] Sauvegarder le fichier
+
+**Résultat attendu :**
+```typescript
+primary: "bg-primary hover:bg-primary-dark text-white",
+```
+
+### Étape 7.5.2 : Modifier Timeline.tsx
+
+- [ ] Ouvrir `components/a-propos/Timeline.tsx`
+- [ ] Remplacer `bg-foreground` par `bg-primary` sur les points de la timeline
+- [ ] Sauvegarder le fichier
+
+### Étape 7.5.3 : Modifier ToolsGrid.tsx
+
+- [ ] Ouvrir `components/a-propos/ToolsGrid.tsx`
+- [ ] Remplacer `bg-foreground` par `bg-primary` sur les conteneurs d'icônes
+- [ ] Sauvegarder le fichier
+
+### Étape 7.5.4 : Modifier ContactInfo.tsx
+
+- [ ] Ouvrir `components/contact/ContactInfo.tsx`
+- [ ] Remplacer `bg-foreground` par `bg-primary` sur les icônes email/téléphone
+- [ ] Sauvegarder le fichier
+
+### Étape 7.5.5 : Modifier AddressCard.tsx
+
+- [ ] Ouvrir `components/contact/AddressCard.tsx`
+- [ ] Remplacer `bg-foreground` par `bg-primary` sur l'icône de localisation
+- [ ] Sauvegarder le fichier
+
+### Étape 7.5.6 : Modifier FormField.tsx
+
+- [ ] Ouvrir `components/contact/FormField.tsx`
+- [ ] Remplacer `focus:ring-foreground` par `focus:ring-primary`
+- [ ] Sauvegarder le fichier
+
+### Étape 7.5.7 : Modifier PageAnchors.tsx
+
+- [ ] Ouvrir `components/layout/PageAnchors.tsx`
+- [ ] Sur le lien actif, remplacer `text-foreground` par `text-primary`
+- [ ] Remplacer `border-foreground` par `border-primary`
+- [ ] Sauvegarder le fichier
+
+### Étape 7.5.8 : Modifier ScrollToTop.tsx
+
+- [ ] Ouvrir `components/ui/ScrollToTop.tsx`
+- [ ] Remplacer `bg-foreground` par `bg-primary`
+- [ ] Ajouter `hover:bg-primary-dark`
+- [ ] Sauvegarder le fichier
+
+---
+
+## 7.6 Ajouter les transitions
+
+### Étape 7.6.1 : Transition globale pour le thème
+
+- [ ] Ouvrir `app/globals.css`
+- [ ] Dans la section `body`, ajouter :
+```css
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+```
+
+### Étape 7.6.2 : Transitions sur les composants interactifs
+
+- [ ] Dans `Button.tsx`, ajouter `transition-colors duration-200` à la classe de base
+- [ ] Dans `Card.tsx`, ajouter `transition-colors duration-200`
+- [ ] Sauvegarder les fichiers
+
+💡 **Conseil :** Les transitions rendent le changement de thème plus fluide et professionnel.
+
+---
+
+## ✅ Checkpoint Phase 7
+
+À ce stade, vous devriez avoir :
+- [ ] Variables CSS pour light et dark mode
+- [ ] ThemeProvider fonctionnel
+- [ ] ThemeToggle dans la navbar
+- [ ] Card, Section, Header, Footer adaptés
+- [ ] Accents verts sur tous les éléments interactifs
+- [ ] Transitions fluides
+
+**Vérifications :**
+- [ ] Toggle fonctionne (clic change le thème)
+- [ ] Thème persiste après refresh (localStorage)
+- [ ] Préférence système respectée au premier chargement
+- [ ] Pas de flash blanc au chargement en mode sombre
+- [ ] Boutons verts avec hover foncé
+- [ ] Focus des inputs en vert
+- [ ] Timeline avec points verts
+- [ ] Icônes contact en vert
+- [ ] Toutes les pages OK en light mode
+- [ ] Toutes les pages OK en dark mode
+- [ ] Responsive OK dans les deux thèmes
+
+---
+
+## 🎉 Phase 7 terminée !
+
+Le site OIKO a maintenant :
+- ✅ Thème clair (fond gris clair `#F5F5F5`, cards blanches)
+- ✅ Thème sombre (fond `#121212`, cards `#1E1E1E`)
+- ✅ Couleur accent verte `#2ECC71` (boutons, icônes, focus, liens actifs)
+- ✅ Toggle dans la navbar avec icône soleil/lune
+- ✅ Persistance du choix utilisateur
+- ✅ Respect de la préférence système
+- ✅ Transitions fluides
+
+**Prochaines étapes :**
+- Phase 8 : Intégration API (en attente de l'API)
+- Phase 9 : Pages Vente/Location (dépend de Phase 8)
+- Phase 10 : Authentification (dépend de Phase 8)
 
 ---
 
