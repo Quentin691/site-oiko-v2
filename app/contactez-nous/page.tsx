@@ -33,7 +33,7 @@ export default function ContactPage() {
           <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
             Envoyez-nous un message
           </h2>
-          <ContactForm formConfig={contactContent.form} />
+          <ContactForm subjects={["Demande d'information", "Demande de devis", "Réclamation", "Autre"]} />
         </div>
       </Section>
 
@@ -50,7 +50,7 @@ export default function ContactPage() {
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {contactContent.addresses.offices.map((office, index) => (
-            <AddressCard key={index} office={office} />
+            <AddressCard key={index} address={office} />
           ))}
         </div>
       </Section>

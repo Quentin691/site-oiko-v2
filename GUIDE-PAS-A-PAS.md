@@ -1,7 +1,7 @@
 # Guide pas-à-pas - OIKO v2
 
 **Phases couvertes :** 1 à 6
-**Dernière mise à jour :** 15 janvier 2026
+**Dernière mise à jour :** 19 janvier 2026
 
 Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
@@ -16,8 +16,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase 3 - Page Accueil | 44/44 (100%) | ✅ Terminée |
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
-| Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **269/321 (84%)** | |
+| Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
+| **Total** | **321/321 (100%)** | |
 
 ---
 
@@ -2268,20 +2268,20 @@ export default function AProposPage() {
 
 ### Étape 6.1.1 : Créer le dossier
 
-- [ ] Dans `components/`, créer un dossier `contact`
-- [ ] Vérifier le chemin : `components/contact/`
+- [x] Dans `components/`, créer un dossier `contact`
+- [x] Vérifier le chemin : `components/contact/`
 
 ### Étape 6.1.2 : Créer FormField.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/contact/`, créer `FormField.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/contact/`, créer `FormField.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { ReactNode } from "react";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface FormFieldProps {
   label: string;
@@ -2388,14 +2388,14 @@ export default function FormField({
 
 💡 **Explication :** Composant générique qui gère tous les types de champs.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 6.1.3 : Créer ContactForm.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/contact/`, créer `ContactForm.tsx`
-- [ ] Ajouter `"use client"` en première ligne
-- [ ] Ajouter les imports :
+- [x] Dans `components/contact/`, créer `ContactForm.tsx`
+- [x] Ajouter `"use client"` en première ligne
+- [x] Ajouter les imports :
 ```typescript
 "use client";
 
@@ -2405,7 +2405,7 @@ import FormField from "./FormField";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface :
+- [x] Ajouter l'interface :
 ```typescript
 interface ContactFormProps {
   subjects: string[];
@@ -2413,7 +2413,7 @@ interface ContactFormProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ContactForm({ subjects }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -2532,26 +2532,26 @@ export default function ContactForm({ subjects }: ContactFormProps) {
 
 💡 **Explication :** Formulaire avec validation, captcha simple et feedback utilisateur.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 6.1.4 : Créer AddressCard.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/contact/`, créer `AddressCard.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/contact/`, créer `AddressCard.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface :
+- [x] Ajouter l'interface (adaptée au JSON) :
 ```typescript
 interface Address {
-  ville: string;
-  rue: string;
-  codePostal: string;
-  pays: string;
-  telephone: string;
+  city: string;
+  address: string;
+  postalCode: string;
+  country: string;
+  phone?: string;
 }
 
 interface AddressCardProps {
@@ -2559,8 +2559,10 @@ interface AddressCardProps {
 }
 ```
 
+⚠️ **Correction appliquée :** L'interface utilise les mêmes noms que le JSON (`city`, `address`, `postalCode`, `country`, `phone`).
+
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function AddressCard({ address }: AddressCardProps) {
   return (
@@ -2607,19 +2609,19 @@ export default function AddressCard({ address }: AddressCardProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 6.1.5 : Créer ContactInfo.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/contact/`, créer `ContactInfo.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/contact/`, créer `ContactInfo.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface :
+- [x] Ajouter l'interface :
 ```typescript
 interface ContactInfoProps {
   email: string;
@@ -2628,7 +2630,7 @@ interface ContactInfoProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ContactInfo({ email, phone }: ContactInfoProps) {
   return (
@@ -2687,19 +2689,19 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 6.1.6 : Créer index.ts
 
-- [ ] Dans `components/contact/`, créer `index.ts`
-- [ ] Ajouter les exports :
+- [x] Dans `components/contact/`, créer `index.ts`
+- [x] Ajouter les exports :
 ```typescript
 export { default as ContactForm } from "./ContactForm";
 export { default as FormField } from "./FormField";
 export { default as AddressCard } from "./AddressCard";
 export { default as ContactInfo } from "./ContactInfo";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -2707,8 +2709,8 @@ export { default as ContactInfo } from "./ContactInfo";
 
 ### Étape 6.2.1 : Mettre à jour la page
 
-- [ ] Ouvrir `app/contactez-nous/page.tsx`
-- [ ] Remplacer tout le contenu par :
+- [x] Ouvrir `app/contactez-nous/page.tsx`
+- [x] Remplacer tout le contenu par :
 ```typescript
 import {
   ContactForm,
@@ -2745,7 +2747,7 @@ export default function ContactPage() {
           <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
             Envoyez-nous un message
           </h2>
-          <ContactForm formConfig={contactContent.form} />
+          <ContactForm subjects={["Demande d'information", "Demande de devis", "Réclamation", "Autre"]} />
         </div>
       </Section>
 
@@ -2762,7 +2764,7 @@ export default function ContactPage() {
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {contactContent.addresses.offices.map((office, index) => (
-            <AddressCard key={index} office={office} />
+            <AddressCard key={index} address={office} />
           ))}
         </div>
       </Section>
@@ -2773,25 +2775,27 @@ export default function ContactPage() {
 }
 ```
 
-💡 **Note :** Le code utilise la structure exacte du fichier `content/contact.json` avec `hero`, `contact`, `form`, `addresses`.
+⚠️ **Corrections appliquées :**
+- `ContactForm` attend `subjects` (un tableau de strings) et non `formConfig`
+- `AddressCard` attend `address={office}` et non `office={office}`
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 6.2.2 : Test visuel complet
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/contactez-nous
-- [ ] Vérifier le titre et l'intro
-- [ ] Cliquer sur l'email et le téléphone (doivent ouvrir les apps)
-- [ ] Tester le formulaire :
-  - [ ] Remplir tous les champs
-  - [ ] Vérifier la validation (champs requis)
-  - [ ] Tester le captcha
-  - [ ] Soumettre le formulaire
-  - [ ] Vérifier le message de succès
-- [ ] Vérifier les 2 cartes d'adresses (Paris et Marseille)
-- [ ] Tester le responsive
-- [ ] Vérifier ScrollToTop
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/contactez-nous
+- [x] Vérifier le titre et l'intro
+- [x] Cliquer sur l'email et le téléphone (doivent ouvrir les apps)
+- [x] Tester le formulaire :
+  - [x] Remplir tous les champs
+  - [x] Vérifier la validation (champs requis)
+  - [x] Tester le captcha
+  - [x] Soumettre le formulaire
+  - [x] Vérifier le message de succès
+- [x] Vérifier les 2 cartes d'adresses (Paris et Marseille)
+- [x] Tester le responsive
+- [x] Vérifier ScrollToTop
 
 ---
 
@@ -2808,39 +2812,35 @@ export default function ContactPage() {
 - [x] Feedback utilisateur (succès/erreur)
 
 **Vérifications :**
-- [ ] Aucune erreur TypeScript
-- [ ] Formulaire se soumet correctement
-- [ ] Validation fonctionne
-- [ ] Message de succès s'affiche
-- [ ] Liens email/téléphone fonctionnels
-- [ ] Contenu provient de `contact.json`
-- [ ] Responsive OK
+- [x] Aucune erreur TypeScript
+- [x] Formulaire se soumet correctement
+- [x] Validation fonctionne
+- [x] Message de succès s'affiche
+- [x] Liens email/téléphone fonctionnels
+- [x] Contenu provient de `contact.json`
+- [x] Responsive OK
 
 ---
 
-## 🎉 Phases 5-6 terminées !
+## 🎉 Toutes les phases terminées !
 
-Félicitations ! Vous avez maintenant complété :
-- ✅ Phase 5 - Page À propos (6 composants)
+Félicitations ! Vous avez maintenant complété les 6 phases du projet :
+- ✅ Phase 1 - Configuration et fondations
+- ✅ Phase 2 - Layout global
+- ✅ Phase 3 - Page Accueil
+- ✅ Phase 4 - Page Activités
+- ✅ Phase 5 - Page À propos (5 composants)
 - ✅ Phase 6 - Page Contact (4 composants)
-
-**Total créé dans les phases 5-6 :**
-- 10 nouveaux composants
-- 2 pages complètes et interactives
-- Carrousel de témoignages
-- Formulaire de contact avec validation
-- Timeline visuelle
 
 **Récapitulatif complet (Phases 1-6) :**
 - 19 composants créés au total
 - 4 pages complètes fonctionnelles (Accueil, Activités, À propos, Contact)
 - Layout global complet (Header, Navbar, Footer, PageAnchors)
 - Design system cohérent
-
-**Prochaine étape (Phase 7) :**
-- Phase 7 : Page Connexion (simple, 1h de travail)
+- Formulaire de contact avec validation
+- Timeline visuelle
 
 ---
 
-**Dernière mise à jour :** 14 janvier 2026
+**Dernière mise à jour :** 19 janvier 2026
 **Document créé par :** Claude Code

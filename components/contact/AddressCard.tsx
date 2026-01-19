@@ -1,11 +1,11 @@
 import { Card } from "@/components/ui";
 
 interface Address {
-  ville: string;
-  rue: string;
-  codePostal: string;
-  pays: string;
-  telephone: string;
+  city: string;
+  address: string;
+  postalCode: string;
+  country: string;
+  phone?: string;
 }
 
 interface AddressCardProps {
@@ -41,14 +41,16 @@ export default function AddressCard({ address }: AddressCardProps) {
 
         <div className="flex-1">
           <h3 className="text-xl font-semibold text-foreground mb-3">
-            {address.ville}
+            {address.city}
           </h3>
           <div className="text-gray-600 space-y-1">
-            <p>{address.rue}</p>
-            <p>{address.codePostal} {address.ville} – {address.pays}</p>
-            <p className="font-medium text-foreground mt-3">
-              📞 {address.telephone}
-            </p>
+            <p>{address.address}</p>
+            <p>{address.postalCode} {address.city} – {address.country}</p>
+            {address.phone && (
+              <p className="font-medium text-foreground mt-3">
+                {address.phone}
+              </p>
+            )}
           </div>
         </div>
       </div>
