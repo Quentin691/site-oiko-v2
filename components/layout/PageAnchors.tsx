@@ -50,9 +50,9 @@ export default function PageAnchors({ anchors }: PageAnchorsProps) {
   }, [anchors]);
 
   return (
-    <nav className="bg-card border-b border-gray-200">
+    <nav className="hidden md:block sticky top-11 z-40 bg-card border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-6">
-        <ul className="flex gap-8 overflow-x-auto py-4">
+        <ul className="flex justify-center gap-8 py-4">
           {anchors.map((anchor) => (
             <li key={anchor.id} className="shrink-0">
               <Link

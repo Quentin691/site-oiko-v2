@@ -14,10 +14,10 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase 1 - Configuration et fondations | 65/65 (100%) | ✅ Terminée |
 | Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
 | Phase 3 - Page Accueil | 44/44 (100%) | ✅ Terminée |
-| Phase 4 - Page Activités | 0/40 (0%) | ⏳ À faire |
+| Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **177/331 (53%)** | |
+| **Total** | **217/331 (66%)** | |
 
 ---
 
@@ -1505,50 +1505,46 @@ export default function HomePage() {
 
 ### Étape 4.1.1 : Créer le dossier
 
-- [ ] Dans `components/`, créer un dossier `activites`
-- [ ] Vérifier le chemin : `components/activites/`
+- [x] Dans `components/`, créer un dossier `activites`
+- [x] Vérifier le chemin : `components/activites/`
 
 ### Étape 4.1.2 : Créer ActivitySection.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/activites/`, créer `ActivitySection.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/activites/`, créer `ActivitySection.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Section, Card, Stats } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces (basées sur la structure de `content/activites.json`) :
 ```typescript
 interface Feature {
-  text: string;
-}
-
-interface Paragraph {
-  title?: string;
+  title: string;
   content: string;
 }
 
 interface Stat {
-  value: string;
+  number: string;
   label: string;
 }
 
 interface ActivitySectionProps {
   id: string;
   title: string;
-  subtitle: string;
-  description: string;
+  subtitle?: string;
+  description?: string;
   features?: Feature[];
-  paragraphs?: Paragraph[];
+  paragraphs?: string[];
   stats?: Stat[];
 }
 ```
 
-💡 **Explication :** Les `?` indiquent que ces props sont optionnelles.
+💡 **Explication :** Les `?` indiquent que ces props sont optionnelles. Les interfaces correspondent à la structure du fichier JSON.
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ActivitySection({
   id,
@@ -1567,66 +1563,50 @@ export default function ActivitySection({
           <h2 className="text-4xl font-bold text-foreground mb-4">
             {title}
           </h2>
-          <p className="text-xl text-gray-600 mb-4">
-            {subtitle}
-          </p>
-          <p className="text-gray-700">
-            {description}
-          </p>
+          {subtitle && (
+            <p className="text-xl text-gray-600 mb-4">
+              {subtitle}
+            </p>
+          )}
+          {description && (
+            <p className="text-gray-700">
+              {description}
+            </p>
+          )}
         </div>
 
-        {/* Features */}
+        {/* Features (avec titre et contenu) */}
         {features.length > 0 && (
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-foreground mb-6">
-              Caractéristiques
-            </h3>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {features.map((feature, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <svg
-                    className="w-6 h-6 text-foreground shrink-0 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700">{feature.text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Paragraphes */}
-        {paragraphs.length > 0 && (
-          <div className="mb-12 space-y-6">
-            {paragraphs.map((paragraph, index) => (
+          <div className="mb-12 space-y-8">
+            {features.map((feature, index) => (
               <div key={index}>
-                {paragraph.title && (
-                  <h3 className="text-xl font-semibold text-foreground mb-3">
-                    {paragraph.title}
-                  </h3>
-                )}
-                <p className="text-gray-700 leading-relaxed">
-                  {paragraph.content}
+                <h3 className="text-2xl font-semibold text-foreground mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                  {feature.content}
                 </p>
               </div>
             ))}
           </div>
         )}
 
+        {/* Paragraphes (simples chaînes de texte) */}
+        {paragraphs.length > 0 && (
+          <div className="mb-12 space-y-4">
+            {paragraphs.map((paragraph, index) => (
+              <p key={index} className="text-gray-700 leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        )}
+
         {/* Stats */}
         {stats.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="flex justify-center gap-16">
             {stats.map((stat, index) => (
-              <Stats key={index} value={stat.value} label={stat.label} />
+              <Stats key={index} value={stat.number} label={stat.label} />
             ))}
           </div>
         )}
@@ -1636,16 +1616,16 @@ export default function ActivitySection({
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 4.1.3 : Créer index.ts
 
-- [ ] Dans `components/activites/`, créer `index.ts`
-- [ ] Ajouter l'export :
+- [x] Dans `components/activites/`, créer `index.ts`
+- [x] Ajouter l'export :
 ```typescript
 export { default as ActivitySection } from "./ActivitySection";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -1653,70 +1633,38 @@ export { default as ActivitySection } from "./ActivitySection";
 
 ### Étape 4.2.1 : Mettre à jour la page
 
-- [ ] Ouvrir `app/activites/page.tsx`
-- [ ] Remplacer tout le contenu par :
+- [x] Ouvrir `app/activites/page.tsx`
+- [x] Remplacer tout le contenu par :
 ```typescript
 import { ActivitySection } from "@/components/activites";
-import { PageAnchors } from "@/components/layout/PageAnchors";
+import { PageAnchors } from "@/components/layout";
 import { ScrollToTop } from "@/components/ui";
 import activitiesContent from "@/content/activites.json";
 
 export default function ActivitiesPage() {
-  // Définir les ancres pour PageAnchors
-  const anchors = [
-    { id: "property-management", label: "Property Management" },
-    { id: "asset-management", label: "Asset Management" },
-    { id: "project-management", label: "Project Management" },
-    { id: "transaction", label: "Transaction" },
-  ];
+  // Définir les ancres dynamiquement depuis le JSON
+  const anchors = activitiesContent.sections.map((section) => ({
+    id: section.id,
+    label: section.title,
+  }));
 
   return (
     <main>
       <PageAnchors anchors={anchors} />
 
-      {/* Property Management */}
-      <ActivitySection
-        id="property-management"
-        title={activitiesContent.propertyManagement.title}
-        subtitle={activitiesContent.propertyManagement.subtitle}
-        description={activitiesContent.propertyManagement.description}
-        features={activitiesContent.propertyManagement.features}
-        paragraphs={activitiesContent.propertyManagement.paragraphs}
-        stats={activitiesContent.propertyManagement.stats}
-      />
-
-      {/* Asset Management */}
-      <ActivitySection
-        id="asset-management"
-        title={activitiesContent.assetManagement.title}
-        subtitle={activitiesContent.assetManagement.subtitle}
-        description={activitiesContent.assetManagement.description}
-        features={activitiesContent.assetManagement.features}
-        paragraphs={activitiesContent.assetManagement.paragraphs}
-        stats={activitiesContent.assetManagement.stats}
-      />
-
-      {/* Project Management */}
-      <ActivitySection
-        id="project-management"
-        title={activitiesContent.projectManagement.title}
-        subtitle={activitiesContent.projectManagement.subtitle}
-        description={activitiesContent.projectManagement.description}
-        features={activitiesContent.projectManagement.features}
-        paragraphs={activitiesContent.projectManagement.paragraphs}
-        stats={activitiesContent.projectManagement.stats}
-      />
-
-      {/* Transaction */}
-      <ActivitySection
-        id="transaction"
-        title={activitiesContent.transaction.title}
-        subtitle={activitiesContent.transaction.subtitle}
-        description={activitiesContent.transaction.description}
-        features={activitiesContent.transaction.features}
-        paragraphs={activitiesContent.transaction.paragraphs}
-        stats={activitiesContent.transaction.stats}
-      />
+      {/* Boucle sur les sections du JSON */}
+      {activitiesContent.sections.map((section) => (
+        <ActivitySection
+          key={section.id}
+          id={section.id}
+          title={section.title}
+          subtitle={section.subtitle}
+          description={section.description}
+          features={section.features}
+          paragraphs={section.paragraphs}
+          stats={section.stats}
+        />
+      ))}
 
       <ScrollToTop />
     </main>
@@ -1724,42 +1672,39 @@ export default function ActivitiesPage() {
 }
 ```
 
-⚠️ **Important :** Le chemin de l'import PageAnchors doit être correct.
+💡 **Note :** Le JSON utilise un tableau `sections[]` avec chaque activité comme objet. On utilise `.map()` pour parcourir toutes les sections automatiquement.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
-### Étape 4.2.2 : Corriger l'import de PageAnchors
+### Étape 4.2.2 : Créer l'index.ts pour layout (si pas déjà fait)
 
-- [ ] Ouvrir `components/layout/PageAnchors.tsx`
-- [ ] Vérifier qu'il n'y a pas d'export de dossier manquant
-- [ ] Si besoin, créer `components/layout/index.ts` :
+- [x] Vérifier si `components/layout/index.ts` existe
+- [x] Si non, créer `components/layout/index.ts` :
 ```typescript
 export { default as Header } from "./Header";
 export { default as Navbar } from "./Navbar";
 export { default as Footer } from "./Footer";
 export { default as PageAnchors } from "./PageAnchors";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
-### Étape 4.2.3 : Mettre à jour l'import dans la page
+💡 **Note :** Cela permet d'importer avec `from "@/components/layout"` au lieu de `from "@/components/layout/PageAnchors"`.
 
-- [ ] Retourner dans `app/activites/page.tsx`
-- [ ] Modifier l'import :
-```typescript
-import PageAnchors from "@/components/layout/PageAnchors";
-```
-- [ ] Sauvegarder le fichier
+### Étape 4.2.3 : Test visuel complet
 
-### Étape 4.2.4 : Test visuel complet
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/activites
+- [x] Vérifier que PageAnchors s'affiche en haut
+- [x] Cliquer sur chaque lien d'ancre et vérifier le scroll
+- [x] Vérifier que le lien actif change selon le scroll
+- [x] Vérifier que les 4 sections s'affichent correctement
+- [x] Tester le responsive (mobile, tablette, desktop)
+- [x] Vérifier que le bouton ScrollToTop fonctionne
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/activites
-- [ ] Vérifier que PageAnchors s'affiche en haut
-- [ ] Cliquer sur chaque lien d'ancre et vérifier le scroll
-- [ ] Vérifier que le lien actif change selon le scroll
-- [ ] Vérifier que les 4 sections s'affichent correctement
-- [ ] Tester le responsive (mobile, tablette, desktop)
-- [ ] Vérifier que le bouton ScrollToTop fonctionne
+**Améliorations apportées lors du test :**
+- PageAnchors masqué sur mobile (`hidden md:block`)
+- Liens des ancres centrés (`justify-center`)
+- PageAnchors sticky sous la navbar (`sticky top-11`)
 
 ---
 
@@ -1775,11 +1720,11 @@ import PageAnchors from "@/components/layout/PageAnchors";
 - [x] Design responsive
 
 **Vérifications finales :**
-- [ ] Aucune erreur TypeScript
-- [ ] Toutes les sections visibles
-- [ ] Navigation par ancres fluide
-- [ ] Contenu provient bien de `activites.json`
-- [ ] Responsive OK sur mobile et desktop
+- [x] Aucune erreur TypeScript
+- [x] Toutes les sections visibles
+- [x] Navigation par ancres fluide
+- [x] Contenu provient bien de `activites.json`
+- [x] Responsive OK sur mobile et desktop
 
 ---
 
@@ -1974,71 +1919,63 @@ import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface :
+- [ ] Ajouter l'interface (basée sur `content/a-propos.json`) :
 ```typescript
 interface VideoSectionProps {
   title: string;
-  description: string;
-  videoUrl?: string;
+  description?: string;
 }
 ```
+
+💡 **Note :** La vidéo sera ajoutée plus tard. Pour l'instant on affiche un placeholder.
 
 #### Sous-étape C : Implémenter le composant
 - [ ] Ajouter le composant :
 ```typescript
-export default function VideoSection({ title, description, videoUrl }: VideoSectionProps) {
+export default function VideoSection({ title, description }: VideoSectionProps) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-foreground mb-4">
+        <h2 className="text-3xl font-bold text-foreground mb-4">
           {title}
-        </h3>
-        <p className="text-gray-600">
-          {description}
-        </p>
+        </h2>
+        {description && (
+          <p className="text-gray-600 whitespace-pre-line">
+            {description}
+          </p>
+        )}
       </div>
 
       <Card>
         <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
-          {videoUrl ? (
-            <iframe
-              src={videoUrl}
-              className="w-full h-full rounded-lg"
-              allowFullScreen
-              title={title}
-            />
-          ) : (
-            <div className="text-center">
-              <svg
-                className="w-20 h-20 text-gray-400 mx-auto mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <p className="text-gray-500">Vidéo à venir</p>
-            </div>
-          )}
+          <div className="text-center">
+            <svg
+              className="w-20 h-20 text-gray-400 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <p className="text-gray-500">Vidéo à venir</p>
+          </div>
         </div>
       </Card>
     </div>
   );
 }
 ```
-
-💡 **Explication :** Si pas de videoUrl, affiche un placeholder.
 
 - [ ] Sauvegarder le fichier
 
@@ -2056,16 +1993,10 @@ import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [ ] Ajouter l'interface (basée sur la structure de `content/a-propos.json` où les témoignages sont de simples strings) :
 ```typescript
-interface Testimonial {
-  name: string;
-  role: string;
-  text: string;
-}
-
 interface TestimonialsCarouselProps {
-  testimonials: Testimonial[];
+  testimonials: string[];
 }
 ```
 
@@ -2103,17 +2034,8 @@ export default function TestimonialsCarousel({ testimonials }: TestimonialsCarou
           </svg>
 
           <p className="text-lg text-gray-700 mb-6 italic leading-relaxed">
-            "{currentTestimonial.text}"
+            "{currentTestimonial}"
           </p>
-
-          <div>
-            <p className="font-semibold text-foreground">
-              {currentTestimonial.name}
-            </p>
-            <p className="text-sm text-gray-600">
-              {currentTestimonial.role}
-            </p>
-          </div>
 
           {/* Navigation */}
           {testimonials.length > 1 && (
@@ -2180,7 +2102,7 @@ export default function TestimonialsCarousel({ testimonials }: TestimonialsCarou
 }
 ```
 
-💡 **Explication :** Carrousel avec navigation manuelle et indicateurs.
+💡 **Explication :** Carrousel avec navigation. Les témoignages sont de simples strings (anonymes) dans le JSON.
 
 - [ ] Sauvegarder le fichier
 
@@ -2194,12 +2116,13 @@ import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [ ] Ajouter les interfaces (basées sur `content/a-propos.json`) :
 ```typescript
 interface Job {
+  name: string;
   title: string;
   description: string;
-  profiles: string[];
+  link: string;
 }
 
 interface JobsGridProps {
@@ -2214,28 +2137,22 @@ export default function JobsGrid({ jobs }: JobsGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {jobs.map((job) => (
-        <Card key={job.title}>
-          <h3 className="text-xl font-semibold text-foreground mb-3">
-            {job.title}
-          </h3>
-          <p className="text-gray-600 mb-4">
-            {job.description}
-          </p>
-
-          {job.profiles && job.profiles.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-foreground mb-2">
-                Profils recherchés :
-              </h4>
-              <ul className="space-y-1">
-                {job.profiles.map((profile, index) => (
-                  <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
-                    <span className="text-foreground mt-1">•</span>
-                    <span>{profile}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <Card key={job.name} hover>
+          <div className="mb-4">
+            <p className="text-sm text-gray-500 mb-1">{job.name}</p>
+            <h3 className="text-xl font-semibold text-foreground">
+              {job.title}
+            </h3>
+          </div>
+          {job.description && (
+            <p className="text-gray-600 mb-4">
+              {job.description}
+            </p>
+          )}
+          {job.link && (
+            <p className="text-sm text-foreground font-medium">
+              {job.link}
+            </p>
           )}
         </Card>
       ))}
@@ -2315,9 +2232,10 @@ export { default as ToolsGrid } from "./ToolsGrid";
 export { default as VideoSection } from "./VideoSection";
 export { default as TestimonialsCarousel } from "./TestimonialsCarousel";
 export { default as JobsGrid } from "./JobsGrid";
-export { default as BarometreCard } from "./BarometreCard";
 ```
 - [ ] Sauvegarder le fichier
+
+💡 **Note :** Le composant BarometreCard a été retiré car il n'est pas nécessaire pour l'implémentation actuelle.
 
 ---
 
@@ -2334,97 +2252,111 @@ import {
   VideoSection,
   TestimonialsCarousel,
   JobsGrid,
-  BarometreCard,
 } from "@/components/a-propos";
-import PageAnchors from "@/components/layout/PageAnchors";
+import { PageAnchors } from "@/components/layout";
 import { Section, ScrollToTop } from "@/components/ui";
 import aproposContent from "@/content/a-propos.json";
 
 export default function AProposPage() {
-  // Définir les ancres
-  const anchors = [
-    { id: "notre-histoire", label: "Notre histoire" },
-    { id: "nos-outils", label: "Nos outils" },
-    { id: "presentation", label: "Présentation" },
-    { id: "nos-metiers", label: "Nos métiers" },
-  ];
+  // Extraire les sections par leur id
+  const histoireSection = aproposContent.sections.find(s => s.id === "histoire");
+  const outilsSection = aproposContent.sections.find(s => s.id === "outils");
+  const presentationSection = aproposContent.sections.find(s => s.id === "presentation");
+  const temoignagesSection = aproposContent.sections.find(s => s.id === "temoignages");
+  const recrutementSection = aproposContent.sections.find(s => s.id === "recrutement");
+  const metiersSection = aproposContent.sections.find(s => s.id === "metiers");
+
+  // Définir les ancres dynamiquement
+  const anchors = aproposContent.sections.map((section) => ({
+    id: section.id,
+    label: section.title,
+  }));
 
   return (
     <main>
       <PageAnchors anchors={anchors} />
 
       {/* Section Histoire */}
-      <Section id="notre-histoire" background="white">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Notre histoire
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {aproposContent.histoire.introduction}
-          </p>
-        </div>
-        <Timeline events={aproposContent.histoire.timeline} />
-      </Section>
+      {histoireSection && (
+        <Section id="histoire" background="white">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              {histoireSection.title}
+            </h1>
+            {histoireSection.subtitle && (
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                {histoireSection.subtitle}
+              </p>
+            )}
+          </div>
+          {histoireSection.timeline && (
+            <Timeline events={histoireSection.timeline} />
+          )}
+        </Section>
+      )}
 
       {/* Section Outils */}
-      <Section id="nos-outils" background="gray">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Nos outils digitaux
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            {aproposContent.outils.description}
-          </p>
-        </div>
-        <ToolsGrid tools={aproposContent.outils.liste} />
-      </Section>
+      {outilsSection && (
+        <Section id="outils" background="gray">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {outilsSection.title}
+            </h2>
+            {outilsSection.description && (
+              <p className="text-gray-600 max-w-2xl mx-auto whitespace-pre-line">
+                {outilsSection.description}
+              </p>
+            )}
+          </div>
+          {outilsSection.tools && (
+            <ToolsGrid tools={outilsSection.tools} />
+          )}
+        </Section>
+      )}
 
       {/* Section Présentation */}
-      <Section id="presentation" background="white">
-        <VideoSection
-          title={aproposContent.presentation.title}
-          description={aproposContent.presentation.description}
-          videoUrl={aproposContent.presentation.videoUrl}
-        />
+      {presentationSection && (
+        <Section id="presentation" background="white">
+          <VideoSection
+            title={presentationSection.title}
+            description={presentationSection.description}
+          />
+        </Section>
+      )}
 
-        {aproposContent.temoignages && aproposContent.temoignages.length > 0 && (
-          <div className="mt-16">
-            <h3 className="text-3xl font-bold text-foreground text-center mb-12">
-              Témoignages
-            </h3>
-            <TestimonialsCarousel testimonials={aproposContent.temoignages} />
+      {/* Section Témoignages */}
+      {temoignagesSection && temoignagesSection.testimonials && (
+        <Section id="temoignages" background="gray">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {temoignagesSection.title}
+            </h2>
           </div>
-        )}
-      </Section>
+          <TestimonialsCarousel testimonials={temoignagesSection.testimonials} />
+        </Section>
+      )}
 
       {/* Section Métiers */}
-      <Section id="nos-metiers" background="gray">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Nos métiers
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            {aproposContent.metiers.description}
-          </p>
-        </div>
-        <JobsGrid jobs={aproposContent.metiers.liste} />
-
-        {aproposContent.barometre && (
-          <div className="mt-16">
-            <BarometreCard
-              score={aproposContent.barometre.score}
-              description={aproposContent.barometre.description}
-              year={aproposContent.barometre.annee}
-            />
+      {metiersSection && (
+        <Section id="metiers" background="white">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {metiersSection.title}
+            </h2>
           </div>
-        )}
-      </Section>
+          {metiersSection.jobs && (
+            <JobsGrid jobs={metiersSection.jobs} />
+          )}
+        </Section>
+      )}
 
       <ScrollToTop />
     </main>
   );
 }
 ```
+
+💡 **Note :** Le JSON utilise un tableau `sections[]` avec différents types de contenu. On extrait chaque section par son `id`.
 
 - [ ] Sauvegarder le fichier
 
@@ -2447,11 +2379,11 @@ export default function AProposPage() {
 ## ✅ Checkpoint Phase 5
 
 À ce stade, vous devriez avoir :
-- [x] 6 composants créés dans `components/a-propos/`
-- [x] Page À propos complète avec 4 sections
+- [x] 5 composants créés dans `components/a-propos/`
+- [x] Page À propos complète avec les sections du JSON
 - [x] Timeline avec alternance gauche/droite
 - [x] Carrousel de témoignages interactif
-- [x] BarometreCard avec barre de progression
+- [x] Grille des métiers
 - [x] PageAnchors fonctionnel
 - [x] Design responsive
 
@@ -2927,18 +2859,18 @@ export default function ContactPage() {
       <Section background="white">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Contactez-nous
+            {contactContent.hero.title}
           </h1>
           <p className="text-xl text-gray-600">
-            Une question ? Un projet ? N'hésitez pas à nous contacter, notre équipe vous répondra dans les plus brefs délais.
+            {contactContent.hero.subtitle}
           </p>
         </div>
 
         {/* Contact info */}
         <div className="max-w-4xl mx-auto mb-16">
           <ContactInfo
-            email={contactContent.contact.email}
-            phone={contactContent.contact.telephone}
+            email={contactContent.contact.email.value}
+            phone={contactContent.contact.phone.value}
           />
         </div>
 
@@ -2947,7 +2879,7 @@ export default function ContactPage() {
           <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
             Envoyez-nous un message
           </h2>
-          <ContactForm subjects={contactContent.formulaire.objets} />
+          <ContactForm formConfig={contactContent.form} />
         </div>
       </Section>
 
@@ -2955,16 +2887,16 @@ export default function ContactPage() {
       <Section background="gray">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Nos bureaux
+            {contactContent.addresses.title}
           </h2>
           <p className="text-gray-600">
-            Retrouvez-nous dans nos agences à Paris et Marseille
+            {contactContent.addresses.company}
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-          {contactContent.adresses.map((address, index) => (
-            <AddressCard key={index} address={address} />
+          {contactContent.addresses.offices.map((office, index) => (
+            <AddressCard key={index} office={office} />
           ))}
         </div>
       </Section>
@@ -2974,6 +2906,8 @@ export default function ContactPage() {
   );
 }
 ```
+
+💡 **Note :** Le code utilise la structure exacte du fichier `content/contact.json` avec `hero`, `contact`, `form`, `addresses`.
 
 - [ ] Sauvegarder le fichier
 
