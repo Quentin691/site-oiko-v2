@@ -355,6 +355,10 @@ Refonte complète du site web OIKO (secteur immobilier) avec une architecture mo
 
 **Localisation :** `components/recherche/`
 
+### Idée à explorer
+
+💡 **Filtres dynamiques depuis l'API** : Récupérer les valeurs des listes déroulantes (villes, types de bien, etc.) directement depuis l'API pour qu'elles soient toujours à jour. À confirmer selon les endpoints disponibles.
+
 ### 9.2 Implémentation pages
 
 - [ ] Page Vente : importer `vente.json` + données API
@@ -370,6 +374,13 @@ Refonte complète du site web OIKO (secteur immobilier) avec une architecture mo
 - `content/location.json` ✅
 
 **Dépendance :** Phase 8 (API) doit être terminée
+
+### 9.3 Page détail d'un bien
+
+- [ ] `/vente/[id]` - Page détail d'un bien à vendre
+- [ ] `/location/[id]` - Page détail d'un bien à louer
+- [ ] Composant **PropertyDetail** avec galerie photos, description, caractéristiques
+- [ ] Bouton de contact / demande d'information
 
 ---
 
@@ -410,6 +421,13 @@ Refonte complète du site web OIKO (secteur immobilier) avec une architecture mo
 **Dépendance :** Phase 8 (API) doit être terminée
 
 **Note :** Les détails du parcours de récupération de compte sont encore à définir.
+
+---
+
+## 💡 Idées futures (à explorer)
+
+- **Favoris** : Permettre aux utilisateurs connectés de sauvegarder des biens en favoris
+- **Filtres dynamiques** : Récupérer les valeurs des filtres (villes, types) depuis l'API
 
 ---
 

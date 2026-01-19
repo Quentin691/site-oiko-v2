@@ -2847,6 +2847,20 @@ Vous avez complété les 6 premières phases du projet :
 
 # Phase 7 - Esthétique / Thème
 
+## Décisions de design validées
+
+Avant de commencer, voici les décisions prises :
+
+| Élément | Décision |
+|---------|----------|
+| **Toggle thème** | Tout à droite dans la navbar (après le bouton "Contactez-nous") |
+| **Logo** | Même logo pour les deux thèmes (on ajuste si besoin après test) |
+| **Thème clair** | Fond `#F5F5F5`, cards blanches, texte `#1F1F1F` |
+| **Thème sombre** | Fond `#121212`, cards `#1E1E1E`, texte `#F5F5F5` |
+| **Couleur accent** | Vert OIKO `#2ECC71`, hover `#27AE60` |
+
+---
+
 ## 7.1 Configurer les variables CSS
 
 ### Étape 7.1.1 : Ajouter les variables de couleur primaire
@@ -3126,12 +3140,12 @@ import { ThemeToggle } from "@/components/ui";
 
 #### Sous-étape C : Placer le toggle
 - [ ] Localiser la section avec les liens de navigation
-- [ ] Ajouter le ThemeToggle à droite des liens (avant ou après le bouton CTA) :
+- [ ] Ajouter le ThemeToggle **tout à droite**, après le bouton "Contactez-nous" :
 ```tsx
 <ThemeToggle />
 ```
 
-💡 **Conseil :** Placer le toggle juste avant le bouton "Contactez-nous" pour une bonne disposition.
+💡 **Décision :** Le toggle est placé tout à droite de la navbar (dernier élément), comme sur le site de référence QuickDev. L'ordre est : `[Logo] [Liens] [Bouton Contactez-nous] [Toggle thème]`
 
 - [ ] Sauvegarder le fichier
 
@@ -3163,6 +3177,8 @@ const bgClasses = {
 - [ ] Remplacer les classes `bg-white` par `bg-card`
 - [ ] Remplacer les `text-gray-xxx` par `text-foreground` ou `text-muted`
 - [ ] Sauvegarder le fichier
+
+💡 **Note sur le logo :** On garde le même logo pour les deux thèmes. Si le rendu n'est pas satisfaisant en mode sombre, on ajustera (version claire du logo ou modification de la couleur du header).
 
 ### Étape 7.4.4 : Adapter Footer.tsx
 
