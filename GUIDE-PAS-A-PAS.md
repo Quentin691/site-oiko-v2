@@ -15,9 +15,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 6 phases
 | Phase 2 - Layout global | 68/68 (100%) | ✅ Terminée |
 | Phase 3 - Page Accueil | 44/44 (100%) | ✅ Terminée |
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
-| Phase 5 - Page À propos | 0/62 (0%) | ⏳ À faire |
+| Phase 5 - Page À propos | 24/62 (39%) | 🔄 En cours |
 | Phase 6 - Page Contact | 0/52 (0%) | ⏳ À faire |
-| **Total** | **217/331 (66%)** | |
+| **Total** | **241/331 (73%)** | |
 
 ---
 
@@ -1758,20 +1758,20 @@ Félicitations ! Vous avez complété :
 
 ### Étape 5.1.1 : Créer le dossier
 
-- [ ] Dans `components/`, créer un dossier `a-propos`
-- [ ] Vérifier le chemin : `components/a-propos/`
+- [x] Dans `components/`, créer un dossier `a-propos`
+- [x] Vérifier le chemin : `components/a-propos/`
 
 ### Étape 5.1.2 : Créer Timeline.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `Timeline.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/a-propos/`, créer `Timeline.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface TimelineEvent {
   year: string;
@@ -1785,7 +1785,7 @@ interface TimelineProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function Timeline({ events }: TimelineProps) {
   return (
@@ -1841,19 +1841,19 @@ export default function Timeline({ events }: TimelineProps) {
 
 💡 **Explication :** Timeline en zigzag sur desktop, liste simple sur mobile.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 5.1.3 : Créer ToolsGrid.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `ToolsGrid.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/a-propos/`, créer `ToolsGrid.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir les interfaces
-- [ ] Ajouter les interfaces :
+- [x] Ajouter les interfaces :
 ```typescript
 interface Tool {
   name: string;
@@ -1866,7 +1866,7 @@ interface ToolsGridProps {
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ToolsGrid({ tools }: ToolsGridProps) {
   return (
@@ -1907,19 +1907,19 @@ export default function ToolsGrid({ tools }: ToolsGridProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 5.1.4 : Créer VideoSection.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `VideoSection.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/a-propos/`, créer `VideoSection.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import { Card } from "@/components/ui";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface (basée sur `content/a-propos.json`) :
+- [x] Ajouter l'interface (basée sur `content/a-propos.json`) :
 ```typescript
 interface VideoSectionProps {
   title: string;
@@ -1930,7 +1930,7 @@ interface VideoSectionProps {
 💡 **Note :** La vidéo sera ajoutée plus tard. Pour l'instant on affiche un placeholder.
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function VideoSection({ title, description }: VideoSectionProps) {
   return (
@@ -1977,25 +1977,21 @@ export default function VideoSection({ title, description }: VideoSectionProps) 
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
-### Étape 5.1.5 : Créer TestimonialsCarousel.tsx
+### Étape 5.1.5 : Créer TestimonialsGrid.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/a-propos/`, créer `TestimonialsCarousel.tsx`
-- [ ] Ajouter `"use client"` en première ligne (composant interactif)
+- [ ] Dans `components/a-propos/`, créer `TestimonialsGrid.tsx`
 - [ ] Ajouter les imports :
 ```typescript
-"use client";
-
-import { useState } from "react";
 import { Card } from "@/components/ui";
 ```
 
-#### Sous-étape B : Définir les interfaces
-- [ ] Ajouter l'interface (basée sur la structure de `content/a-propos.json` où les témoignages sont de simples strings) :
+#### Sous-étape B : Définir l'interface
+- [ ] Ajouter l'interface (basée sur `content/a-propos.json` où les témoignages sont de simples strings) :
 ```typescript
-interface TestimonialsCarouselProps {
+interface TestimonialsGridProps {
   testimonials: string[];
 }
 ```
@@ -2003,106 +1999,36 @@ interface TestimonialsCarouselProps {
 #### Sous-étape C : Implémenter le composant
 - [ ] Ajouter le composant :
 ```typescript
-export default function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
-  };
-
+export default function TestimonialsGrid({ testimonials }: TestimonialsGridProps) {
   if (testimonials.length === 0) {
     return null;
   }
 
-  const currentTestimonial = testimonials[currentIndex];
-
   return (
-    <div className="max-w-3xl mx-auto">
-      <Card>
-        <div className="relative px-8 py-6">
-          {/* Citation */}
-          <svg
-            className="w-10 h-10 text-gray-300 mb-4"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-          </svg>
-
-          <p className="text-lg text-gray-700 mb-6 italic leading-relaxed">
-            "{currentTestimonial}"
-          </p>
-
-          {/* Navigation */}
-          {testimonials.length > 1 && (
-            <div className="flex items-center justify-between mt-8">
-              <button
-                onClick={goToPrevious}
-                className="p-2 rounded-full hover:bg-gray-100 transition"
-                aria-label="Témoignage précédent"
-              >
-                <svg
-                  className="w-6 h-6 text-foreground"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-
-              {/* Indicateurs */}
-              <div className="flex gap-2">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition ${
-                      index === currentIndex ? "bg-foreground w-6" : "bg-gray-300"
-                    }`}
-                    aria-label={`Aller au témoignage ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={goToNext}
-                className="p-2 rounded-full hover:bg-gray-100 transition"
-                aria-label="Témoignage suivant"
-              >
-                <svg
-                  className="w-6 h-6 text-foreground"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </div>
-          )}
-        </div>
-      </Card>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {testimonials.map((testimonial, index) => (
+        <Card key={index}>
+          <div className="p-2">
+            {/* Icône citation */}
+            <svg
+              className="w-8 h-8 text-gray-300 mb-3"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+            </svg>
+            <p className="text-gray-700 italic leading-relaxed">
+              "{testimonial}"
+            </p>
+          </div>
+        </Card>
+      ))}
     </div>
   );
 }
 ```
 
-💡 **Explication :** Carrousel avec navigation. Les témoignages sont de simples strings (anonymes) dans le JSON.
+💡 **Explication :** Grille simple 2x2 sur desktop, colonne sur mobile. Tous les témoignages sont visibles d'un coup.
 
 - [ ] Sauvegarder le fichier
 
@@ -2222,7 +2148,7 @@ export default function BarometreCard({ score, description, year }: BarometreCar
 
 - [ ] Sauvegarder le fichier
 
-### Étape 5.1.8 : Créer index.ts
+### Étape 5.1.7 : Créer index.ts
 
 - [ ] Dans `components/a-propos/`, créer `index.ts`
 - [ ] Ajouter tous les exports :
@@ -2230,12 +2156,10 @@ export default function BarometreCard({ score, description, year }: BarometreCar
 export { default as Timeline } from "./Timeline";
 export { default as ToolsGrid } from "./ToolsGrid";
 export { default as VideoSection } from "./VideoSection";
-export { default as TestimonialsCarousel } from "./TestimonialsCarousel";
+export { default as TestimonialsGrid } from "./TestimonialsGrid";
 export { default as JobsGrid } from "./JobsGrid";
 ```
 - [ ] Sauvegarder le fichier
-
-💡 **Note :** Le composant BarometreCard a été retiré car il n'est pas nécessaire pour l'implémentation actuelle.
 
 ---
 
@@ -2250,7 +2174,7 @@ import {
   Timeline,
   ToolsGrid,
   VideoSection,
-  TestimonialsCarousel,
+  TestimonialsGrid,
   JobsGrid,
 } from "@/components/a-propos";
 import { PageAnchors } from "@/components/layout";
@@ -2332,7 +2256,7 @@ export default function AProposPage() {
               {temoignagesSection.title}
             </h2>
           </div>
-          <TestimonialsCarousel testimonials={temoignagesSection.testimonials} />
+          <TestimonialsGrid testimonials={temoignagesSection.testimonials} />
         </Section>
       )}
 
