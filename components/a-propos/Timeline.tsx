@@ -28,7 +28,7 @@ export default function Timeline({ events }: TimelineProps) {
 
                 {/* Point central */}
                 <div className="hidden md:flex items-center justify-center md:w-2/12">
-                  <div className="w-4 h-4 rounded-full bg-foreground border-4 border-background shadow"></div>
+                  <div className="w-4 h-4 rounded-full bg-primary border-4 border-background shadow"></div>
                 </div>
 
                 {/* Contenu */}

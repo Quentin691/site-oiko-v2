@@ -17,7 +17,7 @@ export default function AddressCard({ address }: AddressCardProps) {
     <Card>
       <div className="flex items-start gap-4">
         {/* Icône localisation */}
-        <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shrink-0">
           <svg
             className="w-6 h-6 text-background"
             fill="none"

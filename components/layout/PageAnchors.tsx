@@ -59,7 +59,7 @@ export default function PageAnchors({ anchors }: PageAnchorsProps) {
                 href={`#${anchor.id}`}
                 className={`text-sm font-medium transition-colors ${
                   activeId === anchor.id
-                    ? "text-foreground border-b-2 border-foreground pb-1"
+                    ? "text-primary border-b-2 border-primary pb-1"
                     : "text-gray-600 hover:text-foreground"
                 }`}
               >

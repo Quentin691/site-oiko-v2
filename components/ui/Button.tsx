@@ -13,13 +13,13 @@ interface ButtonProps {
 const getVariantStyles = (variant: "primary" | "secondary" | "outline") => {
   switch (variant) {
     case "primary":
-      return "bg-foreground text-background hover:opacity-90";
+      return "bg-primary hover:bg-primary-dark text-white";
     case "secondary":
       return "bg-card text-foreground border border-gray-300 hover:bg-gray-50";
     case "outline":
       return "bg-transparent text-foreground border border-foreground hover:bg-foreground hover:text-background";
     default:
-      return "bg-foreground text-background hover:opacity-90";
+      return "bg-primary hover:bg-primary-dark text-white";
   }
 };
 

@@ -23,7 +23,7 @@ export default function FormField({
   rows = 4,
   children,
 }: FormFieldProps) {
-  const baseInputStyles = "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent disabled:bg-gray-200 disabled:cursor-not-allowed";
+  const baseInputStyles = "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-200 disabled:cursor-not-allowed";
 
   if (type === "textarea") {
     return (
@@ -77,7 +77,7 @@ export default function FormField({
           name={name}
           required={required}
           disabled={disabled}
-          className="mt-1 w-4 h-4 text-foreground border-gray-300 rounded focus:ring-foreground disabled:cursor-not-allowed"
+          className="mt-1 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary disabled:cursor-not-allowed"
         />
         <label htmlFor={name} className="text-sm text-gray-700">
           {children || label} {required && <span className="text-red-500">*</span>}

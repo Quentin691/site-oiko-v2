@@ -11,7 +11,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
       {/* Email */}
       <Card hover>
         <a href={`mailto:${email}`} className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <svg
               className="w-6 h-6 text-background"
               fill="none"
@@ -36,7 +36,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
       {/* Téléphone */}
       <Card hover>
         <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <svg
               className="w-6 h-6 text-background"
               fill="none"
