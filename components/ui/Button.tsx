@@ -7,6 +7,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary" | "outline";
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 const getVariantStyles = (variant: "primary" | "secondary" | "outline") => {
@@ -28,10 +29,12 @@ export default function Button({
   variant = "primary",
   onClick,
   type = "button",
+  disabled = false,
 }: ButtonProps) {
   const baseStyles = "px-6 py-3 rounded font-medium transition-all duration-200";
   const variantStyles = getVariantStyles(variant);
-  const combinedStyles = `${baseStyles} ${variantStyles}`;
+  const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "";
+  const combinedStyles = `${baseStyles} ${variantStyles} ${disabledStyles}`;
 
   // Si href est fourni, rendre un Link
   if (href) {
@@ -44,7 +47,7 @@ export default function Button({
 
   // Sinon, rendre un bouton
   return (
-    <button type={type} onClick={onClick} className={combinedStyles}>
+    <button type={type} onClick={onClick} disabled={disabled} className={combinedStyles}>
       {children}
     </button>
   );

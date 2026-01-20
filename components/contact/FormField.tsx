@@ -6,6 +6,7 @@ interface FormFieldProps {
   type?: "text" | "email" | "tel" | "textarea" | "select" | "checkbox";
   placeholder?: string;
   required?: boolean;
+  disabled?: boolean;
   options?: string[];
   rows?: number;
   children?: ReactNode;
@@ -17,11 +18,12 @@ export default function FormField({
   type = "text",
   placeholder,
   required = false,
+  disabled = false,
   options = [],
   rows = 4,
   children,
 }: FormFieldProps) {
-  const baseInputStyles = "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent";
+  const baseInputStyles = "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent disabled:bg-gray-200 disabled:cursor-not-allowed";
 
   if (type === "textarea") {
     return (
@@ -35,6 +37,7 @@ export default function FormField({
           rows={rows}
           placeholder={placeholder}
           required={required}
+          disabled={disabled}
           className={baseInputStyles}
         />
       </div>
@@ -51,6 +54,7 @@ export default function FormField({
           id={name}
           name={name}
           required={required}
+          disabled={disabled}
           className={baseInputStyles}
         >
           <option value="">Sélectionner...</option>
@@ -72,7 +76,8 @@ export default function FormField({
           id={name}
           name={name}
           required={required}
-          className="mt-1 w-4 h-4 text-foreground border-gray-300 rounded focus:ring-foreground"
+          disabled={disabled}
+          className="mt-1 w-4 h-4 text-foreground border-gray-300 rounded focus:ring-foreground disabled:cursor-not-allowed"
         />
         <label htmlFor={name} className="text-sm text-gray-700">
           {children || label} {required && <span className="text-red-500">*</span>}
@@ -92,6 +97,7 @@ export default function FormField({
         name={name}
         placeholder={placeholder}
         required={required}
+        disabled={disabled}
         className={baseInputStyles}
       />
     </div>
