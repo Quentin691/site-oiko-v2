@@ -101,3 +101,12 @@ html.dark .bg-footer {
 html.dark .bg-address-card {
   background-color: #0A0A0A !important;
 }
+
+/* Fond pour les cartes de contact (email/téléphone) */
+.bg-contact-info-card {
+  background-color: #ECECEC !important;
+}
+
+html.dark .bg-contact-info-card {
+  background-color: #0A0A0A !important;
+}

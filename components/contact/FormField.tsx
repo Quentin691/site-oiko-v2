@@ -23,7 +23,7 @@ export default function FormField({
   rows = 4,
   children,
 }: FormFieldProps) {
-  const baseInputStyles = "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-200 disabled:cursor-not-allowed";
+  const baseInputStyles = "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-200 disabled:cursor-not-allowed bg-card text-foreground dark:disabled:bg-gray-700";
 
   if (type === "textarea") {
     return (

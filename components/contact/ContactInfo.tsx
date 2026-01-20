@@ -9,7 +9,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Email */}
-      <Card hover>
+      <Card hover className="bg-contact-info-card">
         <a href={`mailto:${email}`} className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <svg
@@ -34,7 +34,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
       </Card>
 
       {/* Téléphone */}
-      <Card hover>
+      <Card hover className="bg-contact-info-card">
         <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <svg

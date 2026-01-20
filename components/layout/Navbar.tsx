@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [showLogo, setShowLogo] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,12 +43,12 @@ export default function Navbar() {
 
         {/* Navigation desktop - cachée sur mobile */}
         <ul className="hidden sm:flex gap-4 sm:gap-8 md:gap-16 text-xs sm:text-sm whitespace-nowrap items-center">
-          <li><Link href="/" className="hover:text-muted">Accueil</Link></li>
-          <li><Link href="/activites" className="hover:text-muted">Activités</Link></li>
-          <li><Link href="/a-propos-de-nous" className="hover:text-muted">À propos</Link></li>
-          <li><Link href="/vente" className="hover:text-muted">Vente</Link></li>
-          <li><Link href="/location" className="hover:text-muted">Location</Link></li>
-          <li><Link href="/contactez-nous" className="hover:text-muted">Contact</Link></li>
+          <li><Link href="/" className={`hover:text-primary transition-colors ${pathname === "/" ? "text-primary font-semibold" : ""}`}>Accueil</Link></li>
+          <li><Link href="/activites" className={`hover:text-primary transition-colors ${pathname === "/activites" ? "text-primary font-semibold" : ""}`}>Activités</Link></li>
+          <li><Link href="/a-propos-de-nous" className={`hover:text-primary transition-colors ${pathname === "/a-propos-de-nous" ? "text-primary font-semibold" : ""}`}>À propos</Link></li>
+          <li><Link href="/vente" className={`hover:text-primary transition-colors ${pathname === "/vente" ? "text-primary font-semibold" : ""}`}>Vente</Link></li>
+          <li><Link href="/location" className={`hover:text-primary transition-colors ${pathname === "/location" ? "text-primary font-semibold" : ""}`}>Location</Link></li>
+          <li><Link href="/contactez-nous" className={`hover:text-primary transition-colors ${pathname === "/contactez-nous" ? "text-primary font-semibold" : ""}`}>Contact</Link></li>
         </ul>
 
         {/* Bouton hamburger - visible sur mobile */}
@@ -72,32 +74,32 @@ export default function Navbar() {
         <div className="sm:hidden border-t border-gray-200">
           <ul className="flex flex-col py-4">
             <li>
-              <Link href="/" className="block px-6 py-3 hover:bg-gray-50" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>
                 Accueil
               </Link>
             </li>
             <li>
-              <Link href="/activites" className="block px-6 py-3 hover:bg-gray-50" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/activites" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/activites" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>
                 Activités
               </Link>
             </li>
             <li>
-              <Link href="/a-propos-de-nous" className="block px-6 py-3 hover:bg-gray-50" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/a-propos-de-nous" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/a-propos-de-nous" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>
                 À propos
               </Link>
             </li>
             <li>
-              <Link href="/vente" className="block px-6 py-3 hover:bg-gray-50" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/vente" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/vente" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>
                 Vente
               </Link>
             </li>
             <li>
-              <Link href="/location" className="block px-6 py-3 hover:bg-gray-50" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/location" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/location" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>
                 Location
               </Link>
             </li>
             <li>
-              <Link href="/contactez-nous" className="block px-6 py-3 hover:bg-gray-50" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/contactez-nous" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/contactez-nous" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>
                 Contact
               </Link>
             </li>
