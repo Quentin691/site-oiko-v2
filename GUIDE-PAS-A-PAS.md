@@ -17,8 +17,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
-| Phase 7 - Esthétique / Thème | 35/52 (67%) | 🔄 En cours |
-| **Total** | **356/373 (95%)** | |
+| Phase 7 - Esthétique / Thème | 40/52 (77%) | 🔄 En cours |
+| **Total** | **361/373 (97%)** | |
 
 ---
 
@@ -3185,14 +3185,24 @@ const bgClasses = {
 
 ### Étape 7.4.4 : Adapter Footer.tsx
 
-- [ ] Ouvrir `components/layout/Footer.tsx`
-- [ ] Remplacer `bg-gray-900` par `bg-foreground dark:bg-card`
-- [ ] Ajuster les couleurs de texte pour les deux thèmes
-- [ ] Sauvegarder le fichier
+- [x] Ouvrir `components/layout/Footer.tsx`
+- [x] Remplacer `bg-gray-100` par `bg-card`
+- [x] Remplacer `border-gray-400` par `border-t-2` (bordure adaptative)
+- [x] Remplacer `text-gray-600` (copyright) par `text-muted`
+- [x] Remplacer `border-gray-300` (ligne du haut) par `border-t`
+- [x] Sauvegarder le fichier
 
-### Étape 7.4.5 : Adapter les textes gris
+### Étape 7.4.5 : Adapter ContactForm.tsx (zone captcha)
 
-Dans tous les composants, les classes `text-gray-xxx` doivent être adaptées :
+- [x] Ouvrir `components/contact/ContactForm.tsx`
+- [x] Ligne 149 : Remplacer `bg-gray-50 border border-gray-300` par `bg-background border`
+- [x] Sauvegarder le fichier
+
+💡 **Note :** La zone captcha est maintenant lisible en mode sombre
+
+### Étape 7.4.6 : Adapter les autres textes gris (optionnel)
+
+Dans tous les composants, les classes `text-gray-xxx` peuvent être adaptées si nécessaire :
 - `text-gray-600` → `text-muted`
 - `text-gray-500` → `text-muted`
 - `bg-gray-100` → `bg-background`

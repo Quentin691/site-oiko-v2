@@ -49,7 +49,7 @@ function FooterColumn({ title, links }: FooterColumnProps) {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 border-t-2 border-gray-400">
+    <footer className="bg-card border-t-2">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Colonne 1 : Navigation */}
@@ -111,7 +111,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-gray-300 text-center text-sm text-gray-600">
+        <div className="mt-12 pt-8 border-t text-center text-sm text-muted">
           <p>&copy; {new Date().getFullYear()} OIKO. Tous droits réservés.</p>
         </div>
       </div>

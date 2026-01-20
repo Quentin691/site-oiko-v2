@@ -146,7 +146,7 @@ export default function ContactForm({ subjects }: ContactFormProps) {
         </FormField>
 
         {/* Captcha simple */}
-        <div className="bg-gray-50 border border-gray-300 rounded p-4">
+        <div className="bg-background border rounded p-4">
           <FormField
             label={`Vérification : Combien font ${captcha.a} + ${captcha.b} ?`}
             name="captcha"
