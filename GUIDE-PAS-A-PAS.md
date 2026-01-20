@@ -17,8 +17,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
-| Phase 7 - Esthétique / Thème | 31/52 (60%) | 🔄 En cours |
-| **Total** | **352/373 (94%)** | |
+| Phase 7 - Esthétique / Thème | 35/52 (67%) | 🔄 En cours |
+| **Total** | **356/373 (95%)** | |
 
 ---
 
@@ -3059,9 +3059,9 @@ import { ThemeProvider } from "@/components/providers";
 ### Étape 7.3.1 : Créer ThemeToggle.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/ui/`, créer `ThemeToggle.tsx`
-- [ ] Ajouter `"use client"` en première ligne
-- [ ] Ajouter les imports :
+- [x] Dans `components/ui/`, créer `ThemeToggle.tsx`
+- [x] Ajouter `"use client"` en première ligne
+- [x] Ajouter les imports :
 ```typescript
 "use client";
 
@@ -3069,7 +3069,7 @@ import { useTheme } from "@/components/providers";
 ```
 
 #### Sous-étape B : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -3116,38 +3116,41 @@ export default function ThemeToggle() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 7.3.2 : Exporter ThemeToggle
 
-- [ ] Ouvrir `components/ui/index.ts`
-- [ ] Ajouter l'export :
+- [x] Ouvrir `components/ui/index.ts`
+- [x] Ajouter l'export :
 ```typescript
 export { default as ThemeToggle } from "./ThemeToggle";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
-### Étape 7.3.3 : Ajouter ThemeToggle dans la Navbar
+### Étape 7.3.3 : Ajouter ThemeToggle dans le Header
 
-#### Sous-étape A : Ouvrir Navbar.tsx
-- [ ] Ouvrir `components/layout/Navbar.tsx`
-
-#### Sous-étape B : Ajouter l'import
-- [ ] Ajouter à la ligne des imports UI :
+#### Sous-étape A : Modifier Header.tsx
+- [x] Ouvrir `components/layout/Header.tsx`
+- [x] Ajouter `"use client"` en première ligne
+- [x] Ajouter l'import :
 ```typescript
 import { ThemeToggle } from "@/components/ui";
 ```
 
-#### Sous-étape C : Placer le toggle
-- [ ] Localiser la section avec les liens de navigation
-- [ ] Ajouter le ThemeToggle **tout à droite**, après le bouton "Contactez-nous" :
+#### Sous-étape B : Placer le toggle
+- [x] Localiser la fin de la section des réseaux sociaux
+- [x] Ajouter le ThemeToggle **après les icônes sociales** :
 ```tsx
 <ThemeToggle />
 ```
 
-💡 **Décision :** Le toggle est placé tout à droite de la navbar (dernier élément), comme sur le site de référence QuickDev. L'ordre est : `[Logo] [Liens] [Bouton Contactez-nous] [Toggle thème]`
+💡 **Décision :** Le toggle est placé dans le Header après les réseaux sociaux, pour qu'il soit visible tout en haut de la page.
 
-- [ ] Sauvegarder le fichier
+#### Sous-étape C : Corriger la Navbar
+- [x] Ouvrir `components/layout/Navbar.tsx`
+- [x] Changer `bg-white` en `bg-background` pour adaptation au thème
+- [x] Retirer ThemeToggle de la Navbar (il est maintenant dans le Header)
+- [x] Sauvegarder le fichier
 
 ---
 

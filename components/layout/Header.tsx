@@ -1,6 +1,9 @@
+"use client";
+
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import React from "react";
+import { ThemeToggle } from "@/components/ui";
 
 interface SocialLinkProps {
   href: string;
@@ -64,6 +67,8 @@ export default function Header() {
               </svg>
             </SocialLink>
           </div>
+
+          <ThemeToggle />
         </div>
       </div>
     </header>
