@@ -17,8 +17,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
-| Phase 7 - Esthétique / Thème | 40/52 (77%) | 🔄 En cours |
-| **Total** | **361/373 (97%)** | |
+| Phase 7 - Esthétique / Thème | 43/52 (83%) | 🔄 En cours |
+| **Total** | **364/373 (98%)** | |
 
 ---
 
@@ -3158,28 +3158,28 @@ import { ThemeToggle } from "@/components/ui";
 
 ### Étape 7.4.1 : Adapter Card.tsx
 
-- [ ] Ouvrir `components/ui/Card.tsx`
-- [ ] Remplacer `bg-card` par `bg-card text-card-foreground`
-- [ ] Sauvegarder le fichier
+- [x] Ouvrir `components/ui/Card.tsx`
+- [x] Remplacer `bg-card` par `bg-card text-card-foreground`
+- [x] Sauvegarder le fichier
 
 ### Étape 7.4.2 : Adapter Section.tsx
 
-- [ ] Ouvrir `components/ui/Section.tsx`
-- [ ] Modifier le mapping des backgrounds :
+- [x] Ouvrir `components/ui/Section.tsx`
+- [x] Modifier le mapping des backgrounds :
 ```typescript
 const bgClasses = {
   white: "bg-card",
   gray: "bg-background",
 };
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 7.4.3 : Adapter Header.tsx
 
-- [ ] Ouvrir `components/layout/Header.tsx`
-- [ ] Remplacer les classes `bg-white` par `bg-card`
-- [ ] Remplacer les `text-gray-xxx` par `text-foreground` ou `text-muted`
-- [ ] Sauvegarder le fichier
+- [x] Ouvrir `components/layout/Header.tsx`
+- [x] Remplacer les classes `bg-white` par `bg-card`
+- [x] Remplacer les `text-gray-xxx` par `text-foreground` ou `text-muted`
+- [x] Sauvegarder le fichier
 
 💡 **Note sur le logo :** On garde le même logo pour les deux thèmes. Si le rendu n'est pas satisfaisant en mode sombre, on ajustera (version claire du logo ou modification de la couleur du header).
 

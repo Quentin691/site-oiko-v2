@@ -18,7 +18,7 @@ function SocialLink({ href, label, children }: SocialLinkProps) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="text-gray-600 hover:text-foreground transition-colors"
+      className="text-muted hover:text-foreground transition-colors"
     >
       {children}
     </a>

@@ -17,7 +17,7 @@ export default function Card({
 
   return (
     <div
-      className={`bg-card rounded-lg border border-gray-200 p-6 shadow-sm transition-all duration-200 ${hoverStyles} ${className}`}
+      className={`bg-card text-card-foreground rounded-lg border border-gray-200 p-6 shadow-sm transition-all duration-200 ${hoverStyles} ${className}`}
     >
       {children}
     </div>
