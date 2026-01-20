@@ -36,7 +36,7 @@ export default function AProposPage() {
               {histoireSection.title}
             </h1>
             {histoireSection.subtitle && (
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-muted max-w-3xl mx-auto">
                 {histoireSection.subtitle}
               </p>
             )}
@@ -55,7 +55,7 @@ export default function AProposPage() {
               {outilsSection.title}
             </h2>
             {outilsSection.description && (
-              <p className="text-gray-600 max-w-2xl mx-auto whitespace-pre-line">
+              <p className="text-muted max-w-2xl mx-auto whitespace-pre-line">
                 {outilsSection.description}
               </p>
             )}

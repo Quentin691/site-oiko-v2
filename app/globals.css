@@ -15,7 +15,9 @@
   --foreground: #F5F5F5;
   --card: #1E1E1E;
   --card-foreground: #F5F5F5;
-  --muted: #9CA3AF;
+  --muted: #E5E7EB;
+  --primary: #2ECC71;
+  --primary-dark: #27AE60;
 }
 
 @theme inline {
@@ -27,7 +29,8 @@
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-card-foreground: var(--card-foreground);
-  --color-muted: var(--muted);
+  --color-muted-light: #6B7280;
+  --color-muted-dark: #E5E7EB;
 }
 /*
 @media (prefers-color-scheme: dark) {
@@ -42,6 +45,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 1s ease, color 1s ease;
+}
+
+/* Classes personnalisées pour le texte muted */
+.text-muted {
+  color: #6B7280 !important;
+}
+
+.dark .text-muted {
+  color: #D1D5DB !important;
 }
 
 /* Transition globale pour tous les éléments lors du changement de thème */

@@ -43,7 +43,7 @@ export default function AddressCard({ address }: AddressCardProps) {
           <h3 className="text-xl font-semibold text-foreground mb-3">
             {address.city}
           </h3>
-          <div className="text-gray-600 space-y-1">
+          <div className="text-muted space-y-1">
             <p>{address.address}</p>
             <p>{address.postalCode} {address.city} – {address.country}</p>
             {address.phone && (

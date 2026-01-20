@@ -41,17 +41,17 @@ export default function Navbar() {
 
         {/* Navigation desktop - cachée sur mobile */}
         <ul className="hidden sm:flex gap-4 sm:gap-8 md:gap-16 text-xs sm:text-sm whitespace-nowrap items-center">
-          <li><Link href="/" className="hover:text-gray-500">Accueil</Link></li>
-          <li><Link href="/activites" className="hover:text-gray-500">Activités</Link></li>
-          <li><Link href="/a-propos-de-nous" className="hover:text-gray-500">À propos</Link></li>
-          <li><Link href="/vente" className="hover:text-gray-500">Vente</Link></li>
-          <li><Link href="/location" className="hover:text-gray-500">Location</Link></li>
-          <li><Link href="/contactez-nous" className="hover:text-gray-500">Contact</Link></li>
+          <li><Link href="/" className="hover:text-muted">Accueil</Link></li>
+          <li><Link href="/activites" className="hover:text-muted">Activités</Link></li>
+          <li><Link href="/a-propos-de-nous" className="hover:text-muted">À propos</Link></li>
+          <li><Link href="/vente" className="hover:text-muted">Vente</Link></li>
+          <li><Link href="/location" className="hover:text-muted">Location</Link></li>
+          <li><Link href="/contactez-nous" className="hover:text-muted">Contact</Link></li>
         </ul>
 
         {/* Bouton hamburger - visible sur mobile */}
         <button
-          className="sm:hidden p-2 text-gray-600 hover:text-foreground"
+          className="sm:hidden p-2 text-muted hover:text-foreground"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Menu"
         >

@@ -17,13 +17,13 @@ export default function JobsGrid({ jobs }: JobsGridProps) {
       {jobs.map((job) => (
         <Card key={job.name} hover>
           <div className="mb-4">
-            <p className="text-sm text-gray-500 mb-1">{job.name}</p>
+            <p className="text-sm text-muted mb-1">{job.name}</p>
             <h3 className="text-xl font-semibold text-foreground">
               {job.title}
             </h3>
           </div>
           {job.description && (
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted mb-4">
               {job.description}
             </p>
           )}

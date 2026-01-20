@@ -3333,6 +3333,24 @@ Le site OIKO a maintenant :
 - ✅ Respect de la préférence système
 - ✅ Transitions fluides
 
+### Corrections post-phase 7
+
+**Correction de la lisibilité du texte en mode sombre :**
+- Ajout d'une classe CSS personnalisée `.text-muted` dans `app/globals.css` avec `!important` pour forcer l'application
+- Couleur mode clair : `#6B7280`
+- Couleur mode sombre : `#D1D5DB`
+- Remplacement de toutes les classes `text-gray-*` par `text-muted` dans les fichiers suivants :
+  - `components/activites/ActivitySection.tsx`
+  - `components/a-propos/JobsGrid.tsx`
+  - `components/a-propos/VideoSection.tsx`
+  - `components/a-propos/TestimonialsGrid.tsx`
+  - `components/layout/PageAnchors.tsx`
+  - `components/layout/Navbar.tsx`
+  - `components/layout/Footer.tsx`
+  - `components/ui/Stats.tsx`
+  - `components/contact/FormField.tsx`
+  - `components/accueil/Hero.tsx`
+
 **Prochaines étapes :**
 - Phase 8 : Intégration API (en attente de l'API)
 - Phase 9 : Pages Vente/Location (dépend de Phase 8)
@@ -3340,5 +3358,5 @@ Le site OIKO a maintenant :
 
 ---
 
-**Dernière mise à jour :** 19 janvier 2026
+**Dernière mise à jour :** 20 janvier 2026
 **Document créé par :** Claude Code

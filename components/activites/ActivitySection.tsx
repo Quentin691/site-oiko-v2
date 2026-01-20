@@ -38,12 +38,12 @@ export default function ActivitySection({
             {title}
           </h2>
           {subtitle && (
-            <p className="text-xl text-gray-600 mb-4">
+            <p className="text-xl text-muted mb-4">
               {subtitle}
             </p>
           )}
           {description && (
-            <p className="text-gray-700">
+            <p className="text-muted">
               {description}
             </p>
           )}
@@ -57,7 +57,7 @@ export default function ActivitySection({
                 <h3 className="text-2xl font-semibold text-foreground mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                <p className="text-muted leading-relaxed whitespace-pre-line">
                   {feature.content}
                 </p>
               </div>
@@ -69,7 +69,7 @@ export default function ActivitySection({
         {paragraphs.length > 0 && (
           <div className="mb-12 space-y-4">
             {paragraphs.map((paragraph, index) => (
-              <p key={index} className="text-gray-700 leading-relaxed">
+              <p key={index} className="text-muted leading-relaxed">
                 {paragraph}
               </p>
             ))}

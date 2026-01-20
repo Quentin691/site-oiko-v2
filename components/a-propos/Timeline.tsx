@@ -38,7 +38,7 @@ export default function Timeline({ events }: TimelineProps) {
                       <span className="text-3xl font-bold text-foreground">{event.year}</span>
                       <h3 className="text-xl font-semibold text-foreground">{event.title}</h3>
                     </div>
-                    <p className="text-gray-600">{event.description}</p>
+                    <p className="text-muted">{event.description}</p>
                   </Card>
                 </div>
               </div>
@@ -50,7 +50,7 @@ export default function Timeline({ events }: TimelineProps) {
                     <span className="text-2xl font-bold text-foreground">{event.year}</span>
                     <h3 className="text-lg font-semibold text-foreground">{event.title}</h3>
                   </div>
-                  <p className="text-gray-600 text-sm">{event.description}</p>
+                  <p className="text-muted text-sm">{event.description}</p>
                 </Card>
               </div>
             </div>

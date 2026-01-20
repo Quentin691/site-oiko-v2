@@ -36,7 +36,7 @@ export default function ToolsGrid({ tools }: ToolsGridProps) {
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 {tool.name}
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-muted text-sm">
                 {tool.description}
               </p>
             </div>

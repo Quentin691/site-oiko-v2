@@ -13,7 +13,7 @@ export default function VideoSection({ title, description }: VideoSectionProps) 
           {title}
         </h2>
         {description && (
-          <p className="text-gray-600 whitespace-pre-line">
+          <p className="text-muted whitespace-pre-line">
             {description}
           </p>
         )}
@@ -23,7 +23,7 @@ export default function VideoSection({ title, description }: VideoSectionProps) 
         <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
           <div className="text-center">
             <svg
-              className="w-20 h-20 text-gray-400 mx-auto mb-4"
+              className="w-20 h-20 text-muted mx-auto mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -41,7 +41,7 @@ export default function VideoSection({ title, description }: VideoSectionProps) 
                 d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-gray-500">Vidéo à venir</p>
+            <p className="text-muted">Vidéo à venir</p>
           </div>
         </div>
       </Card>

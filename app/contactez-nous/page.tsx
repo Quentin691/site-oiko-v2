@@ -15,7 +15,7 @@ export default function ContactPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             {contactContent.hero.title}
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-muted">
             {contactContent.hero.subtitle}
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function ContactPage() {
           <h2 className="text-3xl font-bold text-foreground mb-4">
             {contactContent.addresses.title}
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted">
             {contactContent.addresses.company}
           </p>
         </div>

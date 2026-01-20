@@ -19,7 +19,7 @@ export default function Stats({
       <div className="text-4xl font-bold text-foreground mb-2">
         {value}
       </div>
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-muted">
         {label}
       </div>
     </div>

@@ -27,7 +27,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
             </svg>
           </div>
           <div>
-            <p className="text-sm text-gray-600 mb-1">Email</p>
+            <p className="text-sm text-muted mb-1">Email</p>
             <p className="text-foreground font-medium">{email}</p>
           </div>
         </a>
@@ -52,7 +52,7 @@ export default function ContactInfo({ email, phone }: ContactInfoProps) {
             </svg>
           </div>
           <div>
-            <p className="text-sm text-gray-600 mb-1">Téléphone</p>
+            <p className="text-sm text-muted mb-1">Téléphone</p>
             <p className="text-foreground font-medium">{phone}</p>
           </div>
         </a>

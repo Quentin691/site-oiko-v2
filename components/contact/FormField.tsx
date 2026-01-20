@@ -79,7 +79,7 @@ export default function FormField({
           disabled={disabled}
           className="mt-1 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary disabled:cursor-not-allowed"
         />
-        <label htmlFor={name} className="text-sm text-gray-700">
+        <label htmlFor={name} className="text-sm text-muted">
           {children || label} {required && <span className="text-red-500">*</span>}
         </label>
       </div>

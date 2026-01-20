@@ -25,7 +25,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
                 <h3 className="text-xl font-semibold text-foreground mb-3">
                   {service.title}
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-muted text-sm">
                   {service.description}
                 </p>
               </Card>
