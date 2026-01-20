@@ -33,7 +33,7 @@ export default function Timeline({ events }: TimelineProps) {
 
                 {/* Contenu */}
                 <div className="md:w-5/12">
-                  <Card>
+                  <Card className={`shadow-green bg-timeline-card ${isEven ? 'border-l-4 border-primary' : 'border-r-4 border-primary'}`}>
                     <div className="flex items-baseline gap-4 mb-3">
                       <span className="text-3xl font-bold text-foreground">{event.year}</span>
                       <h3 className="text-xl font-semibold text-foreground">{event.title}</h3>
@@ -45,7 +45,7 @@ export default function Timeline({ events }: TimelineProps) {
 
               {/* Mobile: liste simple */}
               <div className="md:hidden">
-                <Card>
+                <Card className="shadow-green bg-timeline-card border-l-4 border-primary">
                   <div className="flex items-baseline gap-4 mb-3">
                     <span className="text-2xl font-bold text-foreground">{event.year}</span>
                     <h3 className="text-lg font-semibold text-foreground">{event.title}</h3>

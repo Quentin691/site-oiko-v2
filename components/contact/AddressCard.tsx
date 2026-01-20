@@ -14,7 +14,7 @@ interface AddressCardProps {
 
 export default function AddressCard({ address }: AddressCardProps) {
   return (
-    <Card>
+    <Card className="bg-address-card">
       <div className="flex items-start gap-4">
         {/* Icône localisation */}
         <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shrink-0">

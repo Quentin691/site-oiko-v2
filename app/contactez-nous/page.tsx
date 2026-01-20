@@ -38,7 +38,7 @@ export default function ContactPage() {
       </Section>
 
       {/* Nos bureaux */}
-      <Section background="gray">
+      <Section background="white">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             {contactContent.addresses.title}
