@@ -17,8 +17,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
-| Phase 7 - Esthétique / Thème | 0/52 (0%) | ⏳ À faire |
-| **Total** | **321/373 (86%)** | |
+| Phase 7 - Esthétique / Thème | 24/52 (46%) | 🔄 En cours |
+| **Total** | **345/373 (93%)** | |
 
 ---
 
@@ -2866,11 +2866,11 @@ Avant de commencer, voici les décisions prises :
 ### Étape 7.1.1 : Ajouter les variables de couleur primaire
 
 #### Sous-étape A : Ouvrir globals.css
-- [ ] Ouvrir le fichier `app/globals.css`
-- [ ] Localiser la section `:root` (début du fichier)
+- [x] Ouvrir le fichier `app/globals.css`
+- [x] Localiser la section `:root` (début du fichier)
 
 #### Sous-étape B : Ajouter les couleurs primaires
-- [ ] Dans `:root`, ajouter ces lignes :
+- [x] Dans `:root`, ajouter ces lignes :
 ```css
 --primary: #2ECC71;
 --primary-dark: #27AE60;
@@ -2879,8 +2879,8 @@ Avant de commencer, voici les décisions prises :
 ```
 
 #### Sous-étape C : Ajouter dans @theme inline
-- [ ] Localiser la section `@theme inline`
-- [ ] Ajouter ces lignes :
+- [x] Localiser la section `@theme inline`
+- [x] Ajouter ces lignes :
 ```css
 --color-primary: var(--primary);
 --color-primary-dark: var(--primary-dark);
@@ -2901,12 +2901,12 @@ Avant de commencer, voici les décisions prises :
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 7.1.2 : Ajouter les variables pour le thème sombre
 
 #### Sous-étape A : Créer la classe .dark
-- [ ] Dans `app/globals.css`, après la section `:root`, ajouter :
+- [x] Dans `app/globals.css`, après la section `:root`, ajouter :
 ```css
 .dark {
   --background: #121212;
@@ -2919,7 +2919,7 @@ Avant de commencer, voici les décisions prises :
 
 💡 **Explication :** Les variables `--primary` et `--primary-dark` restent identiques dans les deux thèmes (le vert fonctionne bien sur fond clair et foncé).
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -2927,15 +2927,15 @@ Avant de commencer, voici les décisions prises :
 
 ### Étape 7.2.1 : Créer le dossier providers
 
-- [ ] Dans `components/`, créer un dossier `providers`
-- [ ] Vérifier le chemin : `components/providers/`
+- [x] Dans `components/`, créer un dossier `providers`
+- [x] Vérifier le chemin : `components/providers/`
 
 ### Étape 7.2.2 : Créer ThemeProvider.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/providers/`, créer `ThemeProvider.tsx`
-- [ ] Ajouter `"use client"` en première ligne
-- [ ] Ajouter les imports :
+- [x] Dans `components/providers/`, créer `ThemeProvider.tsx`
+- [x] Ajouter `"use client"` en première ligne
+- [x] Ajouter les imports :
 ```typescript
 "use client";
 
@@ -2943,7 +2943,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 ```
 
 #### Sous-étape B : Définir les types
-- [ ] Ajouter les types :
+- [x] Ajouter les types :
 ```typescript
 type Theme = "light" | "dark";
 
@@ -2954,13 +2954,13 @@ interface ThemeContextType {
 ```
 
 #### Sous-étape C : Créer le context
-- [ ] Ajouter le context :
+- [x] Ajouter le context :
 ```typescript
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 ```
 
 #### Sous-étape D : Implémenter le provider
-- [ ] Ajouter le composant provider :
+- [x] Ajouter le composant provider :
 ```typescript
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
@@ -3007,7 +3007,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 ```
 
 #### Sous-étape E : Ajouter le hook personnalisé
-- [ ] Ajouter le hook à la fin du fichier :
+- [x] Ajouter le hook à la fin du fichier :
 ```typescript
 export function useTheme() {
   const context = useContext(ThemeContext);
@@ -3018,7 +3018,7 @@ export function useTheme() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 7.2.3 : Créer l'index des providers
 
