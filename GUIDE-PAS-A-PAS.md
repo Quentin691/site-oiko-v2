@@ -17,8 +17,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases
 | Phase 4 - Page Activités | 40/40 (100%) | ✅ Terminée |
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
-| Phase 7 - Esthétique / Thème | 24/52 (46%) | 🔄 En cours |
-| **Total** | **345/373 (93%)** | |
+| Phase 7 - Esthétique / Thème | 31/52 (60%) | 🔄 En cours |
+| **Total** | **352/373 (94%)** | |
 
 ---
 
@@ -3022,26 +3022,26 @@ export function useTheme() {
 
 ### Étape 7.2.3 : Créer l'index des providers
 
-- [ ] Dans `components/providers/`, créer `index.ts`
-- [ ] Ajouter :
+- [x] Dans `components/providers/`, créer `index.ts`
+- [x] Ajouter :
 ```typescript
 export { ThemeProvider, useTheme } from "./ThemeProvider";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 7.2.4 : Intégrer le ThemeProvider dans le layout
 
 #### Sous-étape A : Ouvrir le layout
-- [ ] Ouvrir `app/layout.tsx`
+- [x] Ouvrir `app/layout.tsx`
 
 #### Sous-étape B : Ajouter l'import
-- [ ] Ajouter l'import en haut du fichier :
+- [x] Ajouter l'import en haut du fichier :
 ```typescript
 import { ThemeProvider } from "@/components/providers";
 ```
 
 #### Sous-étape C : Envelopper le contenu
-- [ ] Dans le return, envelopper `{children}` avec le ThemeProvider :
+- [x] Dans le return, envelopper `{children}` avec le ThemeProvider :
 ```tsx
 <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
   <ThemeProvider>
@@ -3050,7 +3050,7 @@ import { ThemeProvider } from "@/components/providers";
 </body>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 

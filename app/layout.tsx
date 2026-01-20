@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { ThemeProvider } from "@/components/providers";
 
 
 const geistSans = Geist({
@@ -29,10 +30,12 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider>
         <Header />
         <Navbar /> 
         <main>{children}</main>
         <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
