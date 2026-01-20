@@ -37,7 +37,7 @@ export default function Navbar() {
           }`}
         >
           <Link href="/">
-            <img src="/logo.png" alt="Oikogestion" className="h-8 w-auto" />
+            <img src="/logo.png" alt="Oikogestion" className="h-8 w-auto logo-blend" />
           </Link>
         </div>
 

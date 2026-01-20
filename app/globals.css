@@ -110,3 +110,12 @@ html.dark .bg-address-card {
 html.dark .bg-contact-info-card {
   background-color: #0A0A0A !important;
 }
+
+/* Mix blend mode pour le logo en mode sombre */
+.logo-blend {
+  transition: all 0.3s ease;
+}
+
+html.dark .logo-blend {
+  filter: brightness(1.4) contrast(1);
+}

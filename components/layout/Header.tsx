@@ -33,7 +33,7 @@ export default function Header() {
 
         {/* Logo à gauche */}
         <Link href="/">
-          <img src="/logo.png" alt="Oikogestion" className="h-12 sm:h-20 w-auto" />
+          <img src="/logo.png" alt="Oikogestion" className="h-12 sm:h-20 w-auto logo-blend" />
         </Link>
 
         {/* Bloc à droite : connexion + réseaux */}
