@@ -21,7 +21,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service) => (
             <Link key={service.title} href={service.link}>
-              <Card hover>
+              <Card hover className="bg-service-card">
                 <h3 className="text-xl font-semibold text-foreground mb-3">
                   {service.title}
                 </h3>

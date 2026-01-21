@@ -111,6 +111,24 @@ html.dark .bg-contact-info-card {
   background-color: #0A0A0A !important;
 }
 
+/* Fond pour les cartes de la section "Nos services" sur l'accueil */
+.bg-service-card.bg-service-card {
+  background-color: #ECECEC !important;
+}
+
+html.dark .bg-service-card.bg-service-card {
+  background-color: #0A0A0A !important;
+}
+
+/* Fond pour les cartes de la section "Métiers d'Oïko" sur la page à propos */
+.bg-metier-card.bg-metier-card {
+  background-color: #ECECEC !important;
+}
+
+html.dark .bg-metier-card.bg-metier-card {
+  background-color: #0A0A0A !important;
+}
+
 /* Mix blend mode pour le logo en mode sombre */
 .logo-blend {
   transition: all 0.3s ease;

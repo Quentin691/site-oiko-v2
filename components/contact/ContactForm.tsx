@@ -43,8 +43,28 @@ export default function ContactForm({ subjects }: ContactFormProps) {
       return;
     }
 
-    // Vérifier le captcha
+    // Récupérer les données du formulaire
     const formData = new FormData(e.currentTarget);
+    const phone = formData.get("phone") as string;
+
+    // Valider le numéro de téléphone si fourni
+    if (phone && phone.trim() !== "") {
+      // Vérifier que le numéro contient uniquement des caractères autorisés
+      const validCharsRegex = /^[0-9\s\-\(\)\+]+$/;
+      if (!validCharsRegex.test(phone)) {
+        alert("Le numéro de téléphone contient des caractères non autorisés. Utilisez uniquement des chiffres, espaces, tirets, parenthèses ou +.");
+        return;
+      }
+
+      // Compter le nombre de chiffres
+      const digitCount = phone.replace(/\D/g, "").length;
+      if (digitCount < 10) {
+        alert("Le numéro de téléphone doit contenir au moins 10 chiffres.");
+        return;
+      }
+    }
+
+    // Vérifier le captcha
     const captchaAnswer = formData.get("captcha");
     if (parseInt(captchaAnswer as string) !== captcha.a + captcha.b) {
       const newAttempts = attempts + 1;
