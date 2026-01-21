@@ -10,12 +10,20 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      // Afficher le logo après 100px de scroll
-      if (window.scrollY > 100) {
-        setShowLogo(true);
-      } else {
-        setShowLogo(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Afficher le logo après 100px de scroll
+          if (window.scrollY > 100) {
+            setShowLogo(true);
+          } else {
+            setShowLogo(false);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -71,7 +79,7 @@ export default function Navbar() {
 
       {/* Menu mobile */}
       {isMenuOpen && (
-        <div className="sm:hidden border-t border-gray-200">
+        <div className="sm:hidden border-t border-gray-200 dark:border-gray-700">
           <ul className="flex flex-col py-4">
             <li>
               <Link href="/" className={`block px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${pathname === "/" ? "text-primary font-semibold" : ""}`} onClick={() => setIsMenuOpen(false)}>

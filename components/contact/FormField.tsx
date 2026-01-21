@@ -57,7 +57,7 @@ export default function FormField({
           disabled={disabled}
           className={baseInputStyles}
         >
-          <option value="">Sélectionner...</option>
+          <option value="" disabled>Sélectionner...</option>
           {options.map((option) => (
             <option key={option} value={option}>
               {option}

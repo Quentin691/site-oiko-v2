@@ -29,17 +29,8 @@
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-card-foreground: var(--card-foreground);
-  --color-muted-light: #6B7280;
-  --color-muted-dark: #E5E7EB;
 }
-/*
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-*/
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -56,8 +47,8 @@ body {
   color: #D1D5DB !important;
 }
 
-/* Transition globale pour tous les éléments lors du changement de thème */
-* {
+/* Transition pour les éléments principaux lors du changement de thème */
+header, nav, main, footer, section, article, aside, div, span, p, h1, h2, h3, h4, h5, h6, a, button, input, textarea, select {
   transition: background-color 1s ease, color 1s ease, border-color 1s ease;
 }
 

@@ -20,7 +20,7 @@ export default function VideoSection({ title, description }: VideoSectionProps) 
       </div>
 
       <Card>
-        <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+        <div className="aspect-video bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center">
           <div className="text-center">
             <svg
               className="w-20 h-20 text-muted mx-auto mb-4"
