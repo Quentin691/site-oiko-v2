@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/providers";
+import { JsonLd } from "@/components/seo";
 
 
 const geistSans = Geist({
@@ -49,6 +50,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <JsonLd />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>

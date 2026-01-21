@@ -4,7 +4,7 @@ import {
   AddressCard,
   ContactInfo,
 } from "@/components/contact";
-import { Section, ScrollToTop } from "@/components/ui";
+import { Section, ScrollToTop, AnimateOnScroll } from "@/components/ui";
 import contactContent from "@/content/contact.json";
 
 export const metadata: Metadata = {
@@ -21,6 +21,7 @@ export default function ContactPage() {
   return (
     <main>
       {/* Hero section */}
+      <AnimateOnScroll>
       <Section background="white">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -47,8 +48,10 @@ export default function ContactPage() {
           <ContactForm subjects={["Demande d'information", "Demande de devis", "Réclamation", "Autre"]} />
         </div>
       </Section>
+      </AnimateOnScroll>
 
       {/* Nos bureaux */}
+      <AnimateOnScroll>
       <Section background="white">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -65,6 +68,7 @@ export default function ContactPage() {
           ))}
         </div>
       </Section>
+      </AnimateOnScroll>
 
       <ScrollToTop />
     </main>

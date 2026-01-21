@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ActivitySection } from "@/components/activites";
 import { PageAnchors } from "@/components/layout";
-import { ScrollToTop } from "@/components/ui";
+import { ScrollToTop, AnimateOnScroll } from "@/components/ui";
 import activitiesContent from "@/content/activites.json";
 
 export const metadata: Metadata = {
@@ -26,16 +26,17 @@ export default function ActivitiesPage() {
       <PageAnchors anchors={anchors} />
 
       {activitiesContent.sections.map((section) => (
-        <ActivitySection
-          key={section.id}
-          id={section.id}
-          title={section.title}
-          subtitle={section.subtitle}
-          description={section.description}
-          features={section.features}
-          paragraphs={section.paragraphs}
-          stats={section.stats}
-        />
+        <AnimateOnScroll key={section.id}>
+          <ActivitySection
+            id={section.id}
+            title={section.title}
+            subtitle={section.subtitle}
+            description={section.description}
+            features={section.features}
+            paragraphs={section.paragraphs}
+            stats={section.stats}
+          />
+        </AnimateOnScroll>
       ))}
 
       <ScrollToTop />

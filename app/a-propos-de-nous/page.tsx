@@ -7,7 +7,7 @@ import {
   JobsGrid,
 } from "@/components/a-propos";
 import { PageAnchors } from "@/components/layout";
-import { Section, ScrollToTop } from "@/components/ui";
+import { Section, ScrollToTop, AnimateOnScroll } from "@/components/ui";
 import aproposContent from "@/content/a-propos.json";
 
 export const metadata: Metadata = {
@@ -41,6 +41,7 @@ export default function AProposPage() {
 
       {/* Section Histoire */}
       {histoireSection && (
+        <AnimateOnScroll>
         <Section id="histoire" background="white">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -56,10 +57,12 @@ export default function AProposPage() {
             <Timeline events={histoireSection.timeline} />
           )}
         </Section>
+        </AnimateOnScroll>
       )}
 
       {/* Section Outils */}
       {outilsSection && (
+        <AnimateOnScroll>
         <Section id="outils" background="gray">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -75,20 +78,24 @@ export default function AProposPage() {
             <ToolsGrid tools={outilsSection.tools} />
           )}
         </Section>
+        </AnimateOnScroll>
       )}
 
       {/* Section Présentation */}
       {presentationSection && (
+        <AnimateOnScroll>
         <Section id="presentation" background="white">
           <VideoSection
             title={presentationSection.title}
             description={presentationSection.description}
           />
         </Section>
+        </AnimateOnScroll>
       )}
 
       {/* Section Témoignages */}
       {temoignagesSection && temoignagesSection.testimonials && (
+        <AnimateOnScroll>
         <Section id="temoignages" background="gray">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -97,10 +104,12 @@ export default function AProposPage() {
           </div>
           <TestimonialsGrid testimonials={temoignagesSection.testimonials} />
         </Section>
+        </AnimateOnScroll>
       )}
 
       {/* Section Métiers */}
       {metiersSection && (
+        <AnimateOnScroll>
         <Section id="metiers" background="white">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -111,6 +120,7 @@ export default function AProposPage() {
             <JobsGrid jobs={metiersSection.jobs} />
           )}
         </Section>
+        </AnimateOnScroll>
       )}
 
       <ScrollToTop />

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+
 import {
   Hero,
   ServicesGrid,
   HighlightsSection,
   ActivitiesPreview,
 } from "@/components/accueil";
-import { ScrollToTop } from "@/components/ui";
+import { ScrollToTop,Banner,AnimateOnScroll } from "@/components/ui";
 import homeContent from "@/content/accueil.json";
 
 export const metadata: Metadata = {
@@ -36,24 +37,30 @@ export default function HomePage() {
 
   return (
     <main>
+      <Banner/>
       <Hero
         title={homeContent.hero.title}
         subtitle={homeContent.hero.description}
         ctaText="Découvrir nos activités"
         ctaLink="/activites"
       />
+      <AnimateOnScroll>
+        <ServicesGrid services={servicesWithLinks} />
+      </AnimateOnScroll>
 
-      <ServicesGrid services={servicesWithLinks} />
+      <AnimateOnScroll>
+        <HighlightsSection highlights={homeContent.highlights} />
+      </AnimateOnScroll>
 
-      <HighlightsSection highlights={homeContent.highlights} />
-
-      <ActivitiesPreview
-        title={homeContent.activitiesPreview.title}
-        description="OIKO GESTION accompagne ses clients sur l'ensemble du cycle immobilier."
-        stats={globalStats}
-        ctaText="Voir toutes nos activités"
-        ctaLink="/activites"
-      />
+      <AnimateOnScroll>
+        <ActivitiesPreview
+          title={homeContent.activitiesPreview.title}
+          description="OIKO GESTION accompagne ses clients sur l'ensemble du cycle immobilier."
+          stats={globalStats}
+          ctaText="Voir toutes nos activités"
+          ctaLink="/activites"
+        />
+      </AnimateOnScroll>
 
       <ScrollToTop />
     </main>
