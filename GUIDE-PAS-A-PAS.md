@@ -1,9 +1,9 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 7
-**Dernière mise à jour :** 19 janvier 2026
+**Phases couvertes :** 1 à 8
+**Dernière mise à jour :** 21 janvier 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 8 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
 ---
 
@@ -18,7 +18,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 7 phases
 | Phase 5 - Page À propos | 52/52 (100%) | ✅ Terminée |
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
 | Phase 7 - Esthétique / Thème | 52/52 (100%) | ✅ Terminée |
-| **Total** | **373/373 (100%)** | |
+| Phase 8 - Audit & Finitions | 36/59 (61%) | 🔄 En cours |
+| **Total** | **409/432 (95%)** | |
 
 ---
 
@@ -3352,11 +3353,275 @@ Le site OIKO a maintenant :
   - `components/accueil/Hero.tsx`
 
 **Prochaines étapes :**
-- Phase 8 : Intégration API (en attente de l'API)
-- Phase 9 : Pages Vente/Location (dépend de Phase 8)
-- Phase 10 : Authentification (dépend de Phase 8)
+- Phase 8 : Audit & Finitions 🔄 En cours
+- Phase 9 : Intégration API (en attente de l'API)
+- Phase 10 : Pages Vente/Location (dépend de Phase 9)
+- Phase 11 : Authentification (dépend de Phase 9)
 
 ---
 
-**Dernière mise à jour :** 20 janvier 2026
+# Phase 8 - Audit & Finitions
+
+**Objectif :** Réaliser un audit complet du site, corriger les problèmes identifiés, et ajouter les pages/fichiers techniques manquants.
+
+---
+
+## 8.1 Audit du site
+
+### Étape 8.1.1 : Réaliser l'audit visuel
+
+- [x] Tester toutes les pages en mode clair
+- [x] Tester toutes les pages en mode sombre
+- [x] Vérifier le responsive sur mobile
+- [x] Identifier les problèmes de contraste/lisibilité
+- [x] Documenter les 28 points à vérifier
+
+### Étape 8.1.2 : Corriger la bordure du footer
+
+- [x] Ouvrir `components/layout/Footer.tsx`
+- [x] Localiser la classe `border-border` sur le footer
+- [x] Remplacer par `border-primary` pour avoir la bordure verte visible
+- [x] Sauvegarder le fichier
+
+💡 **Explication :** La bordure `border-border` était invisible en mode sombre car trop proche de la couleur de fond.
+
+### Étape 8.1.3 : Corriger le logo en dark mode
+
+- [x] Ouvrir `app/globals.css`
+- [x] Ajouter la classe `.logo-blend` avec transition :
+```css
+.logo-blend {
+  transition: all 0.3s ease;
+}
+
+html.dark .logo-blend {
+  filter: brightness(1.4) contrast(1);
+}
+```
+- [x] Sauvegarder le fichier
+- [x] Vérifier que les logos dans `Header.tsx` et `Navbar.tsx` utilisent la classe `logo-blend`
+
+💡 **Explication :** Le filtre brightness éclaircit le logo en mode sombre pour qu'il reste visible.
+
+### Étape 8.1.4 : Améliorer le texte muted en dark mode
+
+- [x] Ouvrir `app/globals.css`
+- [x] Dans la section `.dark`, modifier la variable `--muted` :
+```css
+.dark {
+  --muted: #E5E7EB;  /* Plus clair que #9CA3AF */
+}
+```
+- [x] Sauvegarder le fichier
+
+💡 **Explication :** Le texte secondaire était trop sombre en mode nuit, maintenant il est plus lisible.
+
+---
+
+## 8.2 Pages manquantes
+
+### Étape 8.2.1 : Créer la page 404
+
+- [x] Créer le fichier `app/not-found.tsx`
+- [x] Ajouter les imports :
+```typescript
+import Link from "next/link";
+import Image from "next/image";
+```
+- [x] Créer la fonction `NotFound` (avec majuscule !)
+- [x] Ajouter la structure :
+  - `<main>` centré avec `min-h-screen bg-background flex items-center justify-center`
+  - `<div>` avec `text-center`
+  - Logo OIKO avec `next/image`
+  - `<h1>` avec "404" en `text-8xl font-bold text-primary`
+  - `<h2>` avec "Page introuvable"
+  - `<p>` avec message explicatif en `text-muted`
+  - Lien de retour avec style bouton primary
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `app/not-found.tsx`
+
+### Étape 8.2.2 : Créer la page Politique RGPD
+
+- [x] Créer le dossier `app/politique-rgpd/`
+- [x] Créer le fichier `app/politique-rgpd/page.tsx`
+- [x] Créer la fonction `PolitiqueRGPD` (avec majuscule !)
+- [x] Ajouter la structure :
+  - `<main>` centré avec classes de thème
+  - `<div>` avec `text-center`
+  - `<h1>` avec "Politique de confidentialité"
+  - `<p>` avec "Le contenu arrive bientôt" en `text-muted`
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `app/politique-rgpd/page.tsx`
+
+⚠️ **En attente :** Le contenu légal réel doit être fourni par OIKO.
+
+### Étape 8.2.3 : Créer la page Connexion
+
+- [x] Créer le dossier `app/connexion/`
+- [x] Créer le fichier `app/connexion/page.tsx`
+- [x] Ajouter l'import des composants :
+```typescript
+import { Button, Card } from "@/components/ui";
+```
+- [x] Créer la fonction `Connexion` (avec majuscule !)
+- [x] Ajouter la structure :
+  - `<main>` centré
+  - `<Card>` pour le formulaire
+  - `<h1>` avec "Connexion"
+  - `<form>` avec :
+    - Label + input email
+    - Label + input password
+    - `<Button type="submit" variant="primary">Se connecter</Button>`
+- [x] Utiliser les classes de thème sur les inputs : `border-border bg-card text-foreground`
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `app/connexion/page.tsx`
+
+💡 **Apprentissage :** Cette page illustre l'utilisation des composants réutilisables (`Button`, `Card`) et l'importance d'utiliser les variables de thème plutôt que des couleurs fixes comme `border-gray-300`.
+
+---
+
+## 8.3 Fichiers SEO
+
+### Étape 8.3.1 : Créer robots.txt
+
+- [x] Créer le fichier `public/robots.txt`
+- [x] Ajouter le contenu :
+```
+User-agent: *
+Allow: /
+Sitemap: https://oiko.fr/sitemap.xml
+```
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `public/robots.txt`
+
+💡 **Explication :** Ce fichier indique aux moteurs de recherche qu'ils peuvent indexer tout le site et où trouver le sitemap.
+
+### Étape 8.3.2 : Créer sitemap.xml automatique
+
+- [ ] Créer le fichier `app/sitemap.ts`
+- [ ] Ajouter l'import :
+```typescript
+import { MetadataRoute } from "next";
+```
+- [ ] Exporter la fonction `sitemap` qui retourne un tableau d'URLs :
+```typescript
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = "https://oiko.fr";
+
+  return [
+    { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
+    { url: `${baseUrl}/activites`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    // ... autres pages
+  ];
+}
+```
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :** Next.js génère automatiquement `/sitemap.xml` à partir de ce fichier TypeScript.
+
+### Étape 8.3.3 : Ajouter données structurées JSON-LD
+
+- [ ] Créer le fichier `components/seo/JsonLd.tsx`
+- [ ] Ajouter le schema LocalBusiness pour OIKO
+- [ ] Intégrer dans `app/layout.tsx`
+- [ ] Sauvegarder les fichiers
+
+💡 **Explication :** Les données structurées aident Google à mieux comprendre le contenu du site (entreprise, adresse, téléphone, etc.).
+
+---
+
+## 8.4 Améliorations UX
+
+### Étape 8.4.1 : Ajouter animations d'entrée au scroll
+
+- [ ] Ajouter des classes CSS pour les animations fade-in
+- [ ] Appliquer sur les sections principales
+- [ ] Garder les animations subtiles (durée ~0.3s)
+
+### Étape 8.4.2 : Ajouter placeholder photo sur l'accueil
+
+- [ ] Modifier `components/accueil/Hero.tsx`
+- [ ] Ajouter une image de fond (style sites immobiliers)
+- [ ] Ajouter un overlay sombre pour la lisibilité du texte
+- [ ] Adapter les couleurs du texte si nécessaire
+
+### Étape 8.4.3 : Créer composant Skeleton loader
+
+- [ ] Créer `components/ui/Skeleton.tsx`
+- [ ] Ajouter animation pulse
+- [ ] Exporter depuis `components/ui/index.ts`
+
+💡 **Utilité :** Le skeleton sera utilisé sur les pages Vente/Location pour afficher un placeholder pendant le chargement des annonces.
+
+---
+
+## 8.5 Vérification finale
+
+### Étape 8.5.1 : Test build production
+
+- [ ] Ouvrir un terminal
+- [ ] Exécuter `npm run build`
+- [ ] Vérifier qu'il n'y a pas d'erreurs
+- [ ] Si erreurs : les corriger et relancer le build
+- [ ] Noter les éventuels warnings
+
+---
+
+## ✅ Checkpoint Phase 8
+
+À ce stade, vous devriez avoir :
+- [x] Audit des 28 points réalisé
+- [x] Bordure footer corrigée (vert visible)
+- [x] Logo visible en dark mode
+- [x] Texte muted lisible en dark mode
+- [x] Page 404 personnalisée
+- [x] Page politique RGPD (placeholder)
+- [x] Page connexion (placeholder)
+- [x] Fichier robots.txt
+- [ ] Sitemap automatique
+- [ ] Données structurées JSON-LD
+- [ ] Animations scroll
+- [ ] Placeholder photo accueil
+- [ ] Skeleton loader
+- [ ] Test build production réussi
+
+**Vérifications :**
+- [x] `/une-page-inexistante` → affiche la page 404
+- [x] `/politique-rgpd` → affiche la page placeholder
+- [x] `/connexion` → affiche le formulaire
+- [x] `/robots.txt` → affiche le contenu du fichier
+- [ ] `/sitemap.xml` → affiche le sitemap XML
+
+---
+
+## 🔄 Phase 8 en cours
+
+**Réalisé (36/59 tâches) :**
+- ✅ Audit complet du site (28 points)
+- ✅ Corrections visuelles (bordure footer, logo dark mode, texte muted)
+- ✅ Page 404 personnalisée
+- ✅ Page politique RGPD (placeholder)
+- ✅ Page connexion (placeholder)
+- ✅ robots.txt
+
+**Reste à faire (23/59 tâches) :**
+- ⏳ Sitemap automatique
+- ⏳ JSON-LD (données structurées)
+- ⏳ Animations scroll
+- ⏳ Placeholder photo accueil
+- ⏳ Skeleton loader
+- ⏳ Test build production
+
+**En attente (dépendances externes) :**
+- 🔗 URLs réseaux sociaux réelles
+- 🔗 API backend pour formulaire contact
+- 🔗 Contenu légal CGU/RGPD
+
+---
+
+**Dernière mise à jour :** 21 janvier 2026
 **Document créé par :** Claude Code
