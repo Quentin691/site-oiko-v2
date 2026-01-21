@@ -55,4 +55,5 @@ export default function AddressCard({ address }: AddressCardProps) {
         </div>
       </div>
     </Card>
-  );}
+  );
+}

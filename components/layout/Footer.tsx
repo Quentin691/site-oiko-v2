@@ -18,7 +18,6 @@ const linkMapping: Record<string, string> = {
   "Transaction": "/activites#transaction",
 
   // Locataires
-  "Espace locataire": "/espace-locataire",
   "Trouver un bien à louer": "/location",
 };
 
