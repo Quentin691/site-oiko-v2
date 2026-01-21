@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Timeline,
   ToolsGrid,
@@ -8,6 +9,16 @@ import {
 import { PageAnchors } from "@/components/layout";
 import { Section, ScrollToTop } from "@/components/ui";
 import aproposContent from "@/content/a-propos.json";
+
+export const metadata: Metadata = {
+  title: "À Propos | OIKO",
+  description: "Découvrez l'histoire d'OIKO, nos outils, notre équipe et nos métiers. Une expertise immobilière au service des propriétaires et investisseurs depuis notre création.",
+  openGraph: {
+    title: "À Propos | OIKO",
+    description: "L'histoire, les outils et l'équipe OIKO - Experts en gestion immobilière.",
+    type: "website",
+  },
+};
 
 export default function AProposPage() {
   // Extraire les sections par leur id

@@ -2,14 +2,18 @@
 
 import { useTheme } from "@/components/providers";
 
-export default function ThemeToggle(){
-    const { theme, toggleTheme } = useTheme();
+export default function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
 
-    return (
-        <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label={theme === "light" ? "Activer le mode sombre" : "Activer le mode clair"}>
-            {theme === "light" ? (
-                //icone lune
-                <svg
+  return (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-lg hover:bg-hover-bg transition-colors"
+      aria-label={theme === "light" ? "Activer le mode sombre" : "Activer le mode clair"}
+    >
+      {theme === "light" ? (
+        /* Icône lune */
+        <svg
           className="w-5 h-5 text-foreground"
           fill="none"
           stroke="currentColor"
@@ -23,7 +27,7 @@ export default function ThemeToggle(){
           />
         </svg>
       ) : (
-        // Icône soleil
+        /* Icône soleil */
         <svg
           className="w-5 h-5 text-foreground"
           fill="none"
@@ -37,7 +41,7 @@ export default function ThemeToggle(){
             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
-                 )}
-        </button>
-    );
+      )}
+    </button>
+  );
 }

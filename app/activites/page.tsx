@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
 import { ActivitySection } from "@/components/activites";
 import { PageAnchors } from "@/components/layout";
 import { ScrollToTop } from "@/components/ui";
 import activitiesContent from "@/content/activites.json";
+
+export const metadata: Metadata = {
+  title: "Nos Activités | OIKO",
+  description: "Découvrez les activités d'OIKO : Property Management, Asset Management, Project Management et Transaction. Gestion immobilière complète à Paris et Marseille.",
+  openGraph: {
+    title: "Nos Activités | OIKO",
+    description: "Property Management, Asset Management, Project Management et Transaction immobilière.",
+    type: "website",
+  },
+};
 
 export default function ActivitiesPage() {
   // Définir les ancres pour PageAnchors

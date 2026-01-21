@@ -8,6 +8,8 @@
   --primary-dark: #27AE60;
   --card-foreground: #1F1F1F;
   --muted: #6B7280;
+  --border: #E5E7EB;
+  --hover-bg: #F3F4F6;
 }
 
 .dark {
@@ -18,6 +20,8 @@
   --muted: #E5E7EB;
   --primary: #2ECC71;
   --primary-dark: #27AE60;
+  --border: #374151;
+  --hover-bg: #1F2937;
 }
 
 @theme inline {
@@ -29,6 +33,8 @@
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-hover-bg: var(--hover-bg);
 }
 
 body {

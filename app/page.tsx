@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Hero,
   ServicesGrid,
@@ -6,6 +7,16 @@ import {
 } from "@/components/accueil";
 import { ScrollToTop } from "@/components/ui";
 import homeContent from "@/content/accueil.json";
+
+export const metadata: Metadata = {
+  title: "OIKO | Property, Asset & Project Management",
+  description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers à Paris et Marseille.",
+  openGraph: {
+    title: "OIKO | Property, Asset & Project Management",
+    description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers.",
+    type: "website",
+  },
+};
 
 export default function HomePage() {
   // Préparer les services avec les liens

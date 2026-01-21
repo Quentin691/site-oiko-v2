@@ -2,6 +2,7 @@
 
 import Button from "@/components/ui/Button";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import { ThemeToggle } from "@/components/ui";
 
@@ -33,7 +34,14 @@ export default function Header() {
 
         {/* Logo à gauche */}
         <Link href="/">
-          <img src="/logo.png" alt="Oikogestion" className="h-12 sm:h-20 w-auto logo-blend" />
+          <Image
+            src="/logo.png"
+            alt="Oikogestion"
+            width={200}
+            height={80}
+            className="h-12 sm:h-20 w-auto logo-blend"
+            priority
+          />
         </Link>
 
         {/* Bloc à droite : connexion + réseaux */}

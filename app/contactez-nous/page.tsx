@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   ContactForm,
   AddressCard,
@@ -5,6 +6,16 @@ import {
 } from "@/components/contact";
 import { Section, ScrollToTop } from "@/components/ui";
 import contactContent from "@/content/contact.json";
+
+export const metadata: Metadata = {
+  title: "Contact | OIKO",
+  description: "Contactez OIKO pour vos projets immobiliers. Nos bureaux à Paris et Marseille sont à votre disposition pour répondre à vos demandes.",
+  openGraph: {
+    title: "Contact | OIKO",
+    description: "Contactez nos équipes à Paris et Marseille pour vos projets immobiliers.",
+    type: "website",
+  },
+};
 
 export default function ContactPage() {
   return (

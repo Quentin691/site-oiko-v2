@@ -15,7 +15,7 @@ const getVariantStyles = (variant: "primary" | "secondary" | "outline") => {
     case "primary":
       return "bg-primary hover:bg-primary-dark text-white";
     case "secondary":
-      return "bg-card text-foreground border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800";
+      return "bg-card text-foreground border border-border hover:bg-hover-bg";
     case "outline":
       return "bg-transparent text-foreground border border-foreground hover:bg-foreground hover:text-background";
     default:
