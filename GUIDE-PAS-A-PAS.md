@@ -19,13 +19,13 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 14 phase
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
 | Phase 7 - Esthétique / Thème | 52/52 (100%) | ✅ Terminée |
 | Phase 8 - Audit & Finitions | 59/59 (100%) | ✅ Terminée |
-| Phase 9 - Page Location (API + affichage) | 6/32 (19%) | 🔄 En cours |
-| Phase 10 - Page Vente | 0/12 (0%) | ⏳ À faire |
+| Phase 9 - Page Location (API + affichage) | 32/32 (100%) | ✅ Terminée |
+| Phase 10 - Page Vente | 12/12 (100%) | ✅ Terminée |
 | Phase 11 - Filtres & Pages Détail | 0/45 (0%) | ⏳ À faire |
 | Phase 12 - SEO & Performance | 0/28 (0%) | ⏳ À faire |
 | Phase 13 - Contenus Légaux | 0/24 (0%) | ⏳ À faire |
 | Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
-| **Total** | **438/605 (72%)** | |
+| **Total** | **476/605 (79%)** | |
 
 ---
 
@@ -3751,8 +3751,12 @@ export async function getUbiflowToken(): Promise<string> {
 /**
  * Récupère la liste des annonces depuis l'API Ubiflow
  * @param page - Numéro de page (pagination)
+ * @param adType - Type de transaction : "L" (location) ou "V" (vente)
  */
-export async function getAdsList(page: number = 1): Promise<unknown> {
+export async function getAdsList(
+  page: number = 1,
+  adType?: "L" | "V"
+): Promise<unknown> {
   const token = await getUbiflowToken();
   const prodId = process.env.UBIFLOW_PROD_ID;
 
@@ -3760,9 +3764,15 @@ export async function getAdsList(page: number = 1): Promise<unknown> {
     throw new Error("UBIFLOW_PROD_ID non configuré dans .env.local");
   }
 
-  const url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
+  // Construction de l'URL avec filtres optionnels
+  let url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
 
-  console.log(`[Ubiflow] Récupération des annonces (page ${page})...`);
+  // Ajouter le filtre par type de transaction si spécifié
+  if (adType) {
+    url += `&transaction.code=${adType}`;
+  }
+
+  console.log(`[Ubiflow] Récupération des annonces (page ${page}, type: ${adType || "tous"})...`);
 
   const response = await fetch(url, {
     method: "GET",
@@ -3779,10 +3789,14 @@ export async function getAdsList(page: number = 1): Promise<unknown> {
   }
 
   const data = await response.json();
-  console.log(`[Ubiflow] ${Array.isArray(data) ? data.length : "?"} annonces récupérées`);
+  console.log(`[Ubiflow] ${data["hydra:member"]?.length || "?"} annonces récupérées`);
   return data;
 }
 ```
+
+💡 **Codes de transaction Ubiflow :**
+- `L` = Location
+- `V` = Vente
 
 - [x] Sauvegarder le fichier
 
@@ -3837,12 +3851,14 @@ import { getAdsList } from "@/lib/ubiflow";
 
 export async function GET(request: Request) {
   try {
-    // Récupérer le paramètre "page" de l'URL (défaut: 1)
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
 
-    // Récupérer les annonces (le token est géré automatiquement avec cache)
-    const annonces = await getAdsList(page);
+    // Récupérer les paramètres de l'URL
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const type = searchParams.get("type") as "L" | "V" | null;
+
+    // Récupérer les annonces avec filtres
+    const annonces = await getAdsList(page, type || undefined);
 
     return NextResponse.json(annonces);
   } catch (error) {
@@ -3854,6 +3870,12 @@ export async function GET(request: Request) {
   }
 }
 ```
+
+💡 **Utilisation :**
+- `/api/ubiflow/annonces` → Toutes les annonces
+- `/api/ubiflow/annonces?type=L` → Locations uniquement
+- `/api/ubiflow/annonces?type=V` → Ventes uniquement
+- `/api/ubiflow/annonces?type=L&page=2` → Locations, page 2
 
 - [x] Sauvegarder le fichier
 
@@ -3892,62 +3914,211 @@ console.log("Annonces récupérées :", data);
 
 ## 9.5 Créer les types TypeScript
 
-### Étape 9.5.1 : Créer le fichier de types
+### Étape 9.5.1 : Comprendre la structure de l'API Ubiflow
+
+💡 **Structure des données retournées par l'API :**
+
+| Donnée | Chemin dans l'API | Description |
+|--------|-------------------|-------------|
+| ID | `id` | Identifiant unique de l'annonce |
+| Titre | `title` | Titre de l'annonce |
+| Description | `description` | Description détaillée |
+| Prix | `transaction.price` | Loyer mensuel ou prix de vente |
+| Référence | `transaction.reference` | Référence de l'annonce |
+| Type transaction | `transaction.code` | "L" (location) ou "V" (vente) |
+| Type de bien | `productType.description` | T2, T3, Maison, etc. |
+| Caractéristiques | `data[]` | Tableau avec `{ code, description, value }` |
+| Photos | `mediaSupports.pictures[]` | Tableau avec `{ url, urlMini }` |
+
+**Le tableau `data[]` contient les caractéristiques avec ces codes :**
+
+| Code API | Description |
+|----------|-------------|
+| `ville` | Nom de la ville |
+| `code_postal` | Code postal |
+| `surface_habitable` | Surface en m² |
+| `nb_pieces_logement` | Nombre de pièces |
+| `nombre_de_chambres` | Nombre de chambres |
+| `nb_salles_de_bain` | Nombre de salles de bain |
+| `etage` | Étage |
+| `charges_locatives` | Charges mensuelles |
+| `dpe_etiquette_conso` | Classe énergétique (A à G) |
+
+⚠️ **IMPORTANT :** L'API retourne un tableau direct (pas de `hydra:member`). Les images sont dans `mediaSupports.pictures`, pas dans `medias`.
+
+### Étape 9.5.2 : Créer le fichier de types
 
 #### Sous-étape A : Créer le dossier types
-- [ ] Créer le dossier `types/` à la racine du projet
+- [x] Créer le dossier `types/` à la racine du projet
 
-#### Sous-étape B : Créer ubiflow.ts
-- [ ] Dans `types/`, créer `ubiflow.ts`
-- [ ] Analyser la structure des annonces retournées par l'API
-- [ ] Créer les interfaces correspondantes :
+#### Sous-étape B : Créer property.ts
+- [x] Dans `types/`, créer `property.ts`
+- [x] Ajouter les interfaces :
 ```typescript
-export interface UbiflowAd {
+/**
+ * Caractéristique d'un bien (équipement, quantité, etc.)
+ */
+export interface PropertyData {
+  code: string;
+  description: string;
+  familyDescription?: string;
+  value: boolean | number | string;
+  unit?: string | null;
+  public?: boolean;
+}
+
+/**
+ * Transaction (location ou vente)
+ */
+export interface PropertyTransaction {
+  code: "L" | "V";       // L = Location, V = Vente
+  price: number;         // Loyer mensuel ou prix de vente
+  reference: string;     // Référence de l'annonce
+}
+
+/**
+ * Type de bien
+ */
+export interface PropertyType {
+  code: string;
+  description: string;   // "T2", "T3", "Maison", etc.
+}
+
+/**
+ * Media (photo)
+ */
+export interface PropertyMedia {
+  url: string;
+  urlMini?: string;
+  sourceUrl?: string;
+}
+
+/**
+ * Annonce immobilière (données brutes de l'API)
+ */
+export interface PropertyRaw {
   id: string;
-  reference: string;
   title: string;
   description: string;
-  price: number;
-  surface: number;
-  rooms?: number;
-  bedrooms?: number;
+  transaction: PropertyTransaction;
+  productType: PropertyType;
+  data: PropertyData[];
+  medias: PropertyMedia[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * Annonce immobilière (avec champs extraits pour faciliter l'utilisation)
+ */
+export interface Property extends PropertyRaw {
+  price: number;         // Alias de transaction.price
   city: string;
   postalCode: string;
-  transactionType: "sale" | "rent";
-  propertyType: string;
-  photos: UbiflowPhoto[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface UbiflowPhoto {
-  url: string;
-  caption?: string;
-}
-
-export interface UbiflowApiResponse {
-  ads: UbiflowAd[];
-  total: number;
-  page: number;
-  totalPages: number;
+  address: string;
+  surface: number;
+  rooms: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  images: string[];      // URLs extraites de mediaSupports.pictures[]
 }
 ```
 
-⚠️ **Note :** Ces interfaces sont un exemple. Adaptez-les à la structure réelle retournée par l'API Ubiflow.
+💡 **Important :** L'API retourne un tableau direct, pas un objet avec `hydra:member`. Les champs `price`, `city`, `surface`, etc. sont extraits par la fonction `mapApiToProperty`.
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
-#### Sous-étape C : Mettre à jour lib/ubiflow.ts
-- [ ] Ouvrir `lib/ubiflow.ts`
-- [ ] Ajouter l'import des types :
+**Fichier créé :** `types/property.ts`
+
+#### Sous-étape C : Créer une fonction de mapping
+- [x] Dans `lib/`, créer `mapProperty.ts` pour transformer les données brutes :
 ```typescript
-import type { UbiflowApiResponse } from "@/types/ubiflow";
+import type { Property, PropertyRaw, PropertyData } from "@/types/property";
+
+/**
+ * Extrait une valeur du tableau data par son code
+ */
+function getDataValue(
+  data: PropertyData[],
+  code: string
+): boolean | number | string | undefined {
+  if (!Array.isArray(data)) return undefined;
+  const item = data.find((d) => d && d.code && d.code.toLowerCase() === code.toLowerCase());
+  return item?.value;
+}
+
+/**
+ * Transforme une annonce brute de l'API en Property utilisable
+ */
+export function mapApiToProperty(raw: any): Property {
+  const data = raw.data || [];
+
+  return {
+    id: raw.id?.toString() || "",
+    title: raw.title || raw.reference || "Sans titre",
+    description: raw.description || "",
+    transaction: raw.transaction || { code: "L", price: 0, reference: "" },
+    productType: raw.productType || { code: "", description: "" },
+    data: data,
+    medias: raw.mediaSupports?.pictures || [],
+    createdAt: raw.createdAt,
+    updatedAt: raw.updatedAt,
+
+    // Champs extraits avec les codes Ubiflow
+    price: raw.transaction?.price || 0,
+    city: String(getDataValue(data, "ville") || ""),
+    postalCode: String(getDataValue(data, "code_postal") || ""),
+    address: String(getDataValue(data, "adresse2") || ""),
+    surface: Number(getDataValue(data, "surface_habitable") || 0),
+    rooms: Number(getDataValue(data, "nb_pieces_logement") || 0),
+    bedrooms: Number(getDataValue(data, "nombre_de_chambres")) || undefined,
+    bathrooms: Number(getDataValue(data, "nb_salles_de_bain")) || undefined,
+    images: (raw.mediaSupports?.pictures || []).map((p: any) => p?.url).filter(Boolean),
+  };
+}
+
+/**
+ * Transforme un tableau d'annonces brutes en Property[]
+ */
+export function mapApiToProperties(rawList: any[]): Property[] {
+  if (!Array.isArray(rawList)) return [];
+  return rawList.map(mapApiToProperty);
+}
 ```
-- [ ] Changer le type de retour de `getAdsList` :
+
+⚠️ **Codes Ubiflow utilisés :**
+- `ville` (pas "city")
+- `code_postal` (pas "postalCode")
+- `surface_habitable` (pas "surface")
+- `nb_pieces_logement` (pas "rooms")
+- `nombre_de_chambres` (pas "bedrooms")
+- `nb_salles_de_bain` (pas "bathrooms")
+
+⚠️ **Images :** Les photos sont dans `mediaSupports.pictures`, pas dans `medias`.
+
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `lib/mapProperty.ts`
+
+#### Sous-étape D : Mettre à jour lib/ubiflow.ts
+- [x] Ouvrir `lib/ubiflow.ts`
+- [x] Ajouter l'import des types :
 ```typescript
-export async function getAdsList(page: number = 1): Promise<UbiflowApiResponse> {
+import type { PropertyRaw } from "@/types/property";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Changer le type de retour de `getAdsList` (l'API retourne un tableau direct) :
+```typescript
+export async function getAdsList(
+  page: number = 1,
+  adType?: "L" | "V"
+): Promise<PropertyRaw[]> {
+```
+- [x] Mettre à jour le log (l'API retourne `data.length`, pas `data["hydra:member"]`) :
+```typescript
+console.log(`[Ubiflow] ${data.length} annonces récupérées`);
+return data;
+```
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -3955,35 +4126,36 @@ export async function getAdsList(page: number = 1): Promise<UbiflowApiResponse> 
 
 ### Étape 9.6.1 : Créer le dossier annonces
 
-- [ ] Dans `components/`, créer un dossier `annonces`
-- [ ] Vérifier le chemin : `components/annonces/`
+- [x] Dans `components/`, créer un dossier `annonces`
+- [x] Vérifier le chemin : `components/annonces/`
 
 ### Étape 9.6.2 : Créer PropertyCard.tsx
 
 #### Sous-étape A : Créer le fichier
-- [ ] Dans `components/annonces/`, créer `PropertyCard.tsx`
-- [ ] Ajouter les imports :
+- [x] Dans `components/annonces/`, créer `PropertyCard.tsx`
+- [x] Ajouter les imports :
 ```typescript
 import Image from "next/image";
 import Link from "next/link";
-import { Card } from "@/components/ui";
-import type { UbiflowAd } from "@/types/ubiflow";
+import Card from "@/components/ui/Card";
+import type { Property } from "@/types/property";
 ```
 
 #### Sous-étape B : Définir l'interface
-- [ ] Ajouter l'interface des props :
+- [x] Ajouter l'interface des props :
 ```typescript
 interface PropertyCardProps {
-  property: UbiflowAd;
+  property: Property;
   type: "vente" | "location";
 }
 ```
 
 #### Sous-étape C : Implémenter le composant
-- [ ] Ajouter le composant :
+- [x] Ajouter le composant :
 ```typescript
 export default function PropertyCard({ property, type }: PropertyCardProps) {
-  const mainPhoto = property.photos[0]?.url || "/placeholder-property.jpg";
+  const mainPhoto = property.images[0];
+  const hasImage = !!mainPhoto;
 
   // Formater le prix
   const formattedPrice = new Intl.NumberFormat("fr-FR", {
@@ -3994,15 +4166,22 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
 
   return (
     <Link href={`/${type}/${property.id}`}>
-      <Card hover className="overflow-hidden">
+      <Card hover className="overflow-hidden h-full">
         {/* Image */}
-        <div className="relative h-48 -mx-6 -mt-6 mb-4">
-          <Image
-            src={mainPhoto}
-            alt={property.title}
-            fill
-            className="object-cover"
-          />
+        <div className="relative h-48 -mx-6 -mt-6 mb-4 bg-muted/20">
+          {hasImage ? (
+            <Image
+              src={mainPhoto}
+              alt={property.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-4xl">🏠</span>
+            </div>
+          )}
           {/* Badge type de transaction */}
           <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">
             {type === "vente" ? "À vendre" : "À louer"}
@@ -4015,20 +4194,23 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
             {property.title}
           </h3>
           <p className="text-muted text-sm mb-2">
-            {property.city} ({property.postalCode})
+            {property.city}
+            {property.postalCode && ` (${property.postalCode})`}
           </p>
 
           {/* Caractéristiques */}
           <div className="flex gap-4 text-sm text-muted mb-3">
-            <span>{property.surface} m²</span>
-            {property.rooms && <span>{property.rooms} pièces</span>}
+            {property.surface > 0 && <span>{property.surface} m²</span>}
+            {property.rooms > 0 && <span>{property.rooms} pièces</span>}
             {property.bedrooms && <span>{property.bedrooms} ch.</span>}
           </div>
 
           {/* Prix */}
           <p className="text-primary font-bold text-xl">
             {formattedPrice}
-            {type === "location" && <span className="text-sm font-normal">/mois</span>}
+            {type === "location" && (
+              <span className="text-sm font-normal">/mois</span>
+            )}
           </p>
         </div>
       </Card>
@@ -4037,16 +4219,48 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `components/annonces/PropertyCard.tsx`
 
 ### Étape 9.6.3 : Créer index.ts
 
-- [ ] Dans `components/annonces/`, créer `index.ts`
-- [ ] Ajouter l'export :
+- [x] Dans `components/annonces/`, créer `index.ts`
+- [x] Ajouter l'export :
 ```typescript
 export { default as PropertyCard } from "./PropertyCard";
 ```
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `components/annonces/index.ts`
+
+### Étape 9.6.4 : Configurer les images externes
+
+- [x] Ouvrir `next.config.ts`
+- [x] Ajouter la configuration pour les images Ubiflow :
+```typescript
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.ubiflow.net",
+      },
+      {
+        protocol: "https",
+        hostname: "photos.ubiflow.net",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
+```
+- [x] Sauvegarder le fichier
+
+⚠️ **IMPORTANT :** Sans cette configuration, Next.js bloquera les images externes de Ubiflow.
 
 ---
 
@@ -4054,27 +4268,28 @@ export { default as PropertyCard } from "./PropertyCard";
 
 ### Étape 9.7.1 : Mettre à jour la page location
 
-- [ ] Ouvrir `app/location/page.tsx`
-- [ ] Remplacer tout le contenu par :
+- [x] Ouvrir `app/location/page.tsx`
+- [x] Remplacer tout le contenu par :
 ```typescript
 import { Section, ScrollToTop } from "@/components/ui";
 import { PropertyCard } from "@/components/annonces";
 import { getAdsList } from "@/lib/ubiflow";
-import type { UbiflowAd } from "@/types/ubiflow";
+import { mapApiToProperties } from "@/lib/mapProperty";
+
+// Force le rendu côté serveur (pas de pré-rendu au build)
+export const dynamic = "force-dynamic";
 
 export default async function LocationPage() {
-  // Récupérer les annonces côté serveur
-  const data = await getAdsList(1);
+  // Récupérer les annonces de location côté serveur
+  const rawProperties = await getAdsList(1, "L");
 
-  // Filtrer uniquement les annonces de location
-  const rentals = data.ads.filter(
-    (ad: UbiflowAd) => ad.transactionType === "rent"
-  );
+  // Transformer les données brutes en Property[]
+  const properties = mapApiToProperties(rawProperties);
 
   return (
     <main>
-      {/* En-tête */}
-      <Section background="white">
+      <Section className="bg-background">
+        {/* En-tête */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Biens à la location
@@ -4085,16 +4300,21 @@ export default async function LocationPage() {
         </div>
 
         {/* Grille d'annonces */}
-        {rentals.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rentals.map((property: UbiflowAd) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                type="location"
-              />
-            ))}
-          </div>
+        {properties.length > 0 ? (
+          <>
+            <p className="text-muted mb-6">
+              {properties.length} bien(s) disponible(s)
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {properties.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  type="location"
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-muted text-lg">
@@ -4110,19 +4330,23 @@ export default async function LocationPage() {
 }
 ```
 
-⚠️ **Note :** Cette page est un Server Component (pas de `"use client"`). Les données sont récupérées côté serveur avant le rendu.
+⚠️ **Notes importantes :**
+- Cette page est un Server Component (pas de `"use client"`)
+- `export const dynamic = "force-dynamic"` empêche le pré-rendu au build (évite les timeouts)
+- Le filtre `"L"` dans `getAdsList(1, "L")` récupère uniquement les locations
+- `mapApiToProperties` transforme les données brutes en objets `Property` utilisables
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ### Étape 9.7.2 : Test visuel
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/location
-- [ ] Vérifier que les annonces s'affichent en grille
-- [ ] Vérifier le responsive (mobile, tablette, desktop)
-- [ ] Vérifier que les images s'affichent (ou le placeholder)
-- [ ] Vérifier que les prix sont formatés correctement
-- [ ] Cliquer sur une carte et vérifier le lien vers la page détail
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/location
+- [x] Vérifier que les annonces s'affichent en grille
+- [x] Vérifier le responsive (mobile, tablette, desktop)
+- [x] Vérifier que les images s'affichent (photos Ubiflow)
+- [x] Vérifier que les prix sont formatés correctement (ex: 1 939 €/mois)
+- [x] Cliquer sur une carte (le lien pointe vers `/location/[id]`)
 
 ---
 
@@ -4135,17 +4359,30 @@ export default async function LocationPage() {
 - [x] Route API `/api/ubiflow/annonces` fonctionnelle
 - [x] Test de récupération du token réussi
 - [x] Test de récupération des annonces réussi (25 annonces)
-- [ ] Types TypeScript pour les annonces
-- [ ] Composant `PropertyCard` créé
-- [ ] Page `/location` affichant les annonces en grille
-- [ ] Design responsive
+- [x] Types TypeScript pour les annonces (`types/property.ts`)
+- [x] Fonction de mapping (`lib/mapProperty.ts`)
+- [x] Composant `PropertyCard` créé (`components/annonces/PropertyCard.tsx`)
+- [x] Configuration images externes (`next.config.ts`)
+- [x] Page `/location` affichant les annonces en grille
+- [x] Design responsive
 
 **Vérifications :**
-- [ ] Les annonces s'affichent sur `/location`
-- [ ] Les images des biens sont visibles
-- [ ] Les prix sont formatés en euros
-- [ ] Le responsive fonctionne sur mobile
-- [ ] Aucune erreur TypeScript
+- [x] Les annonces s'affichent sur `/location`
+- [x] Les images des biens sont visibles (photos Ubiflow)
+- [x] Les prix sont formatés en euros
+- [x] Le responsive fonctionne sur mobile
+- [x] Aucune erreur TypeScript
+
+**Fichiers créés/modifiés dans cette phase :**
+| Fichier | Description |
+|---------|-------------|
+| `types/property.ts` | Interfaces TypeScript pour les annonces |
+| `lib/mapProperty.ts` | Fonctions de mapping API → Property |
+| `lib/ubiflow.ts` | Mise à jour avec type de retour |
+| `components/annonces/PropertyCard.tsx` | Carte d'affichage d'une annonce |
+| `components/annonces/index.ts` | Export du composant |
+| `app/location/page.tsx` | Page liste des locations |
+| `next.config.ts` | Config images externes |
 
 ---
 
@@ -4159,51 +4396,57 @@ export default async function LocationPage() {
 
 ### Étape 10.1.1 : Créer le dossier
 
-- [ ] Créer le dossier `app/vente/` (s'il n'existe pas)
+- [x] Créer le dossier `app/vente/` (s'il n'existe pas)
 
 ### Étape 10.1.2 : Créer la page
 
-- [ ] Dans `app/vente/`, créer `page.tsx`
-- [ ] Ajouter le code (similaire à location) :
+- [x] Dans `app/vente/`, créer `page.tsx`
+- [x] Ajouter le code (similaire à location mais avec `"V"` pour vente) :
 ```typescript
 import { Section, ScrollToTop } from "@/components/ui";
 import { PropertyCard } from "@/components/annonces";
 import { getAdsList } from "@/lib/ubiflow";
-import type { UbiflowAd } from "@/types/ubiflow";
+import { mapApiToProperties } from "@/lib/mapProperty";
+
+// Force le rendu côté serveur (pas de pré-rendu au build)
+export const dynamic = "force-dynamic";
 
 export default async function VentePage() {
-  // Récupérer les annonces côté serveur
-  const data = await getAdsList(1);
+  // Récupérer les annonces de vente côté serveur
+  const rawProperties = await getAdsList(1, "V");
 
-  // Filtrer uniquement les annonces de vente
-  const sales = data.ads.filter(
-    (ad: UbiflowAd) => ad.transactionType === "sale"
-  );
+  // Transformer les données brutes en Property[]
+  const properties = mapApiToProperties(rawProperties);
 
   return (
     <main>
-      {/* En-tête */}
-      <Section background="white">
+      <Section className="bg-background">
+        {/* En-tête */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Biens à la vente
           </h1>
           <p className="text-xl text-muted max-w-2xl mx-auto">
-            Découvrez nos biens disponibles à l'achat
+            Découvrez nos biens disponibles à la vente
           </p>
         </div>
 
         {/* Grille d'annonces */}
-        {sales.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sales.map((property: UbiflowAd) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                type="vente"
-              />
-            ))}
-          </div>
+        {properties.length > 0 ? (
+          <>
+            <p className="text-muted mb-6">
+              {properties.length} bien(s) disponible(s)
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {properties.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  type="vente"
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-muted text-lg">
@@ -4219,31 +4462,45 @@ export default async function VentePage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+⚠️ **Différences avec la page location :**
+- `getAdsList(1, "V")` → filtre sur les ventes (code "V")
+- `type="vente"` sur `PropertyCard` → affiche "À vendre" au lieu de "À louer"
+- Prix affiché sans "/mois"
+
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `app/vente/page.tsx`
 
 ### Étape 10.1.3 : Test visuel
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/vente
-- [ ] Vérifier que les annonces de vente s'affichent
-- [ ] Vérifier que seuls les biens "À vendre" apparaissent
-- [ ] Vérifier le responsive
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/vente
+- [x] Vérifier que la page s'affiche correctement
+- [x] Si pas d'annonces de vente dans l'API, le message "Aucun bien disponible" s'affiche
+- [x] Vérifier le responsive
+
+💡 **Note :** Si l'API ne contient pas d'annonces de vente (type "V"), la page affichera "Aucun bien disponible à la vente pour le moment." C'est le comportement attendu.
 
 ---
 
 ## ✅ Checkpoint Phase 10
 
 À ce stade, vous devriez avoir :
-- [ ] Page `/vente` fonctionnelle
-- [ ] Réutilisation du composant `PropertyCard`
-- [ ] Filtrage correct (vente uniquement)
-- [ ] Design cohérent avec `/location`
+- [x] Page `/vente` fonctionnelle
+- [x] Réutilisation du composant `PropertyCard`
+- [x] Filtrage correct via `getAdsList(1, "V")`
+- [x] Design cohérent avec `/location`
 
 **Vérifications :**
-- [ ] `/location` affiche les biens à louer
-- [ ] `/vente` affiche les biens à vendre
-- [ ] Les deux pages sont responsive
-- [ ] Navigation entre les pages fonctionnelle
+- [x] `/location` affiche les biens à louer (filtre "L")
+- [x] `/vente` affiche les biens à vendre (filtre "V")
+- [x] Les deux pages sont responsive
+- [x] Navigation entre les pages fonctionnelle
+
+**Fichiers créés dans cette phase :**
+| Fichier | Description |
+|---------|-------------|
+| `app/vente/page.tsx` | Page liste des biens à vendre |
 
 ---
 

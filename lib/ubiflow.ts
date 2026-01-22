@@ -1,3 +1,5 @@
+import type { PropertyRaw } from "@/types/property";
+
 // Cache du token côté serveur
 // Le token est stocké en mémoire sur le serveur, jamais exposé au client
 
@@ -46,14 +48,18 @@ export async function getUbiflowToken(): Promise<string> {
 
   console.log("[Ubiflow] Nouveau token obtenu et mis en cache");
 
-  return cachedToken;
+  return cachedToken as string;
 }
 
 /**
  * Récupère la liste des annonces depuis l'API Ubiflow
  * @param page - Numéro de page (pagination)
+ * @param adType - Type de transaction : "L" (location) ou "V" (vente)
  */
-export async function getAdsList(page: number = 1): Promise<unknown> {
+export async function getAdsList(
+  page: number = 1,
+  adType?: "L" | "V"
+): Promise<PropertyRaw[]> {
   const token = await getUbiflowToken();
   const prodId = process.env.UBIFLOW_PROD_ID;
 
@@ -61,9 +67,15 @@ export async function getAdsList(page: number = 1): Promise<unknown> {
     throw new Error("UBIFLOW_PROD_ID non configuré dans .env.local");
   }
 
-  const url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
+  // Construction de l'URL avec filtres optionnels
+  let url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
 
-  console.log(`[Ubiflow] Récupération des annonces (page ${page})...`);
+  // Ajouter le filtre par type de transaction si spécifié
+  if (adType) {
+    url += `&transaction.code=${adType}`;
+  }
+
+  console.log(`[Ubiflow] Récupération des annonces (page ${page}, type: ${adType || "tous"})...`);
 
   const response = await fetch(url, {
     method: "GET",
@@ -80,6 +92,6 @@ export async function getAdsList(page: number = 1): Promise<unknown> {
   }
 
   const data = await response.json();
-  console.log(`[Ubiflow] ${Array.isArray(data) ? data.length : "?"} annonces récupérées`);
+  console.log(`[Ubiflow] ${data.length} annonces récupérées`);
   return data;
 }

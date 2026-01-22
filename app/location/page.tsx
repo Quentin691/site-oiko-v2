@@ -1,38 +1,57 @@
-"use client";
+import { Section, ScrollToTop } from "@/components/ui";
+import { PropertyCard } from "@/components/annonces";
+import { getAdsList } from "@/lib/ubiflow";
+import { mapApiToProperties } from "@/lib/mapProperty";
 
-export default function LocationPage() {
-  const handleTestToken = async () => {
-    const response = await fetch("/api/ubiflow/token", { method: "POST" });
-    const data = await response.json();
-    console.log("Token récupéré :", data.token);
-  };
+// Force le rendu côté serveur (pas de pré-rendu au build)
+export const dynamic = "force-dynamic";
 
-  const handleTestAnnonces = async () => {
-    console.log("Récupération des annonces...");
-    const response = await fetch("/api/ubiflow/annonces");
-    const data = await response.json();
-    console.log("Annonces récupérées :", data);
-  };
+export default async function LocationPage() {
+  // Récupérer les annonces de location côté serveur
+  const rawProperties = await getAdsList(1, "L");
+
+  // Transformer les données brutes en Property[]
+  const properties = mapApiToProperties(rawProperties);
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Annonces de biens à la location</h1>
+    <main>
+      <Section className="bg-background">
+        {/* En-tête */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Biens à la location
+          </h1>
+          <p className="text-xl text-muted max-w-2xl mx-auto">
+            Découvrez nos biens disponibles à la location
+          </p>
+        </div>
 
-      <div className="flex gap-4">
-        <button
-          onClick={handleTestToken}
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
-        >
-          Tester le token
-        </button>
+        {/* Grille d'annonces */}
+        {properties.length > 0 ? (
+          <>
+            <p className="text-muted mb-6">
+              {properties.length} bien(s) disponible(s)
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {properties.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  type="location"
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted text-lg">
+              Aucun bien disponible à la location pour le moment.
+            </p>
+          </div>
+        )}
+      </Section>
 
-        <button
-          onClick={handleTestAnnonces}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Tester les annonces
-        </button>
-      </div>
-    </div>
+      <ScrollToTop />
+    </main>
   );
 }
