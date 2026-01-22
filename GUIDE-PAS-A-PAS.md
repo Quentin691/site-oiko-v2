@@ -1,9 +1,9 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 8
-**Dernière mise à jour :** 21 janvier 2026
+**Phases couvertes :** 1 à 14
+**Dernière mise à jour :** 22 janvier 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 8 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 14 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
 ---
 
@@ -19,7 +19,13 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 8 phases
 | Phase 6 - Page Contact | 52/52 (100%) | ✅ Terminée |
 | Phase 7 - Esthétique / Thème | 52/52 (100%) | ✅ Terminée |
 | Phase 8 - Audit & Finitions | 59/59 (100%) | ✅ Terminée |
-| **Total** | **432/432 (100%)** | |
+| Phase 9 - Page Location (API + affichage) | 6/32 (19%) | 🔄 En cours |
+| Phase 10 - Page Vente | 0/12 (0%) | ⏳ À faire |
+| Phase 11 - Filtres & Pages Détail | 0/45 (0%) | ⏳ À faire |
+| Phase 12 - SEO & Performance | 0/28 (0%) | ⏳ À faire |
+| Phase 13 - Contenus Légaux | 0/24 (0%) | ⏳ À faire |
+| Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
+| **Total** | **438/605 (72%)** | |
 
 ---
 
@@ -3627,7 +3633,7 @@ import type { MetadataRoute } from "next";
 - ✅ Composant Skeleton (`components/ui/Skeleton.tsx`)
 - ✅ Test build production réussi
 
-**🎉 Le projet OIKO v2 est terminé à 100% !**
+**🎉 Phases 1-8 terminées !**
 
 **En attente (dépendances externes) :**
 - 🔗 URLs réseaux sociaux réelles
@@ -3637,5 +3643,2944 @@ import type { MetadataRoute } from "next";
 
 ---
 
-**Dernière mise à jour :** 21 janvier 2026
+# Phase 9 - Page Location (API + Affichage)
+
+**Objectif :** Intégrer l'API Ubiflow pour récupérer les annonces et les afficher sur la page `/location`.
+
+---
+
+## 9.1 Configuration de l'API Ubiflow
+
+### Étape 9.1.1 : Créer le fichier de variables d'environnement
+
+#### Sous-étape A : Créer .env.local
+- [x] À la racine du projet, créer un fichier `.env.local`
+- [x] Ajouter les variables d'environnement :
+```
+# Credentials Ubiflow API
+UBIFLOW_USERNAME=oiko_gestion
+UBIFLOW_PASSWORD=votre_mot_de_passe
+UBIFLOW_AUTH_URL=https://auth.ubiflow.net/api/login_check
+UBIFLOW_PROD_ID=ag752969
+```
+
+⚠️ **IMPORTANT :** Ce fichier contient des secrets. Il est déjà dans `.gitignore` et ne doit JAMAIS être commité.
+
+💡 **Explication :**
+- `UBIFLOW_USERNAME` : Identifiant de connexion à l'API
+- `UBIFLOW_PASSWORD` : Mot de passe de connexion
+- `UBIFLOW_AUTH_URL` : URL pour obtenir le token JWT
+- `UBIFLOW_PROD_ID` : Code de l'annonceur (identifiant OIKO)
+
+- [x] Sauvegarder le fichier
+
+---
+
+## 9.2 Créer la librairie Ubiflow
+
+### Étape 9.2.1 : Créer lib/ubiflow.ts
+
+#### Sous-étape A : Créer le fichier
+- [x] Dans le dossier `lib/`, créer un fichier `ubiflow.ts`
+- [x] Ce fichier ne doit PAS avoir `"use client"` (il s'exécute côté serveur)
+
+#### Sous-étape B : Ajouter les variables de cache
+- [x] Au début du fichier, ajouter :
+```typescript
+// Cache du token côté serveur
+// Le token est stocké en mémoire sur le serveur, jamais exposé au client
+
+let cachedToken: string | null = null;
+let tokenExpiry: number | null = null;
+
+// Marge de sécurité : on renouvelle le token 5 minutes avant expiration
+const EXPIRY_MARGIN = 5 * 60 * 1000; // 5 minutes en millisecondes
+```
+
+💡 **Explication :** Le token JWT est valide 1 heure. On le garde en mémoire pour éviter de demander un nouveau token à chaque requête. La marge de 5 minutes évite les erreurs si le token expire pendant une requête.
+
+#### Sous-étape C : Créer la fonction getUbiflowToken
+- [x] Ajouter la fonction pour récupérer le token :
+```typescript
+/**
+ * Récupère un token valide (depuis le cache ou en demande un nouveau)
+ */
+export async function getUbiflowToken(): Promise<string> {
+  // Si on a un token en cache et qu'il est encore valide
+  if (cachedToken && tokenExpiry && Date.now() < tokenExpiry - EXPIRY_MARGIN) {
+    console.log("[Ubiflow] Token récupéré depuis le cache");
+    return cachedToken;
+  }
+
+  // Sinon, on demande un nouveau token
+  console.log("[Ubiflow] Demande d'un nouveau token...");
+
+  const response = await fetch("https://auth.ubiflow.net/api/login_check", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username: process.env.UBIFLOW_USERNAME,
+      password: process.env.UBIFLOW_PASSWORD,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Échec de l'authentification Ubiflow");
+  }
+
+  const data = await response.json();
+
+  // Stocker le token en cache
+  cachedToken = data.token;
+
+  // Le token expire dans 1h, on stocke l'heure d'expiration
+  // (1h = 3600 secondes = 3600000 millisecondes)
+  tokenExpiry = Date.now() + 60 * 60 * 1000;
+
+  console.log("[Ubiflow] Nouveau token obtenu et mis en cache");
+
+  return cachedToken;
+}
+```
+
+#### Sous-étape D : Créer la fonction getAdsList
+- [x] Ajouter la fonction pour récupérer les annonces :
+```typescript
+/**
+ * Récupère la liste des annonces depuis l'API Ubiflow
+ * @param page - Numéro de page (pagination)
+ */
+export async function getAdsList(page: number = 1): Promise<unknown> {
+  const token = await getUbiflowToken();
+  const prodId = process.env.UBIFLOW_PROD_ID;
+
+  if (!prodId) {
+    throw new Error("UBIFLOW_PROD_ID non configuré dans .env.local");
+  }
+
+  const url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
+
+  console.log(`[Ubiflow] Récupération des annonces (page ${page})...`);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "X-AUTH-TOKEN": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("[Ubiflow] Erreur:", errorText);
+    throw new Error(`Échec de la récupération des annonces: ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log(`[Ubiflow] ${Array.isArray(data) ? data.length : "?"} annonces récupérées`);
+  return data;
+}
+```
+
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `lib/ubiflow.ts`
+
+---
+
+## 9.3 Créer les routes API
+
+### Étape 9.3.1 : Créer la route /api/ubiflow/token
+
+#### Sous-étape A : Créer le dossier
+- [x] Créer le dossier `app/api/ubiflow/`
+- [x] Créer le dossier `app/api/ubiflow/token/`
+
+#### Sous-étape B : Créer le fichier route.ts
+- [x] Dans `app/api/ubiflow/token/`, créer `route.ts`
+- [x] Ajouter le code :
+```typescript
+import { NextResponse } from "next/server";
+import { getUbiflowToken } from "@/lib/ubiflow";
+
+export async function POST() {
+  try {
+    // Utilise le cache : si le token est valide, on le réutilise
+    const token = await getUbiflowToken();
+    return NextResponse.json({ token });
+  } catch (error) {
+    console.error("[API Token] Erreur:", error);
+    return NextResponse.json({ error: "Auth failed" }, { status: 500 });
+  }
+}
+```
+
+⚠️ **IMPORTANT :** Le fichier DOIT s'appeler `route.ts` (pas `router.ts`). C'est une convention Next.js obligatoire.
+
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `app/api/ubiflow/token/route.ts`
+
+### Étape 9.3.2 : Créer la route /api/ubiflow/annonces
+
+#### Sous-étape A : Créer le dossier
+- [x] Créer le dossier `app/api/ubiflow/annonces/`
+
+#### Sous-étape B : Créer le fichier route.ts
+- [x] Dans `app/api/ubiflow/annonces/`, créer `route.ts`
+- [x] Ajouter le code :
+```typescript
+import { NextResponse } from "next/server";
+import { getAdsList } from "@/lib/ubiflow";
+
+export async function GET(request: Request) {
+  try {
+    // Récupérer le paramètre "page" de l'URL (défaut: 1)
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+
+    // Récupérer les annonces (le token est géré automatiquement avec cache)
+    const annonces = await getAdsList(page);
+
+    return NextResponse.json(annonces);
+  } catch (error) {
+    console.error("[API Annonces] Erreur:", error);
+    return NextResponse.json(
+      { error: "Échec de la récupération des annonces" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [x] Sauvegarder le fichier
+
+**Fichier créé :** `app/api/ubiflow/annonces/route.ts`
+
+---
+
+## 9.4 Tester l'API
+
+### Étape 9.4.1 : Tester la récupération du token
+
+- [x] Lancer `npm run dev`
+- [x] Ouvrir la page `/location` (ou créer une page de test)
+- [x] Dans la console du navigateur, exécuter :
+```javascript
+const response = await fetch("/api/ubiflow/token", { method: "POST" });
+const data = await response.json();
+console.log("Token récupéré :", data.token);
+```
+- [x] Vérifier qu'un token JWT est retourné (longue chaîne de caractères)
+
+### Étape 9.4.2 : Tester la récupération des annonces
+
+- [x] Dans la console du navigateur, exécuter :
+```javascript
+const response = await fetch("/api/ubiflow/annonces");
+const data = await response.json();
+console.log("Annonces récupérées :", data);
+```
+- [x] Vérifier que les annonces sont retournées (tableau d'objets)
+- [x] Noter la structure d'une annonce pour créer les types TypeScript
+
+💡 **Résultat attendu :** Un tableau avec ~25 annonces contenant des informations sur les biens (titre, prix, surface, photos, etc.)
+
+---
+
+## 9.5 Créer les types TypeScript
+
+### Étape 9.5.1 : Créer le fichier de types
+
+#### Sous-étape A : Créer le dossier types
+- [ ] Créer le dossier `types/` à la racine du projet
+
+#### Sous-étape B : Créer ubiflow.ts
+- [ ] Dans `types/`, créer `ubiflow.ts`
+- [ ] Analyser la structure des annonces retournées par l'API
+- [ ] Créer les interfaces correspondantes :
+```typescript
+export interface UbiflowAd {
+  id: string;
+  reference: string;
+  title: string;
+  description: string;
+  price: number;
+  surface: number;
+  rooms?: number;
+  bedrooms?: number;
+  city: string;
+  postalCode: string;
+  transactionType: "sale" | "rent";
+  propertyType: string;
+  photos: UbiflowPhoto[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UbiflowPhoto {
+  url: string;
+  caption?: string;
+}
+
+export interface UbiflowApiResponse {
+  ads: UbiflowAd[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+```
+
+⚠️ **Note :** Ces interfaces sont un exemple. Adaptez-les à la structure réelle retournée par l'API Ubiflow.
+
+- [ ] Sauvegarder le fichier
+
+#### Sous-étape C : Mettre à jour lib/ubiflow.ts
+- [ ] Ouvrir `lib/ubiflow.ts`
+- [ ] Ajouter l'import des types :
+```typescript
+import type { UbiflowApiResponse } from "@/types/ubiflow";
+```
+- [ ] Changer le type de retour de `getAdsList` :
+```typescript
+export async function getAdsList(page: number = 1): Promise<UbiflowApiResponse> {
+```
+- [ ] Sauvegarder le fichier
+
+---
+
+## 9.6 Créer le composant PropertyCard
+
+### Étape 9.6.1 : Créer le dossier annonces
+
+- [ ] Dans `components/`, créer un dossier `annonces`
+- [ ] Vérifier le chemin : `components/annonces/`
+
+### Étape 9.6.2 : Créer PropertyCard.tsx
+
+#### Sous-étape A : Créer le fichier
+- [ ] Dans `components/annonces/`, créer `PropertyCard.tsx`
+- [ ] Ajouter les imports :
+```typescript
+import Image from "next/image";
+import Link from "next/link";
+import { Card } from "@/components/ui";
+import type { UbiflowAd } from "@/types/ubiflow";
+```
+
+#### Sous-étape B : Définir l'interface
+- [ ] Ajouter l'interface des props :
+```typescript
+interface PropertyCardProps {
+  property: UbiflowAd;
+  type: "vente" | "location";
+}
+```
+
+#### Sous-étape C : Implémenter le composant
+- [ ] Ajouter le composant :
+```typescript
+export default function PropertyCard({ property, type }: PropertyCardProps) {
+  const mainPhoto = property.photos[0]?.url || "/placeholder-property.jpg";
+
+  // Formater le prix
+  const formattedPrice = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(property.price);
+
+  return (
+    <Link href={`/${type}/${property.id}`}>
+      <Card hover className="overflow-hidden">
+        {/* Image */}
+        <div className="relative h-48 -mx-6 -mt-6 mb-4">
+          <Image
+            src={mainPhoto}
+            alt={property.title}
+            fill
+            className="object-cover"
+          />
+          {/* Badge type de transaction */}
+          <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">
+            {type === "vente" ? "À vendre" : "À louer"}
+          </span>
+        </div>
+
+        {/* Contenu */}
+        <div>
+          <h3 className="font-semibold text-foreground text-lg mb-1 line-clamp-1">
+            {property.title}
+          </h3>
+          <p className="text-muted text-sm mb-2">
+            {property.city} ({property.postalCode})
+          </p>
+
+          {/* Caractéristiques */}
+          <div className="flex gap-4 text-sm text-muted mb-3">
+            <span>{property.surface} m²</span>
+            {property.rooms && <span>{property.rooms} pièces</span>}
+            {property.bedrooms && <span>{property.bedrooms} ch.</span>}
+          </div>
+
+          {/* Prix */}
+          <p className="text-primary font-bold text-xl">
+            {formattedPrice}
+            {type === "location" && <span className="text-sm font-normal">/mois</span>}
+          </p>
+        </div>
+      </Card>
+    </Link>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+### Étape 9.6.3 : Créer index.ts
+
+- [ ] Dans `components/annonces/`, créer `index.ts`
+- [ ] Ajouter l'export :
+```typescript
+export { default as PropertyCard } from "./PropertyCard";
+```
+- [ ] Sauvegarder le fichier
+
+---
+
+## 9.7 Afficher les annonces sur /location
+
+### Étape 9.7.1 : Mettre à jour la page location
+
+- [ ] Ouvrir `app/location/page.tsx`
+- [ ] Remplacer tout le contenu par :
+```typescript
+import { Section, ScrollToTop } from "@/components/ui";
+import { PropertyCard } from "@/components/annonces";
+import { getAdsList } from "@/lib/ubiflow";
+import type { UbiflowAd } from "@/types/ubiflow";
+
+export default async function LocationPage() {
+  // Récupérer les annonces côté serveur
+  const data = await getAdsList(1);
+
+  // Filtrer uniquement les annonces de location
+  const rentals = data.ads.filter(
+    (ad: UbiflowAd) => ad.transactionType === "rent"
+  );
+
+  return (
+    <main>
+      {/* En-tête */}
+      <Section background="white">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Biens à la location
+          </h1>
+          <p className="text-xl text-muted max-w-2xl mx-auto">
+            Découvrez nos biens disponibles à la location
+          </p>
+        </div>
+
+        {/* Grille d'annonces */}
+        {rentals.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {rentals.map((property: UbiflowAd) => (
+              <PropertyCard
+                key={property.id}
+                property={property}
+                type="location"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted text-lg">
+              Aucun bien disponible à la location pour le moment.
+            </p>
+          </div>
+        )}
+      </Section>
+
+      <ScrollToTop />
+    </main>
+  );
+}
+```
+
+⚠️ **Note :** Cette page est un Server Component (pas de `"use client"`). Les données sont récupérées côté serveur avant le rendu.
+
+- [ ] Sauvegarder le fichier
+
+### Étape 9.7.2 : Test visuel
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/location
+- [ ] Vérifier que les annonces s'affichent en grille
+- [ ] Vérifier le responsive (mobile, tablette, desktop)
+- [ ] Vérifier que les images s'affichent (ou le placeholder)
+- [ ] Vérifier que les prix sont formatés correctement
+- [ ] Cliquer sur une carte et vérifier le lien vers la page détail
+
+---
+
+## ✅ Checkpoint Phase 9
+
+À ce stade, vous devriez avoir :
+- [x] Fichier `.env.local` avec les credentials Ubiflow
+- [x] `lib/ubiflow.ts` avec gestion du token et cache
+- [x] Route API `/api/ubiflow/token` fonctionnelle
+- [x] Route API `/api/ubiflow/annonces` fonctionnelle
+- [x] Test de récupération du token réussi
+- [x] Test de récupération des annonces réussi (25 annonces)
+- [ ] Types TypeScript pour les annonces
+- [ ] Composant `PropertyCard` créé
+- [ ] Page `/location` affichant les annonces en grille
+- [ ] Design responsive
+
+**Vérifications :**
+- [ ] Les annonces s'affichent sur `/location`
+- [ ] Les images des biens sont visibles
+- [ ] Les prix sont formatés en euros
+- [ ] Le responsive fonctionne sur mobile
+- [ ] Aucune erreur TypeScript
+
+---
+
+# Phase 10 - Page Vente
+
+**Objectif :** Créer la page `/vente` en réutilisant les composants de la Phase 9.
+
+---
+
+## 10.1 Créer la page Vente
+
+### Étape 10.1.1 : Créer le dossier
+
+- [ ] Créer le dossier `app/vente/` (s'il n'existe pas)
+
+### Étape 10.1.2 : Créer la page
+
+- [ ] Dans `app/vente/`, créer `page.tsx`
+- [ ] Ajouter le code (similaire à location) :
+```typescript
+import { Section, ScrollToTop } from "@/components/ui";
+import { PropertyCard } from "@/components/annonces";
+import { getAdsList } from "@/lib/ubiflow";
+import type { UbiflowAd } from "@/types/ubiflow";
+
+export default async function VentePage() {
+  // Récupérer les annonces côté serveur
+  const data = await getAdsList(1);
+
+  // Filtrer uniquement les annonces de vente
+  const sales = data.ads.filter(
+    (ad: UbiflowAd) => ad.transactionType === "sale"
+  );
+
+  return (
+    <main>
+      {/* En-tête */}
+      <Section background="white">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Biens à la vente
+          </h1>
+          <p className="text-xl text-muted max-w-2xl mx-auto">
+            Découvrez nos biens disponibles à l'achat
+          </p>
+        </div>
+
+        {/* Grille d'annonces */}
+        {sales.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sales.map((property: UbiflowAd) => (
+              <PropertyCard
+                key={property.id}
+                property={property}
+                type="vente"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted text-lg">
+              Aucun bien disponible à la vente pour le moment.
+            </p>
+          </div>
+        )}
+      </Section>
+
+      <ScrollToTop />
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+### Étape 10.1.3 : Test visuel
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/vente
+- [ ] Vérifier que les annonces de vente s'affichent
+- [ ] Vérifier que seuls les biens "À vendre" apparaissent
+- [ ] Vérifier le responsive
+
+---
+
+## ✅ Checkpoint Phase 10
+
+À ce stade, vous devriez avoir :
+- [ ] Page `/vente` fonctionnelle
+- [ ] Réutilisation du composant `PropertyCard`
+- [ ] Filtrage correct (vente uniquement)
+- [ ] Design cohérent avec `/location`
+
+**Vérifications :**
+- [ ] `/location` affiche les biens à louer
+- [ ] `/vente` affiche les biens à vendre
+- [ ] Les deux pages sont responsive
+- [ ] Navigation entre les pages fonctionnelle
+
+---
+
+# Phase 11 - Filtres & Pages Détail
+
+**Objectif :** Ajouter des filtres de recherche et créer les pages de détail pour chaque bien.
+
+**Prérequis :** Phase 10 terminée (pages Location et Vente avec affichage des annonces)
+
+---
+
+## 11.1 Créer le composant de filtres
+
+### Étape 11.1.1 : Créer PropertyFilters.tsx
+
+**A. Créer le fichier**
+
+- [ ] Dans `components/annonces/`, créer un nouveau fichier `PropertyFilters.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+
+interface PropertyFiltersProps {
+  type: "location" | "vente";
+  cities: string[]; // Liste des villes disponibles
+}
+
+export default function PropertyFilters({ type, cities }: PropertyFiltersProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // État des filtres (initialisé depuis l'URL)
+  const [filters, setFilters] = useState({
+    city: searchParams.get("city") || "",
+    priceMin: searchParams.get("priceMin") || "",
+    priceMax: searchParams.get("priceMax") || "",
+    surfaceMin: searchParams.get("surfaceMin") || "",
+    surfaceMax: searchParams.get("surfaceMax") || "",
+    rooms: searchParams.get("rooms") || "",
+  });
+
+  // Appliquer les filtres (met à jour l'URL)
+  const applyFilters = () => {
+    const params = new URLSearchParams();
+
+    // Ajouter seulement les filtres non vides
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      }
+    });
+
+    // Naviguer vers l'URL avec les filtres
+    router.push(`/${type}?${params.toString()}`);
+  };
+
+  // Réinitialiser les filtres
+  const resetFilters = () => {
+    setFilters({
+      city: "",
+      priceMin: "",
+      priceMax: "",
+      surfaceMin: "",
+      surfaceMax: "",
+      rooms: "",
+    });
+    router.push(`/${type}`);
+  };
+
+  // Gérer le changement d'un filtre
+  const handleChange = (field: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <div className="bg-surface rounded-lg p-6 mb-8 shadow-sm">
+      <h2 className="text-lg font-semibold text-foreground mb-4">
+        Filtrer les biens
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Filtre par ville */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Ville
+          </label>
+          <select
+            value={filters.city}
+            onChange={(e) => handleChange("city", e.target.value)}
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Toutes les villes</option>
+            {cities.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filtre prix min */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Prix min (€)
+          </label>
+          <input
+            type="number"
+            value={filters.priceMin}
+            onChange={(e) => handleChange("priceMin", e.target.value)}
+            placeholder="0"
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+
+        {/* Filtre prix max */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Prix max (€)
+          </label>
+          <input
+            type="number"
+            value={filters.priceMax}
+            onChange={(e) => handleChange("priceMax", e.target.value)}
+            placeholder="1000000"
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+
+        {/* Filtre surface min */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Surface min (m²)
+          </label>
+          <input
+            type="number"
+            value={filters.surfaceMin}
+            onChange={(e) => handleChange("surfaceMin", e.target.value)}
+            placeholder="0"
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+
+        {/* Filtre surface max */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Surface max (m²)
+          </label>
+          <input
+            type="number"
+            value={filters.surfaceMax}
+            onChange={(e) => handleChange("surfaceMax", e.target.value)}
+            placeholder="500"
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+
+        {/* Filtre nombre de pièces */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Nombre de pièces
+          </label>
+          <select
+            value={filters.rooms}
+            onChange={(e) => handleChange("rooms", e.target.value)}
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Tous</option>
+            <option value="1">1 pièce</option>
+            <option value="2">2 pièces</option>
+            <option value="3">3 pièces</option>
+            <option value="4">4 pièces</option>
+            <option value="5">5 pièces et +</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Boutons d'action */}
+      <div className="flex gap-4 mt-6">
+        <button
+          onClick={applyFilters}
+          className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+        >
+          Rechercher
+        </button>
+        <button
+          onClick={resetFilters}
+          className="px-6 py-2 border border-border text-muted rounded-md hover:bg-surface transition-colors"
+        >
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :** Ce composant utilise les `searchParams` de Next.js pour persister les filtres dans l'URL. Cela permet de partager un lien filtré et de garder les filtres lors du rafraîchissement.
+
+---
+
+### Étape 11.1.2 : Créer la fonction de filtrage
+
+**A. Créer le fichier utilitaire**
+
+- [ ] Dans `lib/`, créer un nouveau fichier `filterProperties.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { Property } from "@/types/property";
+
+export interface FilterParams {
+  city?: string;
+  priceMin?: string;
+  priceMax?: string;
+  surfaceMin?: string;
+  surfaceMax?: string;
+  rooms?: string;
+}
+
+/**
+ * Filtre les propriétés selon les critères donnés
+ */
+export function filterProperties(
+  properties: Property[],
+  filters: FilterParams
+): Property[] {
+  return properties.filter((property) => {
+    // Filtre par ville
+    if (filters.city && property.city !== filters.city) {
+      return false;
+    }
+
+    // Filtre par prix minimum
+    if (filters.priceMin && property.price < parseInt(filters.priceMin)) {
+      return false;
+    }
+
+    // Filtre par prix maximum
+    if (filters.priceMax && property.price > parseInt(filters.priceMax)) {
+      return false;
+    }
+
+    // Filtre par surface minimum
+    if (filters.surfaceMin && property.surface < parseInt(filters.surfaceMin)) {
+      return false;
+    }
+
+    // Filtre par surface maximum
+    if (filters.surfaceMax && property.surface > parseInt(filters.surfaceMax)) {
+      return false;
+    }
+
+    // Filtre par nombre de pièces
+    if (filters.rooms) {
+      const roomsFilter = parseInt(filters.rooms);
+      if (roomsFilter === 5) {
+        // 5 pièces et plus
+        if (property.rooms < 5) return false;
+      } else {
+        if (property.rooms !== roomsFilter) return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+/**
+ * Extrait la liste unique des villes depuis les propriétés
+ */
+export function extractCities(properties: Property[]): string[] {
+  const cities = new Set(properties.map((p) => p.city));
+  return Array.from(cities).sort();
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 11.1.3 : Intégrer les filtres dans les pages
+
+**A. Modifier app/location/page.tsx**
+
+- [ ] Ouvrir `app/location/page.tsx`
+- [ ] Importer `PropertyFilters` et les fonctions de filtrage
+- [ ] Ajouter le composant dans le JSX avant la grille d'annonces
+
+```tsx
+import PropertyFilters from "@/components/annonces/PropertyFilters";
+import { filterProperties, extractCities } from "@/lib/filterProperties";
+
+// Dans le composant, avant le return :
+const cities = extractCities(locationProperties);
+const filteredProperties = filterProperties(locationProperties, params);
+
+// Dans le JSX :
+<PropertyFilters type="location" cities={cities} />
+```
+
+- [ ] Sauvegarder le fichier
+
+**B. Faire de même pour app/vente/page.tsx**
+
+- [ ] Appliquer les mêmes modifications avec `type="vente"`
+
+---
+
+### Étape 11.1.4 : Test des filtres
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/location
+- [ ] Vérifier que les filtres s'affichent
+- [ ] Tester chaque filtre individuellement
+- [ ] Vérifier que l'URL se met à jour avec les filtres
+- [ ] Vérifier que le bouton "Réinitialiser" fonctionne
+
+---
+
+## 11.2 Créer le composant Pagination
+
+### Étape 11.2.1 : Créer Pagination.tsx
+
+**A. Créer le fichier**
+
+- [ ] Dans `components/ui/`, créer un nouveau fichier `Pagination.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import Link from "next/link";
+
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+  searchParams?: Record<string, string | undefined>;
+}
+
+export default function Pagination({
+  currentPage,
+  totalPages,
+  basePath,
+  searchParams = {},
+}: PaginationProps) {
+  const buildUrl = (page: number) => {
+    const params = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value && key !== "page") {
+        params.set(key, value);
+      }
+    });
+    params.set("page", page.toString());
+    return `${basePath}?${params.toString()}`;
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, "...", totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages);
+      }
+    }
+    return pages;
+  };
+
+  return (
+    <nav className="flex justify-center items-center gap-2 mt-8">
+      {currentPage > 1 ? (
+        <Link
+          href={buildUrl(currentPage - 1)}
+          className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-surface"
+        >
+          ← Précédent
+        </Link>
+      ) : (
+        <span className="px-4 py-2 border border-border rounded-md text-muted cursor-not-allowed">
+          ← Précédent
+        </span>
+      )}
+
+      <div className="flex gap-1">
+        {getPageNumbers().map((page, index) =>
+          page === "..." ? (
+            <span key={`ellipsis-${index}`} className="px-3 py-2 text-muted">...</span>
+          ) : (
+            <Link
+              key={page}
+              href={buildUrl(page as number)}
+              className={`px-4 py-2 rounded-md ${
+                currentPage === page
+                  ? "bg-primary text-white"
+                  : "border border-border text-foreground hover:bg-surface"
+              }`}
+            >
+              {page}
+            </Link>
+          )
+        )}
+      </div>
+
+      {currentPage < totalPages ? (
+        <Link
+          href={buildUrl(currentPage + 1)}
+          className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-surface"
+        >
+          Suivant →
+        </Link>
+      ) : (
+        <span className="px-4 py-2 border border-border rounded-md text-muted cursor-not-allowed">
+          Suivant →
+        </span>
+      )}
+    </nav>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 11.3 Créer le composant PropertyGallery
+
+### Étape 11.3.1 : Créer PropertyGallery.tsx
+
+**A. Créer le fichier**
+
+- [ ] Dans `components/annonces/`, créer `PropertyGallery.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+
+interface PropertyGalleryProps {
+  images: string[];
+  title: string;
+}
+
+export default function PropertyGallery({ images, title }: PropertyGalleryProps) {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  if (!images || images.length === 0) {
+    return (
+      <div className="aspect-video bg-surface rounded-lg flex items-center justify-center">
+        <span className="text-muted">Aucune image disponible</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Image principale */}
+      <div className="relative aspect-video bg-surface rounded-lg overflow-hidden">
+        <Image
+          src={images[selectedIndex]}
+          alt={`${title} - Photo ${selectedIndex + 1}`}
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+          {selectedIndex + 1} / {images.length}
+        </div>
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={() => setSelectedIndex((prev) => prev === 0 ? images.length - 1 : prev - 1)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/80"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => setSelectedIndex((prev) => prev === images.length - 1 ? 0 : prev + 1)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/80"
+            >
+              →
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Miniatures */}
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {images.map((image, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedIndex(index)}
+              className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 ${
+                index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
+              }`}
+            >
+              <Image src={image} alt={`Miniature ${index + 1}`} fill className="object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 11.4 Créer le composant PropertyDetails
+
+### Étape 11.4.1 : Créer PropertyDetails.tsx
+
+**A. Créer le fichier**
+
+- [ ] Dans `components/annonces/`, créer `PropertyDetails.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import { Property } from "@/types/property";
+
+interface PropertyDetailsProps {
+  property: Property;
+  type: "location" | "vente";
+}
+
+export default function PropertyDetails({ property, type }: PropertyDetailsProps) {
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const characteristics = [
+    { label: "Surface", value: `${property.surface} m²`, icon: "📐" },
+    { label: "Pièces", value: `${property.rooms} pièce(s)`, icon: "🚪" },
+    { label: "Chambres", value: `${property.bedrooms || "N/A"}`, icon: "🛏️" },
+    { label: "Salle(s) de bain", value: `${property.bathrooms || "N/A"}`, icon: "🚿" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* En-tête avec prix */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">{property.title}</h1>
+          <p className="text-muted mt-1">📍 {property.address}, {property.city} {property.postalCode}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-3xl font-bold text-primary">
+            {formatPrice(property.price)}
+            {type === "location" && <span className="text-lg">/mois</span>}
+          </p>
+        </div>
+      </div>
+
+      {/* Caractéristiques */}
+      <div className="bg-surface rounded-lg p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">Caractéristiques</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {characteristics.map((char) => (
+            <div key={char.label} className="flex items-center gap-3">
+              <span className="text-2xl">{char.icon}</span>
+              <div>
+                <p className="text-sm text-muted">{char.label}</p>
+                <p className="font-medium text-foreground">{char.value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Description */}
+      <div>
+        <h2 className="text-lg font-semibold text-foreground mb-4">Description</h2>
+        <p className="text-muted whitespace-pre-line">
+          {property.description || "Aucune description disponible."}
+        </p>
+      </div>
+
+      {/* Bouton de contact */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <a
+          href="/contact"
+          className="flex-1 text-center px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors font-medium"
+        >
+          Nous contacter pour ce bien
+        </a>
+      </div>
+    </div>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 11.5 Créer les pages de détail
+
+### Étape 11.5.1 : Ajouter la fonction getAdById
+
+**A. Ouvrir lib/ubiflow.ts**
+
+- [ ] Ajouter la fonction suivante à la fin du fichier :
+
+```typescript
+/**
+ * Récupère une annonce par son ID depuis l'API Ubiflow
+ */
+export async function getAdById(id: string): Promise<unknown> {
+  const token = await getUbiflowToken();
+  const url = `https://api-classifieds.ubiflow.net/api/ads/${id}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "X-AUTH-TOKEN": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    throw new Error(`Échec récupération annonce: ${response.status}`);
+  }
+
+  return response.json();
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 11.5.2 : Créer la page détail location
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer `app/location/[id]/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import Section from "@/components/ui/Section";
+import PropertyGallery from "@/components/annonces/PropertyGallery";
+import PropertyDetails from "@/components/annonces/PropertyDetails";
+import { getAdById } from "@/lib/ubiflow";
+import { Property } from "@/types/property";
+
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function LocationDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const property = (await getAdById(id)) as Property | null;
+
+  if (!property) {
+    notFound();
+  }
+
+  const images = property.images || [];
+
+  return (
+    <main>
+      <Section className="bg-background">
+        <nav className="mb-6 text-sm">
+          <Link href="/" className="text-muted hover:text-primary">Accueil</Link>
+          <span className="mx-2 text-muted">/</span>
+          <Link href="/location" className="text-muted hover:text-primary">Location</Link>
+          <span className="mx-2 text-muted">/</span>
+          <span className="text-foreground">{property.title}</span>
+        </nav>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <PropertyGallery images={images} title={property.title} />
+          <PropertyDetails property={property} type="location" />
+        </div>
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 11.5.3 : Créer la page détail vente
+
+- [ ] Créer `app/vente/[id]/page.tsx` avec le même code
+- [ ] Remplacer "location" par "vente" et "Location" par "Vente"
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 11.5.4 : Mettre à jour PropertyCard pour le lien
+
+**A. Ouvrir PropertyCard.tsx**
+
+- [ ] Vérifier que le composant inclut un lien vers la page détail
+- [ ] Si non, entourer le contenu avec :
+
+```tsx
+import Link from "next/link";
+
+<Link href={`/${type}/${property.id}`} className="block">
+  {/* Contenu de la carte */}
+</Link>
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 11.5.5 : Test des pages détail
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/location
+- [ ] Cliquer sur une annonce → la page détail s'affiche
+- [ ] Vérifier la galerie photos
+- [ ] Vérifier les détails du bien
+- [ ] Vérifier le fil d'Ariane
+- [ ] Faire les mêmes tests sur `/vente`
+
+---
+
+## ✅ Checkpoint Phase 11
+
+À ce stade, vous devriez avoir :
+- [ ] Composant `PropertyFilters` avec filtres (ville, prix, surface, pièces)
+- [ ] Fonction `filterProperties` pour filtrer les annonces
+- [ ] Composant `Pagination` fonctionnel
+- [ ] Composant `PropertyGallery` avec navigation photos
+- [ ] Composant `PropertyDetails` avec caractéristiques
+- [ ] Fonction `getAdById` dans lib/ubiflow.ts
+- [ ] Page détail `/location/[id]`
+- [ ] Page détail `/vente/[id]`
+- [ ] Lien depuis les cartes vers les pages détail
+
+**Vérifications :**
+- [ ] Les filtres fonctionnent et l'URL se met à jour
+- [ ] La pagination conserve les filtres
+- [ ] Les pages détail affichent toutes les informations
+- [ ] La galerie photos fonctionne
+
+---
+
+# Phase 12 - SEO & Performance
+
+**Objectif :** Optimiser le référencement et les performances du site avec les annonces immobilières.
+
+**Prérequis :** Phase 11 terminée (filtres et pages détail fonctionnelles)
+
+---
+
+## 12.1 Métadonnées dynamiques pour les pages détail
+
+### Étape 12.1.1 : Ajouter generateMetadata pour la page location
+
+**A. Ouvrir app/location/[id]/page.tsx**
+
+- [ ] Ouvrir le fichier `app/location/[id]/page.tsx`
+
+**B. Ajouter la fonction generateMetadata**
+
+Ajouter ce code au début du fichier (après les imports) :
+
+```tsx
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const property = (await getAdById(id)) as Property | null;
+
+  if (!property) {
+    return {
+      title: "Bien non trouvé | OIKO",
+      description: "Ce bien n'est plus disponible.",
+    };
+  }
+
+  const title = `${property.title} - Location à ${property.city} | OIKO`;
+  const description = `${property.rooms} pièces, ${property.surface}m² à louer à ${property.city}. ${property.price}€/mois.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: property.images?.[0] ? [property.images[0]] : [],
+    },
+  };
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :** `generateMetadata` est une fonction spéciale de Next.js qui génère les balises meta côté serveur avant le rendu de la page.
+
+---
+
+### Étape 12.1.2 : Ajouter generateMetadata pour la page vente
+
+**A. Ouvrir app/vente/[id]/page.tsx**
+
+- [ ] Copier la même fonction `generateMetadata`
+- [ ] Modifier `Location à` → `À vendre à`
+- [ ] Modifier `à louer` → `à vendre`
+- [ ] Modifier `€/mois` → `€`
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 12.1.3 : Test des métadonnées
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir une page détail dans le navigateur
+- [ ] Inspecter le code source (Ctrl+U ou Cmd+U)
+- [ ] Vérifier que les balises `<title>` et `<meta name="description">` sont correctes
+
+---
+
+## 12.2 Mettre à jour le sitemap dynamique
+
+### Étape 12.2.1 : Modifier app/sitemap.ts
+
+**A. Ouvrir app/sitemap.ts**
+
+- [ ] Ouvrir le fichier `app/sitemap.ts`
+
+**B. Remplacer le contenu par**
+
+```typescript
+import { MetadataRoute } from "next";
+import { getAdsList } from "@/lib/ubiflow";
+import { Property } from "@/types/property";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+
+  // Pages statiques
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/activites`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/a-propos`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/location`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/vente`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+  ];
+
+  // Pages dynamiques (annonces)
+  let dynamicPages: MetadataRoute.Sitemap = [];
+
+  try {
+    const response = await getAdsList(1);
+    const properties: Property[] = response?.["hydra:member"] || [];
+
+    dynamicPages = properties.map((property) => {
+      const type = property.transaction === "location" ? "location" : "vente";
+      return {
+        url: `${baseUrl}/${type}/${property.id}`,
+        lastModified: property.updatedAt ? new Date(property.updatedAt) : new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.6,
+      };
+    });
+  } catch (error) {
+    console.error("[Sitemap] Erreur:", error);
+  }
+
+  return [...staticPages, ...dynamicPages];
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 12.2.2 : Ajouter la variable d'environnement
+
+**A. Ouvrir .env.local**
+
+- [ ] Ajouter la ligne suivante :
+
+```
+NEXT_PUBLIC_SITE_URL=https://oiko-gestion.fr
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 12.2.3 : Test du sitemap
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/sitemap.xml
+- [ ] Vérifier que les pages statiques sont listées
+- [ ] Vérifier que les annonces sont incluses
+
+---
+
+## 12.3 Ajouter Schema.org pour les annonces
+
+### Étape 12.3.1 : Créer le composant PropertyJsonLd
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `components/seo/` (s'il n'existe pas)
+- [ ] Créer le fichier `components/seo/PropertyJsonLd.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import { Property } from "@/types/property";
+
+interface PropertyJsonLdProps {
+  property: Property;
+  type: "location" | "vente";
+}
+
+export default function PropertyJsonLd({ property, type }: PropertyJsonLdProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: property.title,
+    description: property.description,
+    url: `${baseUrl}/${type}/${property.id}`,
+    offers: {
+      "@type": "Offer",
+      price: property.price,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: property.address,
+      addressLocality: property.city,
+      postalCode: property.postalCode,
+      addressCountry: "FR",
+    },
+    floorSize: {
+      "@type": "QuantitativeValue",
+      value: property.surface,
+      unitCode: "MTK",
+    },
+    numberOfRooms: property.rooms,
+    ...(property.images?.[0] && { image: property.images }),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :** Schema.org aide les moteurs de recherche à comprendre le contenu. Les annonces peuvent apparaître avec des rich snippets dans les résultats Google.
+
+---
+
+### Étape 12.3.2 : Intégrer PropertyJsonLd dans les pages détail
+
+**A. Modifier app/location/[id]/page.tsx**
+
+- [ ] Ajouter l'import :
+
+```tsx
+import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
+```
+
+- [ ] Ajouter le composant juste après `<main>` :
+
+```tsx
+<main>
+  <PropertyJsonLd property={property} type="location" />
+  {/* ... reste du contenu */}
+</main>
+```
+
+- [ ] Sauvegarder le fichier
+
+**B. Faire de même pour app/vente/[id]/page.tsx**
+
+- [ ] Ajouter avec `type="vente"`
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 12.3.3 : Test du Schema.org
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir une page détail
+- [ ] Inspecter le code source
+- [ ] Vérifier que le script JSON-LD est présent
+- [ ] Optionnel : Valider avec https://search.google.com/test/rich-results
+
+---
+
+## 12.4 Configurer les images externes
+
+### Étape 12.4.1 : Modifier next.config.js
+
+**A. Ouvrir next.config.js (ou next.config.ts)**
+
+- [ ] Ajouter la configuration des images :
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.ubiflow.net",
+      },
+      {
+        protocol: "https",
+        hostname: "images.ubiflow.net",
+      },
+    ],
+  },
+};
+
+module.exports = nextConfig;
+```
+
+- [ ] Sauvegarder le fichier
+- [ ] Redémarrer le serveur de développement
+
+⚠️ **Important :** Sans cette configuration, les images externes ne fonctionneront pas avec le composant `<Image>` de Next.js.
+
+---
+
+## 12.5 Ajouter le cache API
+
+### Étape 12.5.1 : Modifier lib/ubiflow.ts pour le cache
+
+**A. Ouvrir lib/ubiflow.ts**
+
+- [ ] Modifier la fonction `getAdsList` :
+
+```typescript
+const response = await fetch(url, {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "X-AUTH-TOKEN": `Bearer ${token}`,
+  },
+  // Cache pendant 5 minutes
+  next: { revalidate: 300 },
+});
+```
+
+- [ ] Faire de même pour `getAdById`
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :** `revalidate: 300` signifie que les données seront mises en cache pendant 5 minutes, réduisant les appels API.
+
+---
+
+## ✅ Checkpoint Phase 12
+
+À ce stade, vous devriez avoir :
+- [ ] `generateMetadata` sur les pages détail location et vente
+- [ ] Sitemap dynamique incluant toutes les annonces
+- [ ] Composant `PropertyJsonLd` pour Schema.org
+- [ ] JSON-LD intégré dans les pages détail
+- [ ] Configuration des images externes dans next.config
+- [ ] Cache API configuré (revalidate: 300)
+
+**Vérifications :**
+- [ ] Les meta tags sont corrects sur les pages détail (voir code source)
+- [ ] Le sitemap.xml liste toutes les annonces
+- [ ] Le JSON-LD est présent dans le code source
+- [ ] Les images externes s'affichent correctement
+
+---
+
+# Phase 13 - Contenus Légaux
+
+**Objectif :** Ajouter les pages légales obligatoires pour la conformité RGPD et les mentions légales.
+
+**Prérequis :** Phase 12 terminée
+
+---
+
+## 13.1 Créer la page CGU
+
+### Étape 13.1.1 : Créer la page CGU
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/cgu/`
+- [ ] Créer le fichier `app/cgu/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import type { Metadata } from "next";
+import Section from "@/components/ui/Section";
+
+export const metadata: Metadata = {
+  title: "Conditions Générales d'Utilisation | OIKO",
+  description: "Conditions générales d'utilisation du site OIKO Gestion.",
+};
+
+export default function CGUPage() {
+  return (
+    <main>
+      <Section
+        title="Conditions Générales d'Utilisation"
+        className="bg-background"
+      >
+        <div className="prose prose-lg max-w-none dark:prose-invert">
+          <p className="text-muted">
+            Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
+          </p>
+
+          <h2>1. Objet</h2>
+          <p>
+            Les présentes Conditions Générales d'Utilisation (CGU) ont pour objet
+            de définir les modalités et conditions d'utilisation du site internet
+            oiko-gestion.fr (ci-après « le Site »), ainsi que les droits et
+            obligations des utilisateurs.
+          </p>
+
+          <h2>2. Acceptation des CGU</h2>
+          <p>
+            L'accès et l'utilisation du Site impliquent l'acceptation pleine et
+            entière des présentes CGU. Si vous n'acceptez pas ces conditions,
+            vous êtes invité à ne pas utiliser le Site.
+          </p>
+
+          <h2>3. Services proposés</h2>
+          <p>Le Site propose les services suivants :</p>
+          <ul>
+            <li>Consultation d'annonces immobilières (vente et location)</li>
+            <li>Informations sur les services de gestion locative</li>
+            <li>Formulaire de contact</li>
+          </ul>
+
+          <h2>4. Accès au Site</h2>
+          <p>
+            Le Site est accessible gratuitement à tout utilisateur disposant d'un
+            accès Internet. OIKO ne peut être tenue responsable en cas
+            d'indisponibilité du Site pour des raisons techniques ou de maintenance.
+          </p>
+
+          <h2>5. Propriété intellectuelle</h2>
+          <p>
+            L'ensemble des éléments constituant le Site (textes, images, logos,
+            graphismes, etc.) est protégé par le droit de la propriété
+            intellectuelle. Toute reproduction non autorisée est interdite.
+          </p>
+
+          <h2>6. Données personnelles</h2>
+          <p>
+            Les données personnelles collectées sur le Site sont traitées
+            conformément à notre{" "}
+            <a href="/politique-rgpd" className="text-primary hover:underline">
+              Politique de Confidentialité
+            </a>.
+          </p>
+
+          <h2>7. Droit applicable</h2>
+          <p>
+            Les présentes CGU sont soumises au droit français. Tout litige
+            relève de la compétence des tribunaux français.
+          </p>
+
+          <h2>8. Contact</h2>
+          <p>
+            Pour toute question, contactez-nous via notre{" "}
+            <a href="/contact" className="text-primary hover:underline">
+              formulaire de contact
+            </a>.
+          </p>
+        </div>
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+⚠️ **Important :** Ce contenu est un modèle. Le contenu juridique définitif doit être validé par un professionnel du droit.
+
+---
+
+## 13.2 Compléter la page RGPD
+
+### Étape 13.2.1 : Mettre à jour la page Politique RGPD
+
+**A. Ouvrir app/politique-rgpd/page.tsx**
+
+- [ ] Ouvrir le fichier existant `app/politique-rgpd/page.tsx`
+
+**B. Remplacer ou compléter le contenu**
+
+```tsx
+import type { Metadata } from "next";
+import Section from "@/components/ui/Section";
+
+export const metadata: Metadata = {
+  title: "Politique de Confidentialité RGPD | OIKO",
+  description: "Politique de confidentialité et protection des données personnelles.",
+};
+
+export default function PolitiqueRGPDPage() {
+  return (
+    <main>
+      <Section
+        title="Politique de Confidentialité"
+        subtitle="Protection de vos données personnelles"
+        className="bg-background"
+      >
+        <div className="prose prose-lg max-w-none dark:prose-invert">
+          <p className="text-muted">
+            Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
+          </p>
+
+          <h2>1. Responsable du traitement</h2>
+          <p>Le responsable du traitement des données personnelles est :</p>
+          <ul>
+            <li><strong>Société :</strong> OIKO Gestion</li>
+            <li><strong>Adresse :</strong> [Adresse de l'entreprise]</li>
+            <li><strong>Email :</strong> contact@oiko-gestion.fr</li>
+          </ul>
+
+          <h2>2. Données collectées</h2>
+          <p>Nous collectons les données suivantes :</p>
+          <ul>
+            <li><strong>Formulaire de contact :</strong> nom, prénom, email, téléphone, message</li>
+            <li><strong>Navigation :</strong> adresse IP, cookies (avec votre consentement)</li>
+          </ul>
+
+          <h2>3. Finalités du traitement</h2>
+          <p>Vos données sont collectées pour :</p>
+          <ul>
+            <li>Répondre à vos demandes de contact</li>
+            <li>Vous informer sur nos biens immobiliers</li>
+            <li>Améliorer notre site et nos services</li>
+          </ul>
+
+          <h2>4. Durée de conservation</h2>
+          <ul>
+            <li><strong>Données de contact :</strong> 3 ans après le dernier contact</li>
+            <li><strong>Cookies :</strong> 13 mois maximum</li>
+          </ul>
+
+          <h2>5. Vos droits</h2>
+          <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+          <ul>
+            <li><strong>Droit d'accès :</strong> obtenir une copie de vos données</li>
+            <li><strong>Droit de rectification :</strong> corriger des données inexactes</li>
+            <li><strong>Droit à l'effacement :</strong> supprimer vos données</li>
+            <li><strong>Droit d'opposition :</strong> vous opposer au traitement</li>
+          </ul>
+          <p>Pour exercer ces droits : contact@oiko-gestion.fr</p>
+
+          <h2>6. Cookies</h2>
+          <p>Notre site utilise des cookies pour :</p>
+          <ul>
+            <li>Assurer le bon fonctionnement du site (cookies techniques)</li>
+            <li>Analyser la fréquentation (cookies analytiques - avec consentement)</li>
+          </ul>
+
+          <h2>7. Réclamation</h2>
+          <p>
+            Vous pouvez introduire une réclamation auprès de la CNIL :{" "}
+            <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              www.cnil.fr
+            </a>
+          </p>
+        </div>
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 13.3 Créer la page Mentions Légales
+
+### Étape 13.3.1 : Créer la page Mentions Légales
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/mentions-legales/`
+- [ ] Créer le fichier `app/mentions-legales/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import type { Metadata } from "next";
+import Section from "@/components/ui/Section";
+
+export const metadata: Metadata = {
+  title: "Mentions Légales | OIKO",
+  description: "Mentions légales du site OIKO Gestion.",
+};
+
+export default function MentionsLegalesPage() {
+  return (
+    <main>
+      <Section title="Mentions Légales" className="bg-background">
+        <div className="prose prose-lg max-w-none dark:prose-invert">
+          <h2>1. Éditeur du site</h2>
+          <ul>
+            <li><strong>Raison sociale :</strong> OIKO Gestion</li>
+            <li><strong>Forme juridique :</strong> [SAS/SARL/etc.]</li>
+            <li><strong>Capital social :</strong> [Montant] €</li>
+            <li><strong>Siège social :</strong> [Adresse complète]</li>
+            <li><strong>SIRET :</strong> [Numéro SIRET]</li>
+            <li><strong>RCS :</strong> [Ville + Numéro RCS]</li>
+            <li><strong>Téléphone :</strong> [Numéro de téléphone]</li>
+            <li><strong>Email :</strong> contact@oiko-gestion.fr</li>
+          </ul>
+
+          <h2>2. Directeur de la publication</h2>
+          <p>[Nom du directeur], en qualité de [fonction].</p>
+
+          <h2>3. Hébergeur</h2>
+          <ul>
+            <li><strong>Raison sociale :</strong> Vercel Inc.</li>
+            <li><strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, USA</li>
+            <li><strong>Site web :</strong>{" "}
+              <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                vercel.com
+              </a>
+            </li>
+          </ul>
+
+          <h2>4. Activité réglementée</h2>
+          <p>OIKO Gestion exerce une activité de gestion immobilière soumise à la loi Hoguet :</p>
+          <ul>
+            <li><strong>Carte professionnelle :</strong> Carte G n° [Numéro] délivrée par la CCI de [Ville]</li>
+            <li><strong>Garantie financière :</strong> [Nom de l'organisme] - [Montant] €</li>
+            <li><strong>Assurance RCP :</strong> [Nom de l'assureur] - Contrat n° [Numéro]</li>
+          </ul>
+
+          <h2>5. Propriété intellectuelle</h2>
+          <p>
+            L'ensemble du contenu du site est protégé par les lois relatives à la propriété intellectuelle.
+            Toute reproduction non autorisée est interdite.
+          </p>
+
+          <h2>6. Crédits</h2>
+          <ul>
+            <li><strong>Conception et développement :</strong> [Nom du développeur/agence]</li>
+          </ul>
+        </div>
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+⚠️ **Important :** Remplacer les informations entre crochets [xxx] par les vraies informations d'OIKO.
+
+---
+
+## 13.4 Créer le bandeau cookies
+
+### Étape 13.4.1 : Créer le composant CookieBanner
+
+**A. Créer le fichier**
+
+- [ ] Dans `components/ui/`, créer le fichier `CookieBanner.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+export default function CookieBanner() {
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    // Vérifier si l'utilisateur a déjà fait un choix
+    const consent = localStorage.getItem("cookie-consent");
+    if (!consent) {
+      setShowBanner(true);
+    }
+  }, []);
+
+  const acceptCookies = () => {
+    localStorage.setItem("cookie-consent", "accepted");
+    setShowBanner(false);
+  };
+
+  const refuseCookies = () => {
+    localStorage.setItem("cookie-consent", "refused");
+    setShowBanner(false);
+  };
+
+  if (!showBanner) return null;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border shadow-lg">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-sm text-muted">
+            <p>
+              Nous utilisons des cookies pour améliorer votre expérience.{" "}
+              <Link href="/politique-rgpd" className="text-primary hover:underline">
+                En savoir plus
+              </Link>
+            </p>
+          </div>
+
+          <div className="flex gap-3 flex-shrink-0">
+            <button
+              onClick={refuseCookies}
+              className="px-4 py-2 text-sm border border-border rounded-md text-muted hover:bg-background transition-colors"
+            >
+              Refuser
+            </button>
+            <button
+              onClick={acceptCookies}
+              className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+            >
+              Accepter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 13.4.2 : Intégrer le bandeau dans le layout
+
+**A. Ouvrir app/layout.tsx**
+
+- [ ] Ajouter l'import :
+
+```tsx
+import CookieBanner from "@/components/ui/CookieBanner";
+```
+
+- [ ] Ajouter le composant juste avant `</body>` :
+
+```tsx
+<CookieBanner />
+</body>
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 13.4.3 : Test du bandeau cookies
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000 (en navigation privée)
+- [ ] Vérifier que le bandeau s'affiche
+- [ ] Cliquer sur "Accepter" → le bandeau disparaît
+- [ ] Rafraîchir la page → le bandeau ne réapparaît pas
+- [ ] Supprimer le cookie dans les DevTools → le bandeau réapparaît
+
+---
+
+## 13.5 Mettre à jour le Footer avec les liens légaux
+
+### Étape 13.5.1 : Modifier le Footer
+
+**A. Ouvrir components/layout/Footer.tsx**
+
+- [ ] Ajouter une section "Informations légales" :
+
+```tsx
+{/* Liens légaux */}
+<div>
+  <h4 className="font-semibold text-foreground mb-4">Informations légales</h4>
+  <ul className="space-y-2 text-sm">
+    <li>
+      <Link href="/mentions-legales" className="text-muted hover:text-primary transition-colors">
+        Mentions légales
+      </Link>
+    </li>
+    <li>
+      <Link href="/cgu" className="text-muted hover:text-primary transition-colors">
+        CGU
+      </Link>
+    </li>
+    <li>
+      <Link href="/politique-rgpd" className="text-muted hover:text-primary transition-colors">
+        Politique de confidentialité
+      </Link>
+    </li>
+  </ul>
+</div>
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 13.5.2 : Test des liens légaux
+
+- [ ] Vérifier que les liens apparaissent dans le footer
+- [ ] Cliquer sur chaque lien → les pages s'ouvrent correctement
+- [ ] Vérifier le responsive du footer
+
+---
+
+## ✅ Checkpoint Phase 13
+
+À ce stade, vous devriez avoir :
+- [ ] Page `/cgu` avec les conditions générales d'utilisation
+- [ ] Page `/politique-rgpd` complète avec toutes les informations RGPD
+- [ ] Page `/mentions-legales` avec les informations de l'entreprise
+- [ ] Composant `CookieBanner` fonctionnel
+- [ ] Bandeau cookies intégré dans le layout
+- [ ] Liens légaux dans le footer
+
+**Vérifications :**
+- [ ] Toutes les pages légales sont accessibles
+- [ ] Le bandeau cookies fonctionne correctement
+- [ ] Le consentement est mémorisé dans localStorage
+- [ ] Les liens du footer fonctionnent
+
+---
+
+# Phase 14 - Blog (Optionnel)
+
+**Objectif :** Ajouter un blog pour améliorer le SEO avec du contenu éditorial sur l'immobilier.
+
+**Prérequis :** Phase 13 terminée
+
+---
+
+## 14.1 Installer les dépendances
+
+### Étape 14.1.1 : Installer gray-matter et remark
+
+**A. Exécuter la commande**
+
+- [ ] Dans le terminal, exécuter :
+
+```bash
+npm install gray-matter remark remark-html
+```
+
+💡 **Explication :**
+- `gray-matter` : parse le frontmatter YAML des fichiers Markdown
+- `remark` : transforme le Markdown en HTML
+- `remark-html` : plugin pour convertir en HTML
+
+---
+
+## 14.2 Créer la structure de contenu
+
+### Étape 14.2.1 : Créer le dossier content/blog
+
+**A. Créer la structure**
+
+- [ ] Créer le dossier `content/` à la racine du projet
+- [ ] Créer le sous-dossier `content/blog/`
+
+---
+
+### Étape 14.2.2 : Créer un premier article exemple
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `content/blog/conseils-investissement-locatif.md`
+
+**B. Ajouter le contenu suivant**
+
+```markdown
+---
+title: "5 conseils pour réussir son investissement locatif"
+excerpt: "Découvrez nos conseils essentiels pour bien démarrer dans l'investissement immobilier locatif."
+date: "2026-01-15"
+author: "OIKO Gestion"
+category: "conseils"
+image: "/images/blog/investissement.jpg"
+---
+
+L'investissement locatif est une excellente façon de se constituer un patrimoine. Voici nos 5 conseils.
+
+## 1. Définir son budget et ses objectifs
+
+Avant de vous lancer, évaluez votre capacité d'emprunt et définissez vos objectifs.
+
+## 2. Bien choisir l'emplacement
+
+L'emplacement est le critère n°1. Privilégiez les zones dynamiques et bien desservies.
+
+## 3. Calculer la rentabilité
+
+Ne vous fiez pas uniquement au prix d'achat. Calculez le rendement net.
+
+## 4. Anticiper la gestion locative
+
+Pensez à confier cette gestion à un professionnel comme OIKO Gestion.
+
+## 5. Se faire accompagner
+
+Un premier investissement peut être complexe. N'hésitez pas à vous faire accompagner.
+
+---
+
+Besoin de conseils ? [Contactez-nous](/contact) !
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 14.3 Créer la bibliothèque de gestion du blog
+
+### Étape 14.3.1 : Créer lib/blog.ts
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `lib/blog.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import { remark } from "remark";
+import html from "remark-html";
+
+const postsDirectory = path.join(process.cwd(), "content/blog");
+
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  author: string;
+  category: string;
+  image?: string;
+  content?: string;
+}
+
+/**
+ * Récupère tous les articles de blog
+ */
+export function getAllPosts(): BlogPost[] {
+  if (!fs.existsSync(postsDirectory)) {
+    return [];
+  }
+
+  const fileNames = fs.readdirSync(postsDirectory);
+
+  const posts = fileNames
+    .filter((fileName) => fileName.endsWith(".md"))
+    .map((fileName) => {
+      const slug = fileName.replace(/\.md$/, "");
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+      const { data } = matter(fileContents);
+
+      return {
+        slug,
+        title: data.title,
+        excerpt: data.excerpt,
+        date: data.date,
+        author: data.author,
+        category: data.category,
+        image: data.image,
+      };
+    });
+
+  return posts.sort((a, b) => (a.date > b.date ? -1 : 1));
+}
+
+/**
+ * Récupère un article par son slug
+ */
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  const fullPath = path.join(postsDirectory, `${slug}.md`);
+
+  if (!fs.existsSync(fullPath)) {
+    return null;
+  }
+
+  const fileContents = fs.readFileSync(fullPath, "utf8");
+  const { data, content } = matter(fileContents);
+
+  const processedContent = await remark().use(html).process(content);
+  const contentHtml = processedContent.toString();
+
+  return {
+    slug,
+    title: data.title,
+    excerpt: data.excerpt,
+    date: data.date,
+    author: data.author,
+    category: data.category,
+    image: data.image,
+    content: contentHtml,
+  };
+}
+
+/**
+ * Récupère tous les slugs pour generateStaticParams
+ */
+export function getAllPostSlugs(): string[] {
+  if (!fs.existsSync(postsDirectory)) {
+    return [];
+  }
+
+  return fs.readdirSync(postsDirectory)
+    .filter((fileName) => fileName.endsWith(".md"))
+    .map((fileName) => fileName.replace(/\.md$/, ""));
+}
+
+/**
+ * Récupère les articles par catégorie
+ */
+export function getPostsByCategory(category: string): BlogPost[] {
+  return getAllPosts().filter((post) => post.category === category);
+}
+
+/**
+ * Récupère toutes les catégories uniques
+ */
+export function getAllCategories(): string[] {
+  const allPosts = getAllPosts();
+  const categories = new Set(allPosts.map((post) => post.category));
+  return Array.from(categories);
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 14.4 Créer les composants du blog
+
+### Étape 14.4.1 : Créer le composant BlogCard
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `components/blog/`
+- [ ] Créer le fichier `components/blog/BlogCard.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import Link from "next/link";
+import Image from "next/image";
+import { BlogPost } from "@/lib/blog";
+
+interface BlogCardProps {
+  post: BlogPost;
+}
+
+export default function BlogCard({ post }: BlogCardProps) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const categoryLabels: Record<string, string> = {
+    conseils: "Conseils",
+    actualites: "Actualités",
+    immobilier: "Immobilier",
+  };
+
+  return (
+    <article className="bg-surface rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <Link href={`/blog/${post.slug}`}>
+        <div className="relative aspect-video bg-background">
+          {post.image ? (
+            <Image src={post.image} alt={post.title} fill className="object-cover" />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-4xl">📝</span>
+            </div>
+          )}
+        </div>
+      </Link>
+
+      <div className="p-6">
+        <div className="flex items-center gap-4 mb-3 text-sm">
+          <span className="px-2 py-1 bg-primary/10 text-primary rounded-full">
+            {categoryLabels[post.category] || post.category}
+          </span>
+          <span className="text-muted">{formatDate(post.date)}</span>
+        </div>
+
+        <h2 className="text-xl font-semibold text-foreground mb-2 line-clamp-2">
+          <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+            {post.title}
+          </Link>
+        </h2>
+
+        <p className="text-muted text-sm line-clamp-3 mb-4">{post.excerpt}</p>
+
+        <Link href={`/blog/${post.slug}`} className="text-primary font-medium text-sm hover:underline">
+          Lire la suite →
+        </Link>
+      </div>
+    </article>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.4.2 : Créer le composant ShareButtons
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `components/blog/ShareButtons.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+"use client";
+
+interface ShareButtonsProps {
+  title: string;
+  slug: string;
+}
+
+export default function ShareButtons({ title, slug }: ShareButtonsProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+  const url = `${baseUrl}/blog/${slug}`;
+  const encodedUrl = encodeURIComponent(url);
+  const encodedTitle = encodeURIComponent(title);
+
+  const shareLinks = [
+    {
+      name: "Twitter",
+      icon: "𝕏",
+      url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+    },
+    {
+      name: "LinkedIn",
+      icon: "in",
+      url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+    },
+    {
+      name: "Facebook",
+      icon: "f",
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    },
+  ];
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(url);
+    alert("Lien copié !");
+  };
+
+  return (
+    <div className="flex gap-3">
+      {shareLinks.map((link) => (
+        <a
+          key={link.name}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted hover:bg-primary hover:text-white hover:border-primary transition-colors"
+          aria-label={`Partager sur ${link.name}`}
+        >
+          {link.icon}
+        </a>
+      ))}
+      <button
+        onClick={copyToClipboard}
+        className="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted hover:bg-primary hover:text-white hover:border-primary transition-colors"
+        aria-label="Copier le lien"
+      >
+        🔗
+      </button>
+    </div>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 14.5 Créer les pages du blog
+
+### Étape 14.5.1 : Créer la page liste des articles
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/blog/`
+- [ ] Créer le fichier `app/blog/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import type { Metadata } from "next";
+import Section from "@/components/ui/Section";
+import BlogCard from "@/components/blog/BlogCard";
+import { getAllPosts, getAllCategories } from "@/lib/blog";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Blog | OIKO Gestion",
+  description: "Conseils immobiliers, actualités du marché et guides pratiques.",
+};
+
+export default function BlogPage() {
+  const posts = getAllPosts();
+  const categories = getAllCategories();
+
+  const categoryLabels: Record<string, string> = {
+    conseils: "Conseils",
+    actualites: "Actualités",
+    immobilier: "Immobilier",
+  };
+
+  return (
+    <main>
+      <Section
+        title="Blog"
+        subtitle="Conseils immobiliers et actualités du marché"
+        className="bg-background"
+      >
+        {/* Filtres par catégorie */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          <Link href="/blog" className="px-4 py-2 bg-primary text-white rounded-full text-sm">
+            Tous
+          </Link>
+          {categories.map((category) => (
+            <Link
+              key={category}
+              href={`/blog/categorie/${category}`}
+              className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-white transition-colors"
+            >
+              {categoryLabels[category] || category}
+            </Link>
+          ))}
+        </div>
+
+        {/* Grille d'articles */}
+        {posts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <BlogCard key={post.slug} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted text-lg">Aucun article pour le moment.</p>
+          </div>
+        )}
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.5.2 : Créer la page article
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/blog/[slug]/`
+- [ ] Créer le fichier `app/blog/[slug]/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import Section from "@/components/ui/Section";
+import ShareButtons from "@/components/blog/ShareButtons";
+import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
+  if (!post) {
+    return { title: "Article non trouvé | OIKO" };
+  }
+
+  return {
+    title: `${post.title} | Blog OIKO`,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      publishedTime: post.date,
+      images: post.image ? [post.image] : [],
+    },
+  };
+}
+
+export async function generateStaticParams() {
+  const slugs = getAllPostSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
+
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  return (
+    <main>
+      <Section className="bg-background">
+        <article className="max-w-3xl mx-auto">
+          {/* Fil d'Ariane */}
+          <nav className="mb-6 text-sm">
+            <Link href="/" className="text-muted hover:text-primary">Accueil</Link>
+            <span className="mx-2 text-muted">/</span>
+            <Link href="/blog" className="text-muted hover:text-primary">Blog</Link>
+            <span className="mx-2 text-muted">/</span>
+            <span className="text-foreground">{post.title}</span>
+          </nav>
+
+          {/* En-tête */}
+          <header className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {post.title}
+            </h1>
+            <div className="flex items-center gap-4 text-sm text-muted">
+              <span>Par {post.author}</span>
+              <span>•</span>
+              <time dateTime={post.date}>{formatDate(post.date)}</time>
+            </div>
+          </header>
+
+          {/* Image principale */}
+          {post.image && (
+            <div className="relative aspect-video mb-8 rounded-lg overflow-hidden">
+              <Image src={post.image} alt={post.title} fill className="object-cover" priority />
+            </div>
+          )}
+
+          {/* Contenu */}
+          <div
+            className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted prose-a:text-primary"
+            dangerouslySetInnerHTML={{ __html: post.content || "" }}
+          />
+
+          {/* Partage */}
+          <div className="mt-8 pt-8 border-t border-border">
+            <p className="text-sm text-muted mb-4">Partager cet article :</p>
+            <ShareButtons title={post.title} slug={post.slug} />
+          </div>
+
+          {/* Retour */}
+          <div className="mt-8">
+            <Link href="/blog" className="text-primary hover:underline">
+              ← Retour au blog
+            </Link>
+          </div>
+        </article>
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.5.3 : Créer la page catégorie
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/blog/categorie/[category]/`
+- [ ] Créer le fichier `app/blog/categorie/[category]/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import Section from "@/components/ui/Section";
+import BlogCard from "@/components/blog/BlogCard";
+import { getPostsByCategory, getAllCategories } from "@/lib/blog";
+import Link from "next/link";
+
+interface PageProps {
+  params: Promise<{ category: string }>;
+}
+
+const categoryLabels: Record<string, string> = {
+  conseils: "Conseils",
+  actualites: "Actualités",
+  immobilier: "Immobilier",
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { category } = await params;
+  const label = categoryLabels[category] || category;
+  return {
+    title: `${label} | Blog OIKO`,
+    description: `Articles dans la catégorie ${label}.`,
+  };
+}
+
+export async function generateStaticParams() {
+  return getAllCategories().map((category) => ({ category }));
+}
+
+export default async function CategoryPage({ params }: PageProps) {
+  const { category } = await params;
+  const posts = getPostsByCategory(category);
+  const allCategories = getAllCategories();
+
+  if (!allCategories.includes(category)) {
+    notFound();
+  }
+
+  const label = categoryLabels[category] || category;
+
+  return (
+    <main>
+      <Section
+        title={`Catégorie : ${label}`}
+        subtitle={`${posts.length} article(s)`}
+        className="bg-background"
+      >
+        {/* Filtres */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          <Link href="/blog" className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-white transition-colors">
+            Tous
+          </Link>
+          {allCategories.map((cat) => (
+            <Link
+              key={cat}
+              href={`/blog/categorie/${cat}`}
+              className={`px-4 py-2 rounded-full text-sm transition-colors ${
+                cat === category
+                  ? "bg-primary text-white"
+                  : "bg-surface text-muted hover:bg-primary hover:text-white"
+              }`}
+            >
+              {categoryLabels[cat] || cat}
+            </Link>
+          ))}
+        </div>
+
+        {/* Grille */}
+        {posts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <BlogCard key={post.slug} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted">Aucun article dans cette catégorie.</p>
+            <Link href="/blog" className="text-primary hover:underline mt-4 inline-block">
+              ← Retour au blog
+            </Link>
+          </div>
+        )}
+      </Section>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.5.4 : Ajouter le lien Blog dans la navigation
+
+**A. Ouvrir le fichier de navigation (Header.tsx ou Navigation.tsx)**
+
+- [ ] Ajouter un lien vers `/blog` :
+
+```tsx
+<Link href="/blog" className="...">
+  Blog
+</Link>
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.5.5 : Test du blog
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/blog
+- [ ] Vérifier que les articles s'affichent
+- [ ] Cliquer sur un article → la page détail s'affiche
+- [ ] Vérifier les boutons de partage
+- [ ] Tester les filtres par catégorie
+- [ ] Vérifier le responsive
+
+---
+
+## ✅ Checkpoint Phase 14
+
+À ce stade, vous devriez avoir :
+- [ ] Dépendances `gray-matter`, `remark`, `remark-html` installées
+- [ ] Dossier `content/blog/` avec au moins un article markdown
+- [ ] Fichier `lib/blog.ts` avec toutes les fonctions utilitaires
+- [ ] Composant `BlogCard` pour les aperçus
+- [ ] Composant `ShareButtons` pour le partage
+- [ ] Page `/blog` avec la liste des articles
+- [ ] Page `/blog/[slug]` pour les articles
+- [ ] Page `/blog/categorie/[category]` pour le filtrage
+- [ ] Lien Blog dans la navigation
+
+**Vérifications :**
+- [ ] Les articles s'affichent correctement
+- [ ] La navigation entre articles fonctionne
+- [ ] Les catégories filtrent correctement
+- [ ] Les boutons de partage fonctionnent
+- [ ] Les métadonnées SEO sont générées
+
+---
+
+## 🎉 Projet OIKO v2 complet !
+
+Félicitations ! Vous avez complété toutes les phases du projet :
+
+- ✅ Phase 1-8 : Fondations, Layout, Pages statiques, Thème, Animations
+- ✅ Phase 9 : Page Location avec API Ubiflow
+- ✅ Phase 10 : Page Vente
+- ✅ Phase 11 : Filtres et Pages Détail
+- ✅ Phase 12 : SEO & Performance
+- ✅ Phase 13 : Contenus Légaux
+- ✅ Phase 14 : Blog (optionnel)
+
+---
+
+**Dernière mise à jour :** 22 janvier 2026
 **Document créé par :** Claude Code
