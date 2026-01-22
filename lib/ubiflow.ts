@@ -95,3 +95,26 @@ export async function getAdsList(
   console.log(`[Ubiflow] ${data.length} annonces récupérées`);
   return data;
 }
+
+/**
+ * Récupère une annonce par son ID depuis l'API Ubiflow
+ */
+export async function getAdById(id: string): Promise<unknown> {
+  const token = await getUbiflowToken();
+  const url = `https://api-classifieds.ubiflow.net/api/ads/${id}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "X-AUTH-TOKEN": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    throw new Error(`Échec récupération annonce: ${response.status}`);
+  }
+
+  return response.json();
+}

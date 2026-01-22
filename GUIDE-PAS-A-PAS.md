@@ -21,11 +21,11 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 14 phase
 | Phase 8 - Audit & Finitions | 59/59 (100%) | ✅ Terminée |
 | Phase 9 - Page Location (API + affichage) | 32/32 (100%) | ✅ Terminée |
 | Phase 10 - Page Vente | 12/12 (100%) | ✅ Terminée |
-| Phase 11 - Filtres & Pages Détail | 9/45 (20%) | 🔄 En cours |
+| Phase 11 - Filtres & Pages Détail | 25/45 (56%) | 🔄 En cours |
 | Phase 12 - SEO & Performance | 0/28 (0%) | ⏳ À faire |
 | Phase 13 - Contenus Légaux | 0/24 (0%) | ⏳ À faire |
 | Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
-| **Total** | **485/605 (80%)** | |
+| **Total** | **501/605 (83%)** | |
 
 ---
 
@@ -4834,7 +4834,7 @@ const filteredProperties = filterProperties(locationProperties, params);
 
 **A. Créer le fichier**
 
-- [ ] Dans `components/ui/`, créer un nouveau fichier `Pagination.tsx`
+- [x] Dans `components/ui/`, créer un nouveau fichier `Pagination.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -4937,7 +4937,7 @@ export default function Pagination({
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -4947,7 +4947,7 @@ export default function Pagination({
 
 **A. Créer le fichier**
 
-- [ ] Dans `components/annonces/`, créer `PropertyGallery.tsx`
+- [x] Dans `components/annonces/`, créer `PropertyGallery.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -5026,7 +5026,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -5036,7 +5036,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
 
 **A. Créer le fichier**
 
-- [ ] Dans `components/annonces/`, créer `PropertyDetails.tsx`
+- [x] Dans `components/annonces/`, créer `PropertyDetails.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -5118,7 +5118,7 @@ export default function PropertyDetails({ property, type }: PropertyDetailsProps
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -5128,7 +5128,7 @@ export default function PropertyDetails({ property, type }: PropertyDetailsProps
 
 **A. Ouvrir lib/ubiflow.ts**
 
-- [ ] Ajouter la fonction suivante à la fin du fichier :
+- [x] Ajouter la fonction suivante à la fin du fichier :
 
 ```typescript
 /**
@@ -5155,7 +5155,7 @@ export async function getAdById(id: string): Promise<unknown> {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -5163,7 +5163,7 @@ export async function getAdById(id: string): Promise<unknown> {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer `app/location/[id]/page.tsx`
+- [x] Créer `app/location/[id]/page.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -5211,15 +5211,15 @@ export default async function LocationDetailPage({ params }: PageProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 11.5.3 : Créer la page détail vente
 
-- [ ] Créer `app/vente/[id]/page.tsx` avec le même code
-- [ ] Remplacer "location" par "vente" et "Location" par "Vente"
-- [ ] Sauvegarder le fichier
+- [x] Créer `app/vente/[id]/page.tsx` avec le même code
+- [x] Remplacer "location" par "vente" et "Location" par "Vente"
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -5227,8 +5227,8 @@ export default async function LocationDetailPage({ params }: PageProps) {
 
 **A. Ouvrir PropertyCard.tsx**
 
-- [ ] Vérifier que le composant inclut un lien vers la page détail
-- [ ] Si non, entourer le contenu avec :
+- [x] Vérifier que le composant inclut un lien vers la page détail
+- [x] Si non, entourer le contenu avec :
 
 ```tsx
 import Link from "next/link";
@@ -5238,7 +5238,7 @@ import Link from "next/link";
 </Link>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
