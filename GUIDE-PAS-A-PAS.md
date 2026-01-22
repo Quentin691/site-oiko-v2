@@ -21,11 +21,11 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 14 phase
 | Phase 8 - Audit & Finitions | 59/59 (100%) | ✅ Terminée |
 | Phase 9 - Page Location (API + affichage) | 32/32 (100%) | ✅ Terminée |
 | Phase 10 - Page Vente | 12/12 (100%) | ✅ Terminée |
-| Phase 11 - Filtres & Pages Détail | 0/45 (0%) | ⏳ À faire |
+| Phase 11 - Filtres & Pages Détail | 9/45 (20%) | 🔄 En cours |
 | Phase 12 - SEO & Performance | 0/28 (0%) | ⏳ À faire |
 | Phase 13 - Contenus Légaux | 0/24 (0%) | ⏳ À faire |
 | Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
-| **Total** | **476/605 (79%)** | |
+| **Total** | **485/605 (80%)** | |
 
 ---
 
@@ -4518,7 +4518,7 @@ export default async function VentePage() {
 
 **A. Créer le fichier**
 
-- [ ] Dans `components/annonces/`, créer un nouveau fichier `PropertyFilters.tsx`
+- [x] Dans `components/annonces/`, créer un nouveau fichier `PropertyFilters.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -4702,7 +4702,7 @@ export default function PropertyFilters({ type, cities }: PropertyFiltersProps) 
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 💡 **Explication :** Ce composant utilise les `searchParams` de Next.js pour persister les filtres dans l'URL. Cela permet de partager un lien filtré et de garder les filtres lors du rafraîchissement.
 
@@ -4712,7 +4712,7 @@ export default function PropertyFilters({ type, cities }: PropertyFiltersProps) 
 
 **A. Créer le fichier utilitaire**
 
-- [ ] Dans `lib/`, créer un nouveau fichier `filterProperties.ts`
+- [x] Dans `lib/`, créer un nouveau fichier `filterProperties.ts`
 
 **B. Ajouter le code suivant**
 
@@ -4785,7 +4785,7 @@ export function extractCities(properties: Property[]): string[] {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -4793,9 +4793,9 @@ export function extractCities(properties: Property[]): string[] {
 
 **A. Modifier app/location/page.tsx**
 
-- [ ] Ouvrir `app/location/page.tsx`
-- [ ] Importer `PropertyFilters` et les fonctions de filtrage
-- [ ] Ajouter le composant dans le JSX avant la grille d'annonces
+- [x] Ouvrir `app/location/page.tsx`
+- [x] Importer `PropertyFilters` et les fonctions de filtrage
+- [x] Ajouter le composant dans le JSX avant la grille d'annonces
 
 ```tsx
 import PropertyFilters from "@/components/annonces/PropertyFilters";
@@ -4809,11 +4809,11 @@ const filteredProperties = filterProperties(locationProperties, params);
 <PropertyFilters type="location" cities={cities} />
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 **B. Faire de même pour app/vente/page.tsx**
 
-- [ ] Appliquer les mêmes modifications avec `type="vente"`
+- [x] Appliquer les mêmes modifications avec `type="vente"`
 
 ---
 

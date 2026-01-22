@@ -2,16 +2,29 @@ import { Section, ScrollToTop } from "@/components/ui";
 import { PropertyCard } from "@/components/annonces";
 import { getAdsList } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
+import PropertyFilters from "@/components/annonces/PropertyFilters";
+import { filterProperties, extractCities } from "@/lib/filterProperties";
 
 // Force le rendu côté serveur (pas de pré-rendu au build)
 export const dynamic = "force-dynamic";
 
-export default async function VentePage() {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}
+
+export default async function VentePage({ searchParams }: PageProps) {
+  // Récupérer les paramètres de recherche
+  const params = await searchParams;
+
   // Récupérer les annonces de vente côté serveur
   const rawProperties = await getAdsList(1, "V");
 
   // Transformer les données brutes en Property[]
   const properties = mapApiToProperties(rawProperties);
+
+  // Extraire les villes et filtrer les propriétés
+  const cities = extractCities(properties);
+  const filteredProperties = filterProperties(properties, params);
 
   return (
     <main>
@@ -26,14 +39,17 @@ export default async function VentePage() {
           </p>
         </div>
 
+        {/* Filtres */}
+        <PropertyFilters type="vente" cities={cities} />
+
         {/* Grille d'annonces */}
-        {properties.length > 0 ? (
+        {filteredProperties.length > 0 ? (
           <>
             <p className="text-muted mb-6">
-              {properties.length} bien(s) disponible(s)
+              {filteredProperties.length} bien(s) disponible(s)
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {properties.map((property) => (
+              {filteredProperties.map((property) => (
                 <PropertyCard
                   key={property.id}
                   property={property}
