@@ -1,19 +1,38 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Biens à la Location | OIKO",
-  description: "Trouvez votre bien immobilier à louer avec OIKO. Appartements et locaux disponibles à la location à Paris et Marseille.",
-  openGraph: {
-    title: "Biens à la Location | OIKO",
-    description: "Annonces immobilières de biens à louer à Paris et Marseille.",
-    type: "website",
-  },
-};
+"use client";
 
 export default function LocationPage() {
+  const handleTestToken = async () => {
+    const response = await fetch("/api/ubiflow/token", { method: "POST" });
+    const data = await response.json();
+    console.log("Token récupéré :", data.token);
+  };
+
+  const handleTestAnnonces = async () => {
+    console.log("Récupération des annonces...");
+    const response = await fetch("/api/ubiflow/annonces");
+    const data = await response.json();
+    console.log("Annonces récupérées :", data);
+  };
+
   return (
-    <div>
-      <h1>Annonces de biens à la location</h1>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Annonces de biens à la location</h1>
+
+      <div className="flex gap-4">
+        <button
+          onClick={handleTestToken}
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
+        >
+          Tester le token
+        </button>
+
+        <button
+          onClick={handleTestAnnonces}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Tester les annonces
+        </button>
+      </div>
     </div>
   );
 }
