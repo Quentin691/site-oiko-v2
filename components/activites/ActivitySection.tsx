@@ -18,6 +18,7 @@ interface ActivitySectionProps {
   features?: Feature[];
   paragraphs?: string[];
   stats?: Stat[];
+  background?: "white" | "gray";
 }
 
 export default function ActivitySection({
@@ -28,9 +29,10 @@ export default function ActivitySection({
   features = [],
   paragraphs = [],
   stats = [],
+  background = "white",
 }: ActivitySectionProps) {
   return (
-    <Section id={id} background="white">
+    <Section id={id} background={background}>
       <div className="max-w-4xl mx-auto">
         {/* En-tête */}
         <div className="text-center mb-12">

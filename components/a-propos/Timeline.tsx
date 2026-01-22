@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui";
+import { Card, AnimateOnScroll } from "@/components/ui";
 
 interface TimelineEvent {
   year: string;
@@ -21,7 +21,8 @@ export default function Timeline({ events }: TimelineProps) {
           const isEven = index % 2 === 0;
 
           return (
-            <div key={event.year} className="relative">
+            <AnimateOnScroll key={event.year}>
+            <div className="relative">
               {/* Desktop: alternance gauche/droite */}
               <div className={`hidden md:flex md:items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 <div className="md:w-5/12"></div>
@@ -54,6 +55,7 @@ export default function Timeline({ events }: TimelineProps) {
                 </Card>
               </div>
             </div>
+            </AnimateOnScroll>
           );
         })}
       </div>

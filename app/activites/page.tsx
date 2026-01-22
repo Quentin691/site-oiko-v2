@@ -25,7 +25,7 @@ export default function ActivitiesPage() {
     <main>
       <PageAnchors anchors={anchors} />
 
-      {activitiesContent.sections.map((section) => (
+      {activitiesContent.sections.map((section, index) => (
         <AnimateOnScroll key={section.id}>
           <ActivitySection
             id={section.id}
@@ -35,6 +35,7 @@ export default function ActivitiesPage() {
             features={section.features}
             paragraphs={section.paragraphs}
             stats={section.stats}
+            background={index % 2 === 0 ? "white" : "gray"}
           />
         </AnimateOnScroll>
       ))}
