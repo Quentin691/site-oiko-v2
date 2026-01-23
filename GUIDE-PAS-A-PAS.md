@@ -1,9 +1,9 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 14
+**Phases couvertes :** 1 à 15
 **Dernière mise à jour :** 23 janvier 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 14 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 15 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
 ---
 
@@ -24,9 +24,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 14 phase
 | Phase 11 - Filtres & Pages Détail | 45/45 (100%) | ✅ Terminé |
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
-| Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
-| Phase 15 - Points à revoir | 0/12 (0%) | ⏳ À faire |
-| **Total** | **585/629 (93%)** | |
+| Phase 14 - Blog (optionnel) | 0/87 (0%) | ⏳ À faire |
+| Phase 15 - Points à revoir | 0/21 (0%) | ⏳ À faire |
+| **Total** | **585/693 (84%)** | |
 
 ---
 
@@ -5013,7 +5013,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 ${
+              className={`relative w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 ${
                 index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
               }`}
             >
@@ -5987,7 +5987,7 @@ export default function CookieBanner() {
             </p>
           </div>
 
-          <div className="flex gap-3 flex-shrink-0">
+          <div className="flex gap-3 shrink-0">
             <button
               onClick={refuseCookies}
               className="px-4 py-2 text-sm border border-border rounded-md text-muted hover:bg-background transition-colors"
@@ -6804,6 +6804,897 @@ export default async function CategoryPage({ params }: PageProps) {
 
 ---
 
+## 14.6 Configuration GitHub API (pour page admin)
+
+Cette section permet d'ajouter une page admin pour créer des articles sans toucher au code.
+
+### Étape 14.6.1 : Créer un token GitHub
+
+**A. Générer le token**
+
+- [ ] Aller sur https://github.com/settings/tokens
+- [ ] Cliquer sur "Generate new token" → "Generate new token (classic)"
+- [ ] Donner un nom : `oiko-blog-admin`
+- [ ] Sélectionner les permissions : `repo` (accès complet au repo)
+- [ ] Cliquer "Generate token"
+- [ ] **Copier le token** (il ne sera plus visible après)
+
+⚠️ **Important :** Ce token donne accès à ton repo. Ne le partage jamais publiquement.
+
+---
+
+### Étape 14.6.2 : Ajouter les variables d'environnement
+
+**A. Ouvrir `.env.local`**
+
+- [ ] Ajouter les variables suivantes :
+
+```env
+# GitHub API pour le blog admin
+GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
+GITHUB_OWNER=ton-username
+GITHUB_REPO=site-oiko-v2
+ADMIN_PASSWORD=un-mot-de-passe-secret
+```
+
+- [ ] Remplacer les valeurs par les vraies
+- [ ] Sauvegarder le fichier
+
+💡 **Explication :**
+- `GITHUB_TOKEN` : Le token généré à l'étape précédente
+- `GITHUB_OWNER` : Ton nom d'utilisateur GitHub
+- `GITHUB_REPO` : Le nom du repo
+- `ADMIN_PASSWORD` : Mot de passe pour accéder à la page admin
+
+---
+
+## 14.7 Créer l'API Route pour publier des articles
+
+### Étape 14.7.1 : Créer l'API Route
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/api/blog/`
+- [ ] Créer le fichier `app/api/blog/route.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+
+interface ArticleData {
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  password: string;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const data: ArticleData = await request.json();
+
+    // Vérification du mot de passe admin
+    if (data.password !== process.env.ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: "Mot de passe incorrect" },
+        { status: 401 }
+      );
+    }
+
+    // Validation des champs
+    if (!data.title || !data.content || !data.excerpt) {
+      return NextResponse.json(
+        { error: "Titre, extrait et contenu sont requis" },
+        { status: 400 }
+      );
+    }
+
+    // Générer le slug à partir du titre
+    const slug = data.title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
+      .replace(/[^a-z0-9]+/g, "-") // Remplace les caractères spéciaux par des tirets
+      .replace(/^-+|-+$/g, ""); // Supprime les tirets en début/fin
+
+    // Créer le contenu Markdown
+    const date = new Date().toISOString().split("T")[0];
+    const markdownContent = `---
+title: "${data.title}"
+excerpt: "${data.excerpt}"
+date: "${date}"
+author: "OIKO Gestion"
+category: "${data.category || "actualites"}"
+---
+
+${data.content}
+`;
+
+    // Encoder le contenu en base64 (requis par GitHub API)
+    const contentBase64 = Buffer.from(markdownContent).toString("base64");
+
+    // Appel à l'API GitHub pour créer le fichier
+    const githubResponse = await fetch(
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${slug}.md`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+          Accept: "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify({
+          message: `Nouvel article: ${data.title}`,
+          content: contentBase64,
+          branch: "main",
+        }),
+      }
+    );
+
+    if (!githubResponse.ok) {
+      const errorData = await githubResponse.json();
+      console.error("[Blog API] Erreur GitHub:", errorData);
+      return NextResponse.json(
+        { error: "Erreur lors de la création sur GitHub" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      slug,
+      message: "Article créé ! Il sera visible dans ~2 minutes après le redéploiement.",
+    });
+  } catch (error) {
+    console.error("[Blog API] Erreur:", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 14.8 Créer la page Admin
+
+### Étape 14.8.1 : Créer la page admin
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/admin/`
+- [ ] Créer le fichier `app/admin/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+"use client";
+
+import { useState } from "react";
+
+export default function AdminPage() {
+  const [formData, setFormData] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "actualites",
+    password: "",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+        setMessage(data.message);
+        // Réinitialiser le formulaire
+        setFormData({
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "actualites",
+          password: formData.password, // Garder le mot de passe
+        });
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Une erreur est survenue");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Erreur de connexion au serveur");
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-background py-12">
+      <div className="max-w-2xl mx-auto px-4">
+        <h1 className="text-3xl font-bold text-foreground mb-8">
+          Administration du Blog
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Mot de passe */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Mot de passe admin
+            </label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              required
+            />
+          </div>
+
+          {/* Titre */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Titre de l'article
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              placeholder="Ex: 5 conseils pour investir dans l'immobilier"
+              required
+            />
+          </div>
+
+          {/* Extrait */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Extrait (résumé court)
+            </label>
+            <textarea
+              value={formData.excerpt}
+              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              rows={2}
+              placeholder="Résumé de l'article en 1-2 phrases"
+              required
+            />
+          </div>
+
+          {/* Catégorie */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Catégorie
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+            >
+              <option value="actualites">Actualités</option>
+              <option value="conseils">Conseils</option>
+              <option value="immobilier">Immobilier</option>
+            </select>
+          </div>
+
+          {/* Contenu */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Contenu (Markdown supporté)
+            </label>
+            <textarea
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground font-mono text-sm"
+              rows={15}
+              placeholder="Écrivez votre article ici...
+
+## Sous-titre
+
+Paragraphe de texte...
+
+- Point 1
+- Point 2
+
+**Texte en gras**, *texte en italique*"
+              required
+            />
+          </div>
+
+          {/* Message de statut */}
+          {message && (
+            <div
+              className={`p-4 rounded-lg ${
+                status === "success"
+                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+              }`}
+            >
+              {message}
+            </div>
+          )}
+
+          {/* Bouton submit */}
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+          >
+            {status === "loading" ? "Publication en cours..." : "Publier l'article"}
+          </button>
+        </form>
+
+        <div className="mt-8 p-4 bg-surface rounded-lg border border-border">
+          <h2 className="font-semibold text-foreground mb-2">Comment ça marche ?</h2>
+          <ol className="text-sm text-muted space-y-1 list-decimal list-inside">
+            <li>Remplissez le formulaire avec votre article</li>
+            <li>Cliquez sur "Publier"</li>
+            <li>L'article est créé dans le repo GitHub</li>
+            <li>Le site se redéploie automatiquement (~2 min)</li>
+            <li>L'article apparaît sur /blog</li>
+          </ol>
+        </div>
+      </div>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.8.2 : Test de la page admin
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/admin
+- [ ] Vérifier que le formulaire s'affiche
+- [ ] Tester avec un mauvais mot de passe → message d'erreur
+- [ ] Tester avec le bon mot de passe → article créé sur GitHub
+
+⚠️ **Note :** En local, l'article sera créé sur GitHub mais le site local ne se rebuildera pas automatiquement. L'article sera visible après un `git pull` ou en production après le redéploiement Vercel.
+
+---
+
+## 14.9 Protection de la page Admin
+
+Cette section ajoute une authentification par mot de passe pour accéder à la page admin.
+
+### Étape 14.9.1 : Créer l'API de login
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/api/admin/`
+- [ ] Créer le fichier `app/api/admin/login/route.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  try {
+    const { password } = await request.json();
+
+    if (password !== process.env.ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: "Mot de passe incorrect" },
+        { status: 401 }
+      );
+    }
+
+    // Créer la réponse avec le cookie de session
+    const response = NextResponse.json({ success: true });
+
+    response.cookies.set("admin-session", "authenticated", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24, // 24 heures
+      path: "/",
+    });
+
+    return response;
+  } catch {
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.9.2 : Créer l'API de logout
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `app/api/admin/logout/route.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextResponse } from "next/server";
+
+export async function POST() {
+  const response = NextResponse.json({ success: true });
+
+  // Supprimer le cookie de session
+  response.cookies.set("admin-session", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 0,
+    path: "/",
+  });
+
+  return response;
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.9.3 : Créer la page de login
+
+**A. Créer le dossier et fichier**
+
+- [ ] Créer le dossier `app/admin/login/`
+- [ ] Créer le fichier `app/admin/login/page.tsx`
+
+**B. Ajouter le code suivant**
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function AdminLoginPage() {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
+        router.push("/admin");
+      } else {
+        setError("Mot de passe incorrect");
+      }
+    } catch {
+      setError("Erreur de connexion");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-surface border border-border rounded-lg p-8">
+          <h1 className="text-2xl font-bold text-foreground text-center mb-6">
+            Administration
+          </h1>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Mot de passe
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground"
+                placeholder="Entrez le mot de passe admin"
+                required
+              />
+            </div>
+
+            {error && (
+              <p className="text-red-500 text-sm">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+            >
+              {loading ? "Connexion..." : "Se connecter"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.9.4 : Créer le middleware de protection
+
+**A. Créer le fichier middleware à la racine**
+
+- [ ] Créer le fichier `middleware.ts` à la racine du projet (pas dans app/)
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Ne protéger que /admin (sauf /admin/login)
+  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
+    const session = request.cookies.get("admin-session");
+
+    if (!session || session.value !== "authenticated") {
+      // Rediriger vers la page de login
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/admin/:path*"],
+};
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.9.5 : Mettre à jour la page admin
+
+**A. Modifier `app/admin/page.tsx`**
+
+- [ ] Retirer le champ mot de passe du formulaire (plus nécessaire)
+- [ ] Ajouter un bouton de déconnexion
+
+**B. Remplacer le contenu par**
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function AdminPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "actualites",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/admin/login");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+        setMessage(data.message);
+        setFormData({
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "actualites",
+        });
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Une erreur est survenue");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Erreur de connexion au serveur");
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-background py-12">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-foreground">
+            Administration du Blog
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 text-sm border border-border rounded-lg text-muted hover:bg-surface transition-colors"
+          >
+            Déconnexion
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Titre */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Titre de l'article
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              placeholder="Ex: 5 conseils pour investir dans l'immobilier"
+              required
+            />
+          </div>
+
+          {/* Extrait */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Extrait (résumé court)
+            </label>
+            <textarea
+              value={formData.excerpt}
+              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              rows={2}
+              placeholder="Résumé de l'article en 1-2 phrases"
+              required
+            />
+          </div>
+
+          {/* Catégorie */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Catégorie
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+            >
+              <option value="actualites">Actualités</option>
+              <option value="conseils">Conseils</option>
+              <option value="immobilier">Immobilier</option>
+            </select>
+          </div>
+
+          {/* Contenu */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Contenu (Markdown supporté)
+            </label>
+            <textarea
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground font-mono text-sm"
+              rows={15}
+              placeholder="Écrivez votre article ici...
+
+## Sous-titre
+
+Paragraphe de texte...
+
+- Point 1
+- Point 2
+
+**Texte en gras**, *texte en italique*"
+              required
+            />
+          </div>
+
+          {/* Message de statut */}
+          {message && (
+            <div
+              className={`p-4 rounded-lg ${
+                status === "success"
+                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+              }`}
+            >
+              {message}
+            </div>
+          )}
+
+          {/* Bouton submit */}
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+          >
+            {status === "loading" ? "Publication en cours..." : "Publier l'article"}
+          </button>
+        </form>
+
+        <div className="mt-8 p-4 bg-surface rounded-lg border border-border">
+          <h2 className="font-semibold text-foreground mb-2">Comment ça marche ?</h2>
+          <ol className="text-sm text-muted space-y-1 list-decimal list-inside">
+            <li>Remplissez le formulaire avec votre article</li>
+            <li>Cliquez sur "Publier"</li>
+            <li>L'article est créé dans le repo GitHub</li>
+            <li>Le site se redéploie automatiquement (~2 min)</li>
+            <li>L'article apparaît sur /blog</li>
+          </ol>
+        </div>
+      </div>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.9.6 : Mettre à jour l'API blog
+
+**A. Modifier `app/api/blog/route.ts`**
+
+L'API blog doit maintenant vérifier le cookie de session au lieu du mot de passe dans le body.
+
+- [ ] Ouvrir `app/api/blog/route.ts`
+- [ ] Remplacer la vérification du mot de passe par la vérification du cookie :
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+
+interface ArticleData {
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Vérifier l'authentification via cookie
+    const session = request.cookies.get("admin-session");
+    if (!session || session.value !== "authenticated") {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 401 }
+      );
+    }
+
+    const data: ArticleData = await request.json();
+
+    // Validation des champs
+    if (!data.title || !data.content || !data.excerpt) {
+      return NextResponse.json(
+        { error: "Titre, extrait et contenu sont requis" },
+        { status: 400 }
+      );
+    }
+
+    // Générer le slug à partir du titre
+    const slug = data.title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    // Créer le contenu Markdown
+    const date = new Date().toISOString().split("T")[0];
+    const markdownContent = `---
+title: "${data.title}"
+excerpt: "${data.excerpt}"
+date: "${date}"
+author: "OIKO Gestion"
+category: "${data.category || "actualites"}"
+---
+
+${data.content}
+`;
+
+    // Encoder le contenu en base64
+    const contentBase64 = Buffer.from(markdownContent).toString("base64");
+
+    // Appel à l'API GitHub
+    const githubResponse = await fetch(
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${slug}.md`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+          Accept: "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify({
+          message: `Nouvel article: ${data.title}`,
+          content: contentBase64,
+          branch: "main",
+        }),
+      }
+    );
+
+    if (!githubResponse.ok) {
+      const errorData = await githubResponse.json();
+      console.error("[Blog API] Erreur GitHub:", errorData);
+      return NextResponse.json(
+        { error: "Erreur lors de la création sur GitHub" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      slug,
+      message: "Article créé ! Il sera visible dans ~2 minutes après le redéploiement.",
+    });
+  } catch (error) {
+    console.error("[Blog API] Erreur:", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 14.9.7 : Test de la protection admin
+
+- [ ] Lancer `npm run dev`
+- [ ] Ouvrir http://localhost:3000/admin → doit rediriger vers `/admin/login`
+- [ ] Entrer un mauvais mot de passe → message d'erreur
+- [ ] Entrer le bon mot de passe → redirection vers `/admin`
+- [ ] Vérifier que le formulaire fonctionne sans champ mot de passe
+- [ ] Cliquer sur "Déconnexion" → retour à `/admin/login`
+- [ ] Réessayer d'accéder à `/admin` → doit rediriger vers login
+
+---
+
 ## ✅ Checkpoint Phase 14
 
 À ce stade, vous devriez avoir :
@@ -6817,12 +7708,30 @@ export default async function CategoryPage({ params }: PageProps) {
 - [ ] Page `/blog/categorie/[category]` pour le filtrage
 - [ ] Lien Blog dans la navigation
 
+**Administration du blog :**
+- [ ] Token GitHub créé avec permissions `repo`
+- [ ] Variables d'environnement configurées dans `.env.local`
+- [ ] API Route `app/api/blog/route.ts` créée
+- [ ] Page admin `app/admin/page.tsx` créée
+
+**Protection admin :**
+- [ ] API login `app/api/admin/login/route.ts` créée
+- [ ] API logout `app/api/admin/logout/route.ts` créée
+- [ ] Page login `app/admin/login/page.tsx` créée
+- [ ] Middleware `middleware.ts` créé à la racine
+- [ ] Page admin mise à jour (sans champ mot de passe, avec déconnexion)
+- [ ] API blog mise à jour (vérification cookie)
+
 **Vérifications :**
 - [ ] Les articles s'affichent correctement
 - [ ] La navigation entre articles fonctionne
 - [ ] Les catégories filtrent correctement
 - [ ] Les boutons de partage fonctionnent
 - [ ] Les métadonnées SEO sont générées
+- [ ] `/admin` redirige vers `/admin/login` si non connecté
+- [ ] Connexion avec mot de passe fonctionne
+- [ ] Formulaire de publication fonctionne
+- [ ] Déconnexion fonctionne
 
 ---
 
@@ -6849,11 +7758,30 @@ export default async function CategoryPage({ params }: PageProps) {
 
 ---
 
-## 15.3 Vérifications production
+## 15.3 Authentification utilisateur (pour plus tard)
+
+La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fonctionnelle.
+
+**Décision à prendre :**
+- [ ] Si espace client nécessaire → implémenter l'authentification
+- [ ] Si pas d'espace client → supprimer la page `/connexion`
+
+**Si implémentation nécessaire :**
+- [ ] **Système d'authentification** → NextAuth, Clerk ou autre solution
+- [ ] **Base de données** → pour stocker les comptes utilisateurs
+- [ ] **Espace propriétaires** → tableau de bord, documents, etc.
+- [ ] **Espace locataires** → accès aux informations personnelles
+
+💡 **Note :** Actuellement, seule l'administration du blog est protégée par mot de passe (via `/admin/login`). Un système d'authentification complet pour les clients nécessitera une base de données externe.
+
+---
+
+## 15.4 Vérifications production
 
 - [ ] Performance Lighthouse (viser le vert)
 - [ ] Tests responsive mobile
 - [ ] Configuration domaine de production
+- [ ] Variables d'environnement configurées sur l'hébergeur
 
 ---
 
@@ -6862,6 +7790,7 @@ export default async function CategoryPage({ params }: PageProps) {
 - [ ] Tous les contenus légaux sont validés
 - [ ] Liens réseaux sociaux fonctionnels
 - [ ] Formulaire de contact envoie des emails
+- [ ] Authentification utilisateur documentée (pour plus tard)
 - [ ] Site testé et prêt pour la production
 
 ---

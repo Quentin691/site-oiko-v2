@@ -39,7 +39,7 @@ export default function CookieBanner() {
             </p>
           </div>
 
-          <div className="flex gap-3 flex-shrink-0">
+          <div className="flex gap-3 shrink-0">
             <button
               onClick={refuseCookies}
               className="px-4 py-2 text-sm border border-border rounded-md text-muted hover:bg-background transition-colors"
