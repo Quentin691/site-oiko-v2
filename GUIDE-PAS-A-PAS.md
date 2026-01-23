@@ -24,9 +24,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 15 phase
 | Phase 11 - Filtres & Pages Détail | 45/45 (100%) | ✅ Terminé |
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
-| Phase 14 - Blog (optionnel) | 0/87 (0%) | ⏳ À faire |
+| Phase 14 - Blog (optionnel) | 18/87 (21%) | 🔄 En cours |
 | Phase 15 - Points à revoir | 0/21 (0%) | ⏳ À faire |
-| **Total** | **585/693 (84%)** | |
+| **Total** | **603/693 (87%)** | |
 
 ---
 
