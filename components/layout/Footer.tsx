@@ -15,7 +15,7 @@ const linkMapping: Record<string, string> = {
   "Property Management": "/activites#property-management",
   "Asset Management": "/activites#asset-management",
   "Project Management": "/activites#project-management",
-  "Transaction": "/activites#transaction",
+  "Transaction": "/activites#transaction-location",
 
   // Locataires
   "Trouver un bien à louer": "/location",
@@ -109,8 +109,23 @@ export default function Footer() {
           </a>
         </div>
 
+        {/* Liens légaux */}
+        <div className="mt-8 pt-8 border-t border-border">
+          <div className="flex flex-wrap justify-center gap-6 text-sm">
+            <Link href="/mentions-legales" className="text-muted hover:text-primary transition-colors">
+              Mentions légales
+            </Link>
+            <Link href="/cgu" className="text-muted hover:text-primary transition-colors">
+              CGU
+            </Link>
+            <Link href="/politique-rgpd" className="text-muted hover:text-primary transition-colors">
+              Politique de confidentialité
+            </Link>
+          </div>
+        </div>
+
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t text-center text-sm text-muted">
+        <div className="mt-6 text-center text-sm text-muted">
           <p>&copy; {new Date().getFullYear()} OIKO. Tous droits réservés.</p>
         </div>
       </div>

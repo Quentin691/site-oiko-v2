@@ -6,7 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/providers";
 import { JsonLd } from "@/components/seo";
-
+import CookieBanner from "@/components/ui/CookieBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +52,7 @@ export default function RootLayout({
         />
         <JsonLd />
       </head>
+      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
         <Header />
@@ -59,6 +60,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         </ThemeProvider>
+        <CookieBanner />
       </body>
     </html>
   );

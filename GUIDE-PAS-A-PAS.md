@@ -1,7 +1,7 @@
 # Guide pas-à-pas - OIKO v2
 
 **Phases couvertes :** 1 à 14
-**Dernière mise à jour :** 22 janvier 2026
+**Dernière mise à jour :** 23 janvier 2026
 
 Ce guide contient toutes les étapes détaillées pour implémenter les 14 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
@@ -23,9 +23,10 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 14 phase
 | Phase 10 - Page Vente | 12/12 (100%) | ✅ Terminée |
 | Phase 11 - Filtres & Pages Détail | 45/45 (100%) | ✅ Terminé |
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
-| Phase 13 - Contenus Légaux | 0/24 (0%) | ⏳ À faire |
+| Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
-| **Total** | **561/617 (91%)** | |
+| Phase 15 - Points à revoir | 0/12 (0%) | ⏳ À faire |
+| **Total** | **585/629 (93%)** | |
 
 ---
 
@@ -5658,8 +5659,8 @@ const response = await fetch(url, {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `app/cgu/`
-- [ ] Créer le fichier `app/cgu/page.tsx`
+- [x] Créer le dossier `app/cgu/`
+- [x] Créer le fichier `app/cgu/page.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -5750,7 +5751,7 @@ export default function CGUPage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ⚠️ **Important :** Ce contenu est un modèle. Le contenu juridique définitif doit être validé par un professionnel du droit.
 
@@ -5762,7 +5763,7 @@ export default function CGUPage() {
 
 **A. Ouvrir app/politique-rgpd/page.tsx**
 
-- [ ] Ouvrir le fichier existant `app/politique-rgpd/page.tsx`
+- [x] Ouvrir le fichier existant `app/politique-rgpd/page.tsx`
 
 **B. Remplacer ou compléter le contenu**
 
@@ -5848,7 +5849,7 @@ export default function PolitiqueRGPDPage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -5858,8 +5859,8 @@ export default function PolitiqueRGPDPage() {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `app/mentions-legales/`
-- [ ] Créer le fichier `app/mentions-legales/page.tsx`
+- [x] Créer le dossier `app/mentions-legales/`
+- [x] Créer le fichier `app/mentions-legales/page.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -5928,7 +5929,7 @@ export default function MentionsLegalesPage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ⚠️ **Important :** Remplacer les informations entre crochets [xxx] par les vraies informations d'OIKO.
 
@@ -5940,7 +5941,7 @@ export default function MentionsLegalesPage() {
 
 **A. Créer le fichier**
 
-- [ ] Dans `components/ui/`, créer le fichier `CookieBanner.tsx`
+- [x] Dans `components/ui/`, créer le fichier `CookieBanner.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -6007,7 +6008,7 @@ export default function CookieBanner() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6015,31 +6016,31 @@ export default function CookieBanner() {
 
 **A. Ouvrir app/layout.tsx**
 
-- [ ] Ajouter l'import :
+- [x] Ajouter l'import :
 
 ```tsx
 import CookieBanner from "@/components/ui/CookieBanner";
 ```
 
-- [ ] Ajouter le composant juste avant `</body>` :
+- [x] Ajouter le composant juste avant `</body>` :
 
 ```tsx
 <CookieBanner />
 </body>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 13.4.3 : Test du bandeau cookies
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000 (en navigation privée)
-- [ ] Vérifier que le bandeau s'affiche
-- [ ] Cliquer sur "Accepter" → le bandeau disparaît
-- [ ] Rafraîchir la page → le bandeau ne réapparaît pas
-- [ ] Supprimer le cookie dans les DevTools → le bandeau réapparaît
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000 (en navigation privée)
+- [x] Vérifier que le bandeau s'affiche
+- [x] Cliquer sur "Accepter" → le bandeau disparaît
+- [x] Rafraîchir la page → le bandeau ne réapparaît pas
+- [x] Supprimer le cookie dans les DevTools → le bandeau réapparaît
 
 ---
 
@@ -6049,7 +6050,7 @@ import CookieBanner from "@/components/ui/CookieBanner";
 
 **A. Ouvrir components/layout/Footer.tsx**
 
-- [ ] Ajouter une section "Informations légales" :
+- [x] Ajouter une section "Informations légales" :
 
 ```tsx
 {/* Liens légaux */}
@@ -6075,33 +6076,33 @@ import CookieBanner from "@/components/ui/CookieBanner";
 </div>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 13.5.2 : Test des liens légaux
 
-- [ ] Vérifier que les liens apparaissent dans le footer
-- [ ] Cliquer sur chaque lien → les pages s'ouvrent correctement
-- [ ] Vérifier le responsive du footer
+- [x] Vérifier que les liens apparaissent dans le footer
+- [x] Cliquer sur chaque lien → les pages s'ouvrent correctement
+- [x] Vérifier le responsive du footer
 
 ---
 
 ## ✅ Checkpoint Phase 13
 
 À ce stade, vous devriez avoir :
-- [ ] Page `/cgu` avec les conditions générales d'utilisation
-- [ ] Page `/politique-rgpd` complète avec toutes les informations RGPD
-- [ ] Page `/mentions-legales` avec les informations de l'entreprise
-- [ ] Composant `CookieBanner` fonctionnel
-- [ ] Bandeau cookies intégré dans le layout
-- [ ] Liens légaux dans le footer
+- [x] Page `/cgu` avec les conditions générales d'utilisation
+- [x] Page `/politique-rgpd` complète avec toutes les informations RGPD
+- [x] Page `/mentions-legales` avec les informations de l'entreprise
+- [x] Composant `CookieBanner` fonctionnel
+- [x] Bandeau cookies intégré dans le layout
+- [x] Liens légaux dans le footer
 
 **Vérifications :**
-- [ ] Toutes les pages légales sont accessibles
-- [ ] Le bandeau cookies fonctionne correctement
-- [ ] Le consentement est mémorisé dans localStorage
-- [ ] Les liens du footer fonctionnent
+- [x] Toutes les pages légales sont accessibles
+- [x] Le bandeau cookies fonctionne correctement
+- [x] Le consentement est mémorisé dans localStorage
+- [x] Les liens du footer fonctionnent
 
 ---
 
@@ -6825,6 +6826,46 @@ export default async function CategoryPage({ params }: PageProps) {
 
 ---
 
+# Phase 15 - Points à revoir
+
+**Objectif :** Liste des éléments en attente avant mise en production.
+
+**Prérequis :** Phases précédentes terminées
+
+---
+
+## 15.1 Contenus légaux à compléter
+
+- [ ] **Page CGU** (`app/cgu/page.tsx`) → ajouter le contenu réel
+- [ ] **Page RGPD** (`app/politique-rgpd/page.tsx`) → ajouter le contenu réel
+- [ ] **Page Mentions Légales** (`app/mentions-legales/page.tsx`) → vérifier les infos (SIRET, hébergeur...)
+
+---
+
+## 15.2 Fonctionnalités à finaliser
+
+- [ ] **Liens réseaux sociaux** → mettre les vrais liens (actuellement vers page connexion)
+- [ ] **Formulaire de contact** → relier à un backend pour l'envoi d'emails
+
+---
+
+## 15.3 Vérifications production
+
+- [ ] Performance Lighthouse (viser le vert)
+- [ ] Tests responsive mobile
+- [ ] Configuration domaine de production
+
+---
+
+## ✅ Checkpoint Phase 15
+
+- [ ] Tous les contenus légaux sont validés
+- [ ] Liens réseaux sociaux fonctionnels
+- [ ] Formulaire de contact envoie des emails
+- [ ] Site testé et prêt pour la production
+
+---
+
 ## 🎉 Projet OIKO v2 complet !
 
 Félicitations ! Vous avez complété toutes les phases du projet :
@@ -6836,8 +6877,9 @@ Félicitations ! Vous avez complété toutes les phases du projet :
 - ✅ Phase 12 : SEO & Performance
 - ✅ Phase 13 : Contenus Légaux
 - ✅ Phase 14 : Blog (optionnel)
+- ✅ Phase 15 : Points à revoir
 
 ---
 
-**Dernière mise à jour :** 22 janvier 2026
+**Dernière mise à jour :** 23 janvier 2026
 **Document créé par :** Claude Code
