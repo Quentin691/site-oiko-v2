@@ -21,11 +21,11 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 14 phase
 | Phase 8 - Audit & Finitions | 59/59 (100%) | ✅ Terminée |
 | Phase 9 - Page Location (API + affichage) | 32/32 (100%) | ✅ Terminée |
 | Phase 10 - Page Vente | 12/12 (100%) | ✅ Terminée |
-| Phase 11 - Filtres & Pages Détail | 25/45 (56%) | 🔄 En cours |
-| Phase 12 - SEO & Performance | 0/28 (0%) | ⏳ À faire |
+| Phase 11 - Filtres & Pages Détail | 45/45 (100%) | ✅ Terminé |
+| Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 0/24 (0%) | ⏳ À faire |
 | Phase 14 - Blog (optionnel) | 0/32 (0%) | ⏳ À faire |
-| **Total** | **501/605 (83%)** | |
+| **Total** | **561/617 (91%)** | |
 
 ---
 
@@ -4819,12 +4819,12 @@ const filteredProperties = filterProperties(locationProperties, params);
 
 ### Étape 11.1.4 : Test des filtres
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/location
-- [ ] Vérifier que les filtres s'affichent
-- [ ] Tester chaque filtre individuellement
-- [ ] Vérifier que l'URL se met à jour avec les filtres
-- [ ] Vérifier que le bouton "Réinitialiser" fonctionne
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/location
+- [x] Vérifier que les filtres s'affichent
+- [x] Tester chaque filtre individuellement
+- [x] Vérifier que l'URL se met à jour avec les filtres
+- [x] Vérifier que le bouton "Réinitialiser" fonctionne
 
 ---
 
@@ -5244,34 +5244,34 @@ import Link from "next/link";
 
 ### Étape 11.5.5 : Test des pages détail
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/location
-- [ ] Cliquer sur une annonce → la page détail s'affiche
-- [ ] Vérifier la galerie photos
-- [ ] Vérifier les détails du bien
-- [ ] Vérifier le fil d'Ariane
-- [ ] Faire les mêmes tests sur `/vente`
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/location
+- [x] Cliquer sur une annonce → la page détail s'affiche
+- [x] Vérifier la galerie photos
+- [x] Vérifier les détails du bien
+- [x] Vérifier le fil d'Ariane
+- [x] Faire les mêmes tests sur `/vente` (pas de biens en vente dans l'API, code identique)
 
 ---
 
 ## ✅ Checkpoint Phase 11
 
 À ce stade, vous devriez avoir :
-- [ ] Composant `PropertyFilters` avec filtres (ville, prix, surface, pièces)
-- [ ] Fonction `filterProperties` pour filtrer les annonces
-- [ ] Composant `Pagination` fonctionnel
-- [ ] Composant `PropertyGallery` avec navigation photos
-- [ ] Composant `PropertyDetails` avec caractéristiques
-- [ ] Fonction `getAdById` dans lib/ubiflow.ts
-- [ ] Page détail `/location/[id]`
-- [ ] Page détail `/vente/[id]`
-- [ ] Lien depuis les cartes vers les pages détail
+- [x] Composant `PropertyFilters` avec filtres (ville, prix, surface, pièces)
+- [x] Fonction `filterProperties` pour filtrer les annonces
+- [x] Composant `Pagination` fonctionnel
+- [x] Composant `PropertyGallery` avec navigation photos
+- [x] Composant `PropertyDetails` avec caractéristiques
+- [x] Fonction `getAdById` dans lib/ubiflow.ts
+- [x] Page détail `/location/[id]`
+- [x] Page détail `/vente/[id]`
+- [x] Lien depuis les cartes vers les pages détail
 
 **Vérifications :**
-- [ ] Les filtres fonctionnent et l'URL se met à jour
-- [ ] La pagination conserve les filtres
-- [ ] Les pages détail affichent toutes les informations
-- [ ] La galerie photos fonctionne
+- [x] Les filtres fonctionnent et l'URL se met à jour
+- [x] La pagination conserve les filtres
+- [x] Les pages détail affichent toutes les informations
+- [x] La galerie photos fonctionne
 
 ---
 
@@ -5289,7 +5289,7 @@ import Link from "next/link";
 
 **A. Ouvrir app/location/[id]/page.tsx**
 
-- [ ] Ouvrir le fichier `app/location/[id]/page.tsx`
+- [x] Ouvrir le fichier `app/location/[id]/page.tsx`
 
 **B. Ajouter la fonction generateMetadata**
 
@@ -5325,7 +5325,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 💡 **Explication :** `generateMetadata` est une fonction spéciale de Next.js qui génère les balises meta côté serveur avant le rendu de la page.
 
@@ -5335,20 +5335,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 **A. Ouvrir app/vente/[id]/page.tsx**
 
-- [ ] Copier la même fonction `generateMetadata`
-- [ ] Modifier `Location à` → `À vendre à`
-- [ ] Modifier `à louer` → `à vendre`
-- [ ] Modifier `€/mois` → `€`
-- [ ] Sauvegarder le fichier
+- [x] Copier la même fonction `generateMetadata`
+- [x] Modifier `Location à` → `À vendre à`
+- [x] Modifier `à louer` → `à vendre`
+- [x] Modifier `€/mois` → `€`
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 12.1.3 : Test des métadonnées
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir une page détail dans le navigateur
-- [ ] Inspecter le code source (Ctrl+U ou Cmd+U)
-- [ ] Vérifier que les balises `<title>` et `<meta name="description">` sont correctes
+- [x] Lancer `npm run dev`
+- [x] Ouvrir une page détail dans le navigateur
+- [x] Inspecter le code source (Ctrl+U ou Cmd+U)
+- [x] Vérifier que les balises `<title>` et `<meta name="description">` sont correctes
 
 ---
 
@@ -5358,7 +5358,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 **A. Ouvrir app/sitemap.ts**
 
-- [ ] Ouvrir le fichier `app/sitemap.ts`
+- [x] Ouvrir le fichier `app/sitemap.ts`
 
 **B. Remplacer le contenu par**
 
@@ -5434,7 +5434,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -5442,22 +5442,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 **A. Ouvrir .env.local**
 
-- [ ] Ajouter la ligne suivante :
+- [x] Ajouter la ligne suivante :
 
 ```
 NEXT_PUBLIC_SITE_URL=https://oiko-gestion.fr
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 12.2.3 : Test du sitemap
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/sitemap.xml
-- [ ] Vérifier que les pages statiques sont listées
-- [ ] Vérifier que les annonces sont incluses
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/sitemap.xml
+- [x] Vérifier que les pages statiques sont listées
+- [x] Vérifier que les annonces sont incluses
 
 ---
 
@@ -5467,8 +5467,8 @@ NEXT_PUBLIC_SITE_URL=https://oiko-gestion.fr
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `components/seo/` (s'il n'existe pas)
-- [ ] Créer le fichier `components/seo/PropertyJsonLd.tsx`
+- [x] Créer le dossier `components/seo/` (s'il n'existe pas)
+- [x] Créer le fichier `components/seo/PropertyJsonLd.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -5520,7 +5520,7 @@ export default function PropertyJsonLd({ property, type }: PropertyJsonLdProps) 
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 💡 **Explication :** Schema.org aide les moteurs de recherche à comprendre le contenu. Les annonces peuvent apparaître avec des rich snippets dans les résultats Google.
 
@@ -5530,13 +5530,13 @@ export default function PropertyJsonLd({ property, type }: PropertyJsonLdProps) 
 
 **A. Modifier app/location/[id]/page.tsx**
 
-- [ ] Ajouter l'import :
+- [x] Ajouter l'import :
 
 ```tsx
 import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
 ```
 
-- [ ] Ajouter le composant juste après `<main>` :
+- [x] Ajouter le composant juste après `<main>` :
 
 ```tsx
 <main>
@@ -5545,22 +5545,22 @@ import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
 </main>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 **B. Faire de même pour app/vente/[id]/page.tsx**
 
-- [ ] Ajouter avec `type="vente"`
-- [ ] Sauvegarder le fichier
+- [x] Ajouter avec `type="vente"`
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 12.3.3 : Test du Schema.org
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir une page détail
-- [ ] Inspecter le code source
-- [ ] Vérifier que le script JSON-LD est présent
-- [ ] Optionnel : Valider avec https://search.google.com/test/rich-results
+- [x] Lancer `npm run dev`
+- [x] Ouvrir une page détail
+- [x] Inspecter le code source
+- [x] Vérifier que le script JSON-LD est présent
+- [x] Optionnel : Valider avec https://search.google.com/test/rich-results
 
 ---
 
@@ -5570,7 +5570,7 @@ import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
 
 **A. Ouvrir next.config.js (ou next.config.ts)**
 
-- [ ] Ajouter la configuration des images :
+- [x] Ajouter la configuration des images :
 
 ```javascript
 /** @type {import('next').NextConfig} */
@@ -5592,8 +5592,8 @@ const nextConfig = {
 module.exports = nextConfig;
 ```
 
-- [ ] Sauvegarder le fichier
-- [ ] Redémarrer le serveur de développement
+- [x] Sauvegarder le fichier
+- [x] Redémarrer le serveur de développement
 
 ⚠️ **Important :** Sans cette configuration, les images externes ne fonctionneront pas avec le composant `<Image>` de Next.js.
 
@@ -5605,7 +5605,7 @@ module.exports = nextConfig;
 
 **A. Ouvrir lib/ubiflow.ts**
 
-- [ ] Modifier la fonction `getAdsList` :
+- [x] Modifier la fonction `getAdsList` :
 
 ```typescript
 const response = await fetch(url, {
@@ -5619,8 +5619,8 @@ const response = await fetch(url, {
 });
 ```
 
-- [ ] Faire de même pour `getAdById`
-- [ ] Sauvegarder le fichier
+- [x] Faire de même pour `getAdById`
+- [x] Sauvegarder le fichier
 
 💡 **Explication :** `revalidate: 300` signifie que les données seront mises en cache pendant 5 minutes, réduisant les appels API.
 
@@ -5629,18 +5629,18 @@ const response = await fetch(url, {
 ## ✅ Checkpoint Phase 12
 
 À ce stade, vous devriez avoir :
-- [ ] `generateMetadata` sur les pages détail location et vente
-- [ ] Sitemap dynamique incluant toutes les annonces
-- [ ] Composant `PropertyJsonLd` pour Schema.org
-- [ ] JSON-LD intégré dans les pages détail
-- [ ] Configuration des images externes dans next.config
-- [ ] Cache API configuré (revalidate: 300)
+- [x] `generateMetadata` sur les pages détail location et vente
+- [x] Sitemap dynamique incluant toutes les annonces
+- [x] Composant `PropertyJsonLd` pour Schema.org
+- [x] JSON-LD intégré dans les pages détail
+- [x] Configuration des images externes dans next.config
+- [x] Cache API configuré (revalidate: 300)
 
 **Vérifications :**
-- [ ] Les meta tags sont corrects sur les pages détail (voir code source)
-- [ ] Le sitemap.xml liste toutes les annonces
-- [ ] Le JSON-LD est présent dans le code source
-- [ ] Les images externes s'affichent correctement
+- [x] Les meta tags sont corrects sur les pages détail (voir code source)
+- [x] Le sitemap.xml liste toutes les annonces
+- [x] Le JSON-LD est présent dans le code source
+- [x] Les images externes s'affichent correctement
 
 ---
 

@@ -1,15 +1,44 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import Section from "@/components/ui/Section";
 import PropertyGallery from "@/components/annonces/PropertyGallery";
 import PropertyDetails from "@/components/annonces/PropertyDetails";
 import { getAdById } from "@/lib/ubiflow";
 import { mapApiToProperty } from "@/lib/mapProperty";
+import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
 
 export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const rawProperty = await getAdById(id);
+
+  if (!rawProperty) {
+    return {
+      title: "Bien non trouvé | OIKO",
+      description: "Ce bien n'est plus disponible.",
+    };
+  }
+
+  const property = mapApiToProperty(rawProperty);
+  const title = `${property.title} - À vendre à ${property.city} | OIKO`;
+  const description = `${property.rooms} pièces, ${property.surface}m² à vendre à ${property.city}. ${property.price}€.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: property.images?.[0] ? [property.images[0]] : [],
+    },
+  };
 }
 
 export default async function VenteDetailPage({ params }: PageProps) {
@@ -24,6 +53,7 @@ export default async function VenteDetailPage({ params }: PageProps) {
 
   return (
     <main>
+       <PropertyJsonLd property={property} type="vente" />
       <Section className="bg-background">
         <nav className="mb-6 text-sm">
           <Link href="/" className="text-muted hover:text-primary">Accueil</Link>

@@ -83,6 +83,8 @@ export async function getAdsList(
       "Content-Type": "application/json",
       "X-AUTH-TOKEN": `Bearer ${token}`,
     },
+    // Cache pendant 5 minutes
+    next: { revalidate: 300 },
   });
 
   if (!response.ok) {
@@ -109,6 +111,8 @@ export async function getAdById(id: string): Promise<unknown> {
       "Content-Type": "application/json",
       "X-AUTH-TOKEN": `Bearer ${token}`,
     },
+    // Cache pendant 5 minutes
+    next: { revalidate: 300 },
   });
 
   if (!response.ok) {
