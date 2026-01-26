@@ -5,20 +5,20 @@ interface ArticleData {
   excerpt: string;
   content: string;
   category: string;
-  password: string;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const data: ArticleData = await request.json();
-
-    // Vérification du mot de passe admin
-    if (data.password !== process.env.ADMIN_PASSWORD) {
+    // Vérifier l'authentification via cookie
+    const session = request.cookies.get("admin-session");
+    if (!session || session.value !== "authenticated") {
       return NextResponse.json(
-        { error: "Mot de passe incorrect" },
+        { error: "Non autorisé" },
         { status: 401 }
       );
     }
+
+    const data: ArticleData = await request.json();
 
     // Validation des champs
     if (!data.title || !data.content || !data.excerpt) {
@@ -32,9 +32,9 @@ export async function POST(request: NextRequest) {
     const slug = data.title
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
-      .replace(/[^a-z0-9]+/g, "-") // Remplace les caractères spéciaux par des tirets
-      .replace(/^-+|-+$/g, ""); // Supprime les tirets en début/fin
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
     // Créer le contenu Markdown
     const date = new Date().toISOString().split("T")[0];
@@ -49,10 +49,10 @@ category: "${data.category || "actualites"}"
 ${data.content}
 `;
 
-    // Encoder le contenu en base64 (requis par GitHub API)
+    // Encoder le contenu en base64
     const contentBase64 = Buffer.from(markdownContent).toString("base64");
 
-    // Appel à l'API GitHub pour créer le fichier
+    // Appel à l'API GitHub
     const githubResponse = await fetch(
       `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${slug}.md`,
       {

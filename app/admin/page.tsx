@@ -1,17 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
     content: "",
     category: "actualites",
-    password: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/admin/login");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,13 +36,11 @@ export default function AdminPage() {
       if (response.ok) {
         setStatus("success");
         setMessage(data.message);
-        // Réinitialiser le formulaire
         setFormData({
           title: "",
           excerpt: "",
           content: "",
           category: "actualites",
-          password: formData.password, // Garder le mot de passe
         });
       } else {
         setStatus("error");
@@ -51,25 +55,19 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-background py-12">
       <div className="max-w-2xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-foreground mb-8">
-          Administration du Blog
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-foreground">
+            Administration du Blog
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 text-sm border border-border rounded-lg text-muted hover:bg-surface transition-colors"
+          >
+            Déconnexion
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Mot de passe */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Mot de passe admin
-            </label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
-              required
-            />
-          </div>
-
           {/* Titre */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">

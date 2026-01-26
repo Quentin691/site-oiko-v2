@@ -24,10 +24,10 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 11 - Filtres & Pages Détail | 45/45 (100%) | ✅ Terminé |
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
-| Phase 14 - Blog (optionnel) | 30/87 (34%) | 🔄 En cours |
+| Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 0/45 (0%) | ⏳ À faire |
-| Phase 16 - Points à revoir | 0/21 (0%) | ⏳ À faire |
-| **Total** | **615/738 (83%)** | |
+| Phase 16 - Points à revoir | 0/23 (0%) | ⏳ À faire |
+| **Total** | **672/740 (91%)** | |
 
 ---
 
@@ -8511,7 +8511,18 @@ La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fon
 
 ---
 
-## 16.5 Images des articles de blog
+## 16.5 Migration middleware vers proxy (Next.js 16+)
+
+**Décision à prendre :** Migrer le fichier `middleware.ts` vers la nouvelle convention "proxy" de Next.js.
+
+- [ ] Lire la documentation : https://nextjs.org/docs/messages/middleware-to-proxy
+- [ ] Migrer le middleware vers la nouvelle syntaxe
+
+💡 **État actuel :** Le middleware fonctionne mais affiche un warning de dépréciation.
+
+---
+
+## 16.6 Images des articles de blog
 
 **Décision à prendre :** Comment gérer les images personnalisées pour chaque article ?
 
