@@ -6,6 +6,8 @@ interface BlogCardProps {
   post: BlogPost;
 }
 
+const DEFAULT_BLOG_IMAGE = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop";
+
 export default function BlogCard({ post }: BlogCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR", {
@@ -25,13 +27,12 @@ export default function BlogCard({ post }: BlogCardProps) {
     <article className="bg-surface rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <Link href={`/blog/${post.slug}`}>
         <div className="relative aspect-video bg-background">
-          {post.image ? (
-            <Image src={post.image} alt={post.title} fill className="object-cover" />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-4xl">📝</span>
-            </div>
-          )}
+          <Image
+            src={post.image || DEFAULT_BLOG_IMAGE}
+            alt={post.title}
+            fill
+            className="object-cover"
+          />
         </div>
       </Link>
 

@@ -58,8 +58,12 @@ export async function getUbiflowToken(): Promise<string> {
  */
 export async function getAdsList(
   page: number = 1,
-  adType?: "L" | "V"
+  options?: {
+    adType?: "L" | "V",
+    getCount?: boolean
+  }
 ): Promise<PropertyRaw[]> {
+  const { adType = "L", getCount = false } = options || {};
   const token = await getUbiflowToken();
   const prodId = process.env.UBIFLOW_PROD_ID;
 
@@ -76,6 +80,17 @@ export async function getAdsList(
   }
 
   console.log(`[Ubiflow] Récupération des annonces (page ${page}, type: ${adType || "tous"})...`);
+
+  let headersData: Record<string, string> = {
+    "Content-Type": "application/json",
+    "X-AUTH-TOKEN": `Bearer ${token}`,
+  };
+
+  if (getCount) {
+    headersData = {
+      ...headersData, 
+      'Acccept':'application/ld+json'};
+  }
 
   const response = await fetch(url, {
     method: "GET",

@@ -1,9 +1,9 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 15
+**Phases couvertes :** 1 à 16
 **Dernière mise à jour :** 23 janvier 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 15 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 16 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
 ---
 
@@ -25,8 +25,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 15 phase
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 30/87 (34%) | 🔄 En cours |
-| Phase 15 - Points à revoir | 0/21 (0%) | ⏳ À faire |
-| **Total** | **615/693 (89%)** | |
+| Phase 15 - Gestion articles admin | 0/45 (0%) | ⏳ À faire |
+| Phase 16 - Points à revoir | 0/21 (0%) | ⏳ À faire |
+| **Total** | **615/738 (83%)** | |
 
 ---
 
@@ -7735,7 +7736,732 @@ ${data.content}
 
 ---
 
-# Phase 15 - Points à revoir
+# Phase 15 - Gestion des articles (Admin)
+
+**Objectif :** Ajouter la possibilité de lister, modifier et supprimer des articles depuis la page admin.
+
+**Prérequis :** Phase 14 terminée (sections 14.1 à 14.8)
+
+---
+
+## 15.1 Créer l'API pour lister les articles
+
+### Étape 15.1.1 : Créer la route API pour récupérer les articles
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `app/api/blog/articles/route.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextResponse } from "next/server";
+import { getAllPosts } from "@/lib/blog";
+
+export async function GET() {
+  try {
+    const posts = getAllPosts();
+    return NextResponse.json({ posts });
+  } catch (error) {
+    console.error("[Blog API] Erreur:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la récupération des articles" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 15.2 Créer l'API pour supprimer un article
+
+### Étape 15.2.1 : Créer la route API de suppression
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `app/api/blog/delete/route.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+
+interface DeleteData {
+  slug: string;
+  password: string;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const data: DeleteData = await request.json();
+
+    // Vérification du mot de passe admin
+    if (data.password !== process.env.ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: "Mot de passe incorrect" },
+        { status: 401 }
+      );
+    }
+
+    if (!data.slug) {
+      return NextResponse.json(
+        { error: "Slug de l'article requis" },
+        { status: 400 }
+      );
+    }
+
+    // Récupérer le SHA du fichier (requis par GitHub pour la suppression)
+    const getFileResponse = await fetch(
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${data.slug}.md`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
+
+    if (!getFileResponse.ok) {
+      return NextResponse.json(
+        { error: "Article non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    const fileData = await getFileResponse.json();
+
+    // Supprimer le fichier sur GitHub
+    const deleteResponse = await fetch(
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${data.slug}.md`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+          Accept: "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify({
+          message: `Suppression article: ${data.slug}`,
+          sha: fileData.sha,
+          branch: "main",
+        }),
+      }
+    );
+
+    if (!deleteResponse.ok) {
+      const errorData = await deleteResponse.json();
+      console.error("[Blog API] Erreur GitHub:", errorData);
+      return NextResponse.json(
+        { error: "Erreur lors de la suppression sur GitHub" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Article supprimé ! Le site se mettra à jour dans ~2 minutes.",
+    });
+  } catch (error) {
+    console.error("[Blog API] Erreur:", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 15.3 Créer l'API pour modifier un article
+
+### Étape 15.3.1 : Créer la route API de modification
+
+**A. Créer le fichier**
+
+- [ ] Créer le fichier `app/api/blog/update/route.ts`
+
+**B. Ajouter le code suivant**
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+
+interface UpdateData {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  date: string;
+  password: string;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const data: UpdateData = await request.json();
+
+    // Vérification du mot de passe admin
+    if (data.password !== process.env.ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: "Mot de passe incorrect" },
+        { status: 401 }
+      );
+    }
+
+    if (!data.slug || !data.title || !data.content || !data.excerpt) {
+      return NextResponse.json(
+        { error: "Tous les champs sont requis" },
+        { status: 400 }
+      );
+    }
+
+    // Récupérer le SHA du fichier existant
+    const getFileResponse = await fetch(
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${data.slug}.md`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
+
+    if (!getFileResponse.ok) {
+      return NextResponse.json(
+        { error: "Article non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    const fileData = await getFileResponse.json();
+
+    // Créer le nouveau contenu Markdown
+    const markdownContent = `---
+title: "${data.title}"
+excerpt: "${data.excerpt}"
+date: "${data.date}"
+author: "OIKO Gestion"
+category: "${data.category || "actualites"}"
+---
+
+${data.content}
+`;
+
+    // Encoder le contenu en base64
+    const contentBase64 = Buffer.from(markdownContent).toString("base64");
+
+    // Mettre à jour le fichier sur GitHub
+    const updateResponse = await fetch(
+      `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/content/blog/${data.slug}.md`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+          Accept: "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify({
+          message: `Modification article: ${data.title}`,
+          content: contentBase64,
+          sha: fileData.sha,
+          branch: "main",
+        }),
+      }
+    );
+
+    if (!updateResponse.ok) {
+      const errorData = await updateResponse.json();
+      console.error("[Blog API] Erreur GitHub:", errorData);
+      return NextResponse.json(
+        { error: "Erreur lors de la modification sur GitHub" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Article modifié ! Le site se mettra à jour dans ~2 minutes.",
+    });
+  } catch (error) {
+    console.error("[Blog API] Erreur:", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 15.4 Mettre à jour la page admin
+
+### Étape 15.4.1 : Ajouter la liste des articles et les actions
+
+**A. Remplacer le contenu de `app/admin/page.tsx`**
+
+- [ ] Ouvrir le fichier `app/admin/page.tsx`
+
+**B. Remplacer par le code suivant**
+
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  content?: string;
+}
+
+type Mode = "create" | "edit" | "list";
+
+export default function AdminPage() {
+  const [mode, setMode] = useState<Mode>("list");
+  const [articles, setArticles] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    slug: "",
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "actualites",
+    date: "",
+    password: "",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  // Charger les articles
+  const loadArticles = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/blog/articles");
+      const data = await response.json();
+      setArticles(data.posts || []);
+    } catch {
+      console.error("Erreur chargement articles");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadArticles();
+  }, []);
+
+  // Réinitialiser le formulaire
+  const resetForm = () => {
+    setFormData({
+      slug: "",
+      title: "",
+      excerpt: "",
+      content: "",
+      category: "actualites",
+      date: "",
+      password: formData.password,
+    });
+    setStatus("idle");
+    setMessage("");
+  };
+
+  // Créer un article
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+        setMessage(data.message);
+        resetForm();
+        setMode("list");
+        // Recharger après un délai (le fichier met du temps à apparaître)
+        setTimeout(loadArticles, 2000);
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Une erreur est survenue");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Erreur de connexion au serveur");
+    }
+  };
+
+  // Modifier un article
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/blog/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+        setMessage(data.message);
+        setMode("list");
+        setTimeout(loadArticles, 2000);
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Une erreur est survenue");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Erreur de connexion au serveur");
+    }
+  };
+
+  // Supprimer un article
+  const handleDelete = async (slug: string) => {
+    if (!formData.password) {
+      setMessage("Entrez le mot de passe admin d'abord");
+      setStatus("error");
+      return;
+    }
+
+    if (!confirm(`Voulez-vous vraiment supprimer l'article "${slug}" ?`)) {
+      return;
+    }
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/blog/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, password: formData.password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+        setMessage(data.message);
+        setTimeout(loadArticles, 2000);
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Une erreur est survenue");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Erreur de connexion au serveur");
+    }
+  };
+
+  // Charger un article pour modification
+  const handleEdit = async (article: BlogPost) => {
+    // Récupérer le contenu complet de l'article
+    try {
+      const response = await fetch(`/api/blog/articles?slug=${article.slug}`);
+      const data = await response.json();
+
+      setFormData({
+        slug: article.slug,
+        title: article.title,
+        excerpt: article.excerpt,
+        content: data.content || "",
+        category: article.category,
+        date: article.date,
+        password: formData.password,
+      });
+      setMode("edit");
+      setStatus("idle");
+      setMessage("");
+    } catch {
+      setMessage("Erreur lors du chargement de l'article");
+      setStatus("error");
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-background py-12">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-foreground">
+            Administration du Blog
+          </h1>
+          {mode !== "list" && (
+            <button
+              onClick={() => { setMode("list"); resetForm(); }}
+              className="px-4 py-2 text-muted hover:text-foreground"
+            >
+              ← Retour à la liste
+            </button>
+          )}
+        </div>
+
+        {/* Mot de passe global */}
+        <div className="mb-6 p-4 bg-surface rounded-lg border border-border">
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Mot de passe admin (requis pour toutes les actions)
+          </label>
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            className="w-full max-w-xs px-4 py-2 border border-border rounded-lg bg-background text-foreground"
+            placeholder="Entrez le mot de passe"
+          />
+        </div>
+
+        {/* Message de statut */}
+        {message && (
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              status === "success"
+                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+
+        {/* MODE: Liste des articles */}
+        {mode === "list" && (
+          <>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-foreground">
+                Articles existants ({articles.length})
+              </h2>
+              <button
+                onClick={() => { setMode("create"); resetForm(); }}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+              >
+                + Nouvel article
+              </button>
+            </div>
+
+            {loading ? (
+              <p className="text-muted">Chargement...</p>
+            ) : articles.length === 0 ? (
+              <p className="text-muted">Aucun article pour le moment.</p>
+            ) : (
+              <div className="space-y-4">
+                {articles.map((article) => (
+                  <div
+                    key={article.slug}
+                    className="p-4 bg-surface rounded-lg border border-border flex justify-between items-start"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-medium text-foreground">{article.title}</h3>
+                      <p className="text-sm text-muted mt-1">{article.excerpt}</p>
+                      <div className="flex gap-4 mt-2 text-xs text-muted">
+                        <span>📅 {article.date}</span>
+                        <span>📁 {article.category}</span>
+                        <span>🔗 {article.slug}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 ml-4">
+                      <button
+                        onClick={() => handleEdit(article)}
+                        className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        onClick={() => handleDelete(article.slug)}
+                        className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200 dark:bg-red-900 dark:text-red-200"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* MODE: Créer / Modifier un article */}
+        {(mode === "create" || mode === "edit") && (
+          <form onSubmit={mode === "create" ? handleCreate : handleUpdate} className="space-y-6">
+            <h2 className="text-xl font-semibold text-foreground">
+              {mode === "create" ? "Nouvel article" : `Modifier: ${formData.title}`}
+            </h2>
+
+            {/* Titre */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Titre de l'article
+              </label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+                placeholder="Ex: 5 conseils pour investir dans l'immobilier"
+                required
+              />
+            </div>
+
+            {/* Extrait */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Extrait (résumé court)
+              </label>
+              <textarea
+                value={formData.excerpt}
+                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+                rows={2}
+                placeholder="Résumé de l'article en 1-2 phrases"
+                required
+              />
+            </div>
+
+            {/* Catégorie */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Catégorie
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              >
+                <option value="actualites">Actualités</option>
+                <option value="conseils">Conseils</option>
+                <option value="immobilier">Immobilier</option>
+              </select>
+            </div>
+
+            {/* Contenu */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Contenu (Markdown supporté)
+              </label>
+              <textarea
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground font-mono text-sm"
+                rows={15}
+                placeholder="Écrivez votre article ici..."
+                required
+              />
+            </div>
+
+            {/* Bouton submit */}
+            <button
+              type="submit"
+              disabled={status === "loading" || !formData.password}
+              className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+            >
+              {status === "loading"
+                ? "En cours..."
+                : mode === "create"
+                ? "Publier l'article"
+                : "Enregistrer les modifications"}
+            </button>
+          </form>
+        )}
+      </div>
+    </main>
+  );
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+### Étape 15.4.2 : Mettre à jour l'API articles pour récupérer le contenu
+
+**A. Modifier `app/api/blog/articles/route.ts`**
+
+- [ ] Remplacer le contenu par :
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+import { getAllPosts, getPostBySlug } from "@/lib/blog";
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get("slug");
+
+    // Si un slug est fourni, retourner l'article complet avec son contenu
+    if (slug) {
+      const post = await getPostBySlug(slug);
+      if (!post) {
+        return NextResponse.json({ error: "Article non trouvé" }, { status: 404 });
+      }
+      return NextResponse.json(post);
+    }
+
+    // Sinon retourner la liste de tous les articles
+    const posts = getAllPosts();
+    return NextResponse.json({ posts });
+  } catch (error) {
+    console.error("[Blog API] Erreur:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la récupération des articles" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+- [ ] Sauvegarder le fichier
+
+---
+
+## 15.5 Tests de la gestion des articles
+
+### Étape 15.5.1 : Tester les fonctionnalités
+
+- [ ] Lancer `npm run dev`
+- [ ] Aller sur http://localhost:3000/admin
+- [ ] Entrer le mot de passe admin
+- [ ] Vérifier que la liste des articles s'affiche
+- [ ] Cliquer sur "Nouvel article" → créer un article de test
+- [ ] Vérifier que l'article apparaît dans la liste
+- [ ] Cliquer sur "Modifier" → modifier le titre
+- [ ] Vérifier que la modification est prise en compte
+- [ ] Cliquer sur "Supprimer" → confirmer la suppression
+- [ ] Vérifier que l'article est supprimé
+
+---
+
+## ✅ Checkpoint Phase 15
+
+- [ ] API liste articles fonctionnelle (`/api/blog/articles`)
+- [ ] API suppression fonctionnelle (`/api/blog/delete`)
+- [ ] API modification fonctionnelle (`/api/blog/update`)
+- [ ] Page admin mise à jour avec liste, création, modification, suppression
+- [ ] Tests de toutes les fonctionnalités passés
+
+---
+
+# Phase 16 - Points à revoir
 
 **Objectif :** Liste des éléments en attente avant mise en production.
 
@@ -7743,7 +8469,7 @@ ${data.content}
 
 ---
 
-## 15.1 Contenus légaux à compléter
+## 16.1 Contenus légaux à compléter
 
 - [ ] **Page CGU** (`app/cgu/page.tsx`) → ajouter le contenu réel
 - [ ] **Page RGPD** (`app/politique-rgpd/page.tsx`) → ajouter le contenu réel
@@ -7751,14 +8477,14 @@ ${data.content}
 
 ---
 
-## 15.2 Fonctionnalités à finaliser
+## 16.2 Fonctionnalités à finaliser
 
 - [ ] **Liens réseaux sociaux** → mettre les vrais liens (actuellement vers page connexion)
 - [ ] **Formulaire de contact** → relier à un backend pour l'envoi d'emails
 
 ---
 
-## 15.3 Authentification utilisateur (pour plus tard)
+## 16.3 Authentification utilisateur (pour plus tard)
 
 La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fonctionnelle.
 
@@ -7776,7 +8502,7 @@ La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fon
 
 ---
 
-## 15.4 Vérifications production
+## 16.4 Vérifications production
 
 - [ ] Performance Lighthouse (viser le vert)
 - [ ] Tests responsive mobile
@@ -7785,7 +8511,21 @@ La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fon
 
 ---
 
-## ✅ Checkpoint Phase 15
+## 16.5 Images des articles de blog
+
+**Décision à prendre :** Comment gérer les images personnalisées pour chaque article ?
+
+**Options possibles :**
+- [ ] **Option 1 - Upload sur GitHub** : Stocker les images dans `public/images/blog/` via l'API GitHub (repo plus lourd)
+- [ ] **Option 2 - Service externe** : Utiliser Cloudinary, Imgur ou autre pour héberger les images
+- [ ] **Option 3 - URL manuelle** : Ajouter un champ URL dans le formulaire admin (images Unsplash, etc.)
+- [ ] **Option 4 - Image par défaut uniquement** : Garder la même image pour tous les articles
+
+💡 **État actuel :** Une image par défaut Unsplash est utilisée quand aucune image n'est définie.
+
+---
+
+## ✅ Checkpoint Phase 16
 
 - [ ] Tous les contenus légaux sont validés
 - [ ] Liens réseaux sociaux fonctionnels
@@ -7806,9 +8546,10 @@ Félicitations ! Vous avez complété toutes les phases du projet :
 - ✅ Phase 12 : SEO & Performance
 - ✅ Phase 13 : Contenus Légaux
 - ✅ Phase 14 : Blog (optionnel)
-- ✅ Phase 15 : Points à revoir
+- ✅ Phase 15 : Gestion des articles (Admin)
+- ✅ Phase 16 : Points à revoir
 
 ---
 
-**Dernière mise à jour :** 23 janvier 2026
+**Dernière mise à jour :** 26 janvier 2026
 **Document créé par :** Claude Code

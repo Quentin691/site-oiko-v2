@@ -4,7 +4,6 @@ excerpt: "Découvrez nos conseils essentiels pour bien démarrer dans l'investis
 date: "2026-01-15"
 author: "OIKO Gestion"
 category: "conseils"
-image: "/images/blog/investissement.jpg"
 ---
 
 L'investissement locatif est une excellente façon de se constituer un patrimoine. Voici nos 5 conseils.

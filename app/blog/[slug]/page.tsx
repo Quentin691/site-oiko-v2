@@ -6,6 +6,8 @@ import Section from "@/components/ui/Section";
 import ShareButtons from "@/components/blog/ShareButtons";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
 
+const DEFAULT_BLOG_IMAGE = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop";
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -78,11 +80,15 @@ export default async function BlogPostPage({ params }: PageProps) {
           </header>
 
           {/* Image principale */}
-          {post.image && (
-            <div className="relative aspect-video mb-8 rounded-lg overflow-hidden">
-              <Image src={post.image} alt={post.title} fill className="object-cover" priority />
-            </div>
-          )}
+          <div className="relative aspect-video mb-8 rounded-lg overflow-hidden">
+            <Image
+              src={post.image || DEFAULT_BLOG_IMAGE}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
 
           {/* Contenu */}
           <div
