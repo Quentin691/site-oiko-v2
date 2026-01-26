@@ -24,9 +24,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 15 phase
 | Phase 11 - Filtres & Pages Détail | 45/45 (100%) | ✅ Terminé |
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
-| Phase 14 - Blog (optionnel) | 18/87 (21%) | 🔄 En cours |
+| Phase 14 - Blog (optionnel) | 30/87 (34%) | 🔄 En cours |
 | Phase 15 - Points à revoir | 0/21 (0%) | ⏳ À faire |
-| **Total** | **603/693 (87%)** | |
+| **Total** | **615/693 (89%)** | |
 
 ---
 
@@ -6120,7 +6120,7 @@ import CookieBanner from "@/components/ui/CookieBanner";
 
 **A. Exécuter la commande**
 
-- [ ] Dans le terminal, exécuter :
+- [x] Dans le terminal, exécuter :
 
 ```bash
 npm install gray-matter remark remark-html
@@ -6139,8 +6139,8 @@ npm install gray-matter remark remark-html
 
 **A. Créer la structure**
 
-- [ ] Créer le dossier `content/` à la racine du projet
-- [ ] Créer le sous-dossier `content/blog/`
+- [x] Créer le dossier `content/` à la racine du projet
+- [x] Créer le sous-dossier `content/blog/`
 
 ---
 
@@ -6148,7 +6148,7 @@ npm install gray-matter remark remark-html
 
 **A. Créer le fichier**
 
-- [ ] Créer le fichier `content/blog/conseils-investissement-locatif.md`
+- [x] Créer le fichier `content/blog/conseils-investissement-locatif.md`
 
 **B. Ajouter le contenu suivant**
 
@@ -6189,7 +6189,7 @@ Un premier investissement peut être complexe. N'hésitez pas à vous faire acco
 Besoin de conseils ? [Contactez-nous](/contact) !
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6199,7 +6199,7 @@ Besoin de conseils ? [Contactez-nous](/contact) !
 
 **A. Créer le fichier**
 
-- [ ] Créer le fichier `lib/blog.ts`
+- [x] Créer le fichier `lib/blog.ts`
 
 **B. Ajouter le code suivant**
 
@@ -6313,7 +6313,7 @@ export function getAllCategories(): string[] {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6323,8 +6323,8 @@ export function getAllCategories(): string[] {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `components/blog/`
-- [ ] Créer le fichier `components/blog/BlogCard.tsx`
+- [x] Créer le dossier `components/blog/`
+- [x] Créer le fichier `components/blog/BlogCard.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -6391,7 +6391,7 @@ export default function BlogCard({ post }: BlogCardProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6399,7 +6399,7 @@ export default function BlogCard({ post }: BlogCardProps) {
 
 **A. Créer le fichier**
 
-- [ ] Créer le fichier `components/blog/ShareButtons.tsx`
+- [x] Créer le fichier `components/blog/ShareButtons.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -6466,7 +6466,7 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6476,8 +6476,8 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `app/blog/`
-- [ ] Créer le fichier `app/blog/page.tsx`
+- [x] Créer le dossier `app/blog/`
+- [x] Créer le fichier `app/blog/page.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -6544,7 +6544,7 @@ export default function BlogPage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6552,8 +6552,8 @@ export default function BlogPage() {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `app/blog/[slug]/`
-- [ ] Créer le fichier `app/blog/[slug]/page.tsx`
+- [x] Créer le dossier `app/blog/[slug]/`
+- [x] Créer le fichier `app/blog/[slug]/page.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -6669,7 +6669,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6677,8 +6677,8 @@ export default async function BlogPostPage({ params }: PageProps) {
 
 **A. Créer le dossier et fichier**
 
-- [ ] Créer le dossier `app/blog/categorie/[category]/`
-- [ ] Créer le fichier `app/blog/categorie/[category]/page.tsx`
+- [x] Créer le dossier `app/blog/categorie/[category]/`
+- [x] Créer le fichier `app/blog/categorie/[category]/page.tsx`
 
 **B. Ajouter le code suivant**
 
@@ -6772,7 +6772,7 @@ export default async function CategoryPage({ params }: PageProps) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -6780,7 +6780,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
 **A. Ouvrir le fichier de navigation (Header.tsx ou Navigation.tsx)**
 
-- [ ] Ajouter un lien vers `/blog` :
+- [x] Ajouter un lien vers `/blog` :
 
 ```tsx
 <Link href="/blog" className="...">
@@ -6788,19 +6788,19 @@ export default async function CategoryPage({ params }: PageProps) {
 </Link>
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
 ### Étape 14.5.5 : Test du blog
 
-- [ ] Lancer `npm run dev`
-- [ ] Ouvrir http://localhost:3000/blog
-- [ ] Vérifier que les articles s'affichent
-- [ ] Cliquer sur un article → la page détail s'affiche
-- [ ] Vérifier les boutons de partage
-- [ ] Tester les filtres par catégorie
-- [ ] Vérifier le responsive
+- [x] Lancer `npm run dev`
+- [x] Ouvrir http://localhost:3000/blog
+- [x] Vérifier que les articles s'affichent
+- [x] Cliquer sur un article → la page détail s'affiche
+- [x] Vérifier les boutons de partage
+- [x] Tester les filtres par catégorie
+- [x] Vérifier le responsive
 
 ---
 

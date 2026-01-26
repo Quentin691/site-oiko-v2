@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/vente", label: "Vente" },
   { href: "/location", label: "Location" },
   { href: "/contactez-nous", label: "Contact" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export default function Navbar() {
