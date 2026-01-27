@@ -7,3 +7,4 @@ export { default as ThemeToggle } from "./ThemeToggle";
 export { Skeleton } from "./Skeleton";
 export { Banner } from "./Banner";
 export { AnimateOnScroll } from "./AnimateOnScroll";
+export { default as Pagination } from "./Pagination";

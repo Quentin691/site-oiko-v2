@@ -1,7 +1,7 @@
 # Guide pas-à-pas - OIKO v2
 
 **Phases couvertes :** 1 à 16
-**Dernière mise à jour :** 23 janvier 2026
+**Dernière mise à jour :** 27 janvier 2026
 
 Ce guide contient toutes les étapes détaillées pour implémenter les 16 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
@@ -25,9 +25,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 12 - SEO & Performance | 40/40 (100%) | ✅ Terminé |
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
-| Phase 15 - Gestion articles admin | 0/45 (0%) | ⏳ À faire |
+| Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
 | Phase 16 - Points à revoir | 0/23 (0%) | ⏳ À faire |
-| **Total** | **672/740 (91%)** | |
+| **Total** | **717/740 (97%)** | |
 
 ---
 
@@ -7750,7 +7750,7 @@ ${data.content}
 
 **A. Créer le fichier**
 
-- [ ] Créer le fichier `app/api/blog/articles/route.ts`
+- [x] Créer le fichier `app/api/blog/articles/route.ts`
 
 **B. Ajouter le code suivant**
 
@@ -7772,7 +7772,7 @@ export async function GET() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -7782,7 +7782,7 @@ export async function GET() {
 
 **A. Créer le fichier**
 
-- [ ] Créer le fichier `app/api/blog/delete/route.ts`
+- [x] Créer le fichier `app/api/blog/delete/route.ts`
 
 **B. Ajouter le code suivant**
 
@@ -7874,7 +7874,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -7884,7 +7884,7 @@ export async function POST(request: NextRequest) {
 
 **A. Créer le fichier**
 
-- [ ] Créer le fichier `app/api/blog/update/route.ts`
+- [x] Créer le fichier `app/api/blog/update/route.ts`
 
 **B. Ajouter le code suivant**
 
@@ -7997,7 +7997,7 @@ ${data.content}
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -8007,7 +8007,7 @@ ${data.content}
 
 **A. Remplacer le contenu de `app/admin/page.tsx`**
 
-- [ ] Ouvrir le fichier `app/admin/page.tsx`
+- [x] Ouvrir le fichier `app/admin/page.tsx`
 
 **B. Remplacer par le code suivant**
 
@@ -8389,7 +8389,7 @@ export default function AdminPage() {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -8397,7 +8397,7 @@ export default function AdminPage() {
 
 **A. Modifier `app/api/blog/articles/route.ts`**
 
-- [ ] Remplacer le contenu par :
+- [x] Remplacer le contenu par :
 
 ```typescript
 import { NextRequest, NextResponse } from "next/server";
@@ -8430,7 +8430,7 @@ export async function GET(request: NextRequest) {
 }
 ```
 
-- [ ] Sauvegarder le fichier
+- [x] Sauvegarder le fichier
 
 ---
 
@@ -8438,26 +8438,26 @@ export async function GET(request: NextRequest) {
 
 ### Étape 15.5.1 : Tester les fonctionnalités
 
-- [ ] Lancer `npm run dev`
-- [ ] Aller sur http://localhost:3000/admin
-- [ ] Entrer le mot de passe admin
-- [ ] Vérifier que la liste des articles s'affiche
-- [ ] Cliquer sur "Nouvel article" → créer un article de test
-- [ ] Vérifier que l'article apparaît dans la liste
-- [ ] Cliquer sur "Modifier" → modifier le titre
-- [ ] Vérifier que la modification est prise en compte
-- [ ] Cliquer sur "Supprimer" → confirmer la suppression
-- [ ] Vérifier que l'article est supprimé
+- [x] Lancer `npm run dev`
+- [x] Aller sur http://localhost:3000/admin
+- [x] Entrer le mot de passe admin
+- [x] Vérifier que la liste des articles s'affiche
+- [x] Cliquer sur "Nouvel article" → créer un article de test
+- [x] Vérifier que l'article apparaît dans la liste
+- [x] Cliquer sur "Modifier" → modifier le titre
+- [x] Vérifier que la modification est prise en compte
+- [x] Cliquer sur "Supprimer" → confirmer la suppression
+- [x] Vérifier que l'article est supprimé
 
 ---
 
 ## ✅ Checkpoint Phase 15
 
-- [ ] API liste articles fonctionnelle (`/api/blog/articles`)
-- [ ] API suppression fonctionnelle (`/api/blog/delete`)
-- [ ] API modification fonctionnelle (`/api/blog/update`)
-- [ ] Page admin mise à jour avec liste, création, modification, suppression
-- [ ] Tests de toutes les fonctionnalités passés
+- [x] API liste articles fonctionnelle (`/api/blog/articles`)
+- [x] API suppression fonctionnelle (`/api/blog/delete`)
+- [x] API modification fonctionnelle (`/api/blog/update`)
+- [x] Page admin mise à jour avec liste, création, modification, suppression
+- [x] Tests de toutes les fonctionnalités passés
 
 ---
 

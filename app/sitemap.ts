@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAdsList } from "@/lib/ubiflow";
+import { getAllAds } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -55,8 +55,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let dynamicPages: MetadataRoute.Sitemap = [];
 
   try {
-    // Récupérer toutes les annonces (sans filtre de type)
-    const rawProperties = await getAdsList(1);
+    // Récupérer toutes les annonces (toutes les pages, sans filtre de type)
+    const rawProperties = await getAllAds();
     const properties = mapApiToProperties(rawProperties);
 
     dynamicPages = properties.map((property) => {

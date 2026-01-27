@@ -103,6 +103,11 @@ export async function getAdsList(
   });
 
   if (!response.ok) {
+    // Si 404, c'est qu'on a dépassé le nombre de pages disponibles
+    if (response.status === 404) {
+      console.log(`[Ubiflow] Page ${page} non trouvée (fin des résultats)`);
+      return [];
+    }
     const errorText = await response.text();
     console.error("[Ubiflow] Erreur:", errorText);
     throw new Error(`Échec de la récupération des annonces: ${response.status}`);
@@ -111,6 +116,34 @@ export async function getAdsList(
   const data = await response.json();
   console.log(`[Ubiflow] ${data.length} annonces récupérées`);
   return data;
+}
+
+/**
+ * Récupère TOUTES les annonces (toutes les pages) depuis l'API Ubiflow
+ * @param adType - Type de transaction : "L" (location), "V" (vente), ou undefined pour tous
+ */
+export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
+  const allAds: PropertyRaw[] = [];
+  let page = 1;
+  let hasMorePages = true;
+
+  console.log(`[Ubiflow] Récupération de toutes les annonces (type: ${adType || "tous"})...`);
+
+  while (hasMorePages) {
+    const ads = await getAdsList(page, adType ? { adType } : undefined);
+
+    if (ads.length === 0) {
+      // Plus de résultats, on arrête
+      hasMorePages = false;
+    } else {
+      allAds.push(...ads);
+      console.log(`[Ubiflow] Page ${page}: ${ads.length} annonces (total: ${allAds.length})`);
+      page++;
+    }
+  }
+
+  console.log(`[Ubiflow] Total récupéré: ${allAds.length} annonces`);
+  return allAds;
 }
 
 /**

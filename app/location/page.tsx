@@ -1,13 +1,14 @@
-import { Section, ScrollToTop } from "@/components/ui";
+import { Section, ScrollToTop, Pagination } from "@/components/ui";
 import { PropertyCard } from "@/components/annonces";
-import { getAdsList } from "@/lib/ubiflow";
+import { getAllAds } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
 import PropertyFilters from "@/components/annonces/PropertyFilters";
 import { filterProperties, extractCities } from "@/lib/filterProperties";
 
-
 // Force le rendu côté serveur (pas de pré-rendu au build)
 export const dynamic = "force-dynamic";
+
+const ITEMS_PER_PAGE = 24;
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -17,8 +18,8 @@ export default async function LocationPage({ searchParams }: PageProps) {
   // Récupérer les paramètres de recherche
   const params = await searchParams;
 
-  // Récupérer les annonces de location côté serveur
-  const rawProperties = await getAdsList(1, "L");
+  // Récupérer TOUTES les annonces de location côté serveur
+  const rawProperties = await getAllAds("L");
 
   // Transformer les données brutes en Property[]
   const properties = mapApiToProperties(rawProperties);
@@ -26,6 +27,12 @@ export default async function LocationPage({ searchParams }: PageProps) {
   // Extraire les villes et filtrer les propriétés
   const cities = extractCities(properties);
   const filteredProperties = filterProperties(properties, params);
+
+  // Pagination
+  const currentPage = Math.max(1, parseInt(params.page || "1", 10));
+  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProperties = filteredProperties.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   return (
     <main>
       <Section className="bg-background">
@@ -45,11 +52,22 @@ export default async function LocationPage({ searchParams }: PageProps) {
         {/* Grille d'annonces */}
         {filteredProperties.length > 0 ? (
           <>
-            <p className="text-muted mb-6">
-              {filteredProperties.length} bien(s) disponible(s)
-            </p>
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-muted">
+                {filteredProperties.length} bien(s) disponible(s)
+                {totalPages > 1 && ` - Page ${currentPage} sur ${totalPages}`}
+              </p>
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  basePath="/location"
+                  searchParams={params}
+                />
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProperties.map((property) => (
+              {paginatedProperties.map((property) => (
                 <PropertyCard
                   key={property.id}
                   property={property}
@@ -57,6 +75,14 @@ export default async function LocationPage({ searchParams }: PageProps) {
                 />
               ))}
             </div>
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath="/location"
+              searchParams={params}
+            />
           </>
         ) : (
           <div className="text-center py-12">
