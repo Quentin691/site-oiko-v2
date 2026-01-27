@@ -3,7 +3,7 @@ import { getAllAds } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-oiko-v2-tklh.vercel.app";
 
   // Pages statiques
   const staticPages: MetadataRoute.Sitemap = [
@@ -20,13 +20,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/a-propos`,
+      url: `${baseUrl}/a-propos-de-nous`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${baseUrl}/contactez-nous`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
@@ -44,7 +44,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/politique-rgpd`,
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/mentions-legales`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.3,
