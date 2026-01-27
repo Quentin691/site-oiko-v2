@@ -26,8 +26,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
-| Phase 16 - Points à revoir | 0/23 (0%) | ⏳ À faire |
-| **Total** | **717/740 (97%)** | |
+| Phase 16 - Points à revoir | 3/23 (13%) | ⏳ En cours |
+| **Total** | **720/740 (97%)** | |
 
 ---
 
@@ -8513,12 +8513,13 @@ La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fon
 
 ## 16.5 Migration middleware vers proxy (Next.js 16+)
 
-**Décision à prendre :** Migrer le fichier `middleware.ts` vers la nouvelle convention "proxy" de Next.js.
+**Objectif :** Migrer le fichier `middleware.ts` vers la nouvelle convention "proxy" de Next.js.
 
-- [ ] Lire la documentation : https://nextjs.org/docs/messages/middleware-to-proxy
-- [ ] Migrer le middleware vers la nouvelle syntaxe
+- [x] Lire la documentation : https://nextjs.org/docs/messages/middleware-to-proxy
+- [x] Renommer `middleware.ts` → `proxy.ts`
+- [x] Renommer la fonction `middleware()` → `proxy()`
 
-💡 **État actuel :** Le middleware fonctionne mais affiche un warning de dépréciation.
+✅ **Terminé :** Le proxy fonctionne sur Node.js runtime (plus sécurisé que Edge).
 
 ---
 
