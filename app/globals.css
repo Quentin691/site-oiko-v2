@@ -63,6 +63,12 @@ textarea::placeholder {
   transition: color 1s ease;
 }
 
+/* Options des selects */
+select option {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
 /* Transition pour les éléments principaux lors du changement de thème */
 header, nav, main, footer, section, article, aside, div, span, p, h1, h2, h3, h4, h5, h6, a, button, input, textarea, select {
   transition: background-color 1s ease, color 1s ease, border-color 1s ease;
