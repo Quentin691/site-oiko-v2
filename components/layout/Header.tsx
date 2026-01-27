@@ -46,7 +46,7 @@ export default function Header() {
 
         {/* Bloc à droite : connexion + réseaux */}
         <div className="flex items-center gap-2 sm:gap-6 shrink-0">
-          <Button href="/connexion" variant="secondary">
+          <Button href="/admin" variant="secondary">
             Connexion
           </Button>
 

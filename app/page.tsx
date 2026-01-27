@@ -37,7 +37,7 @@ export default function HomePage() {
 
   return (
     <main>
-      <Banner/>
+      <Banner videoSrc="/Film-Oiko.mp4" />
       <Hero
         title={homeContent.hero.title}
         subtitle={homeContent.hero.description}

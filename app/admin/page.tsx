@@ -99,8 +99,16 @@ export default function AdminPage() {
 
       if (response.ok) {
         setStatus("success");
-        setMessage(data.message);
-        resetForm();
+        setMessage(data.message || "Article créé avec succès !");
+        // Réinitialiser le formulaire sans effacer le message
+        setFormData({
+          slug: "",
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "actualites",
+          date: "",
+        });
         setMode("list");
         // Recharger après un délai (le fichier met du temps à apparaître)
         setTimeout(loadArticles, 2000);
@@ -134,7 +142,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         setStatus("success");
-        setMessage(data.message);
+        setMessage(data.message || "Article modifié avec succès !");
         setMode("list");
         setTimeout(loadArticles, 2000);
       } else {
@@ -176,7 +184,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         setStatus("success");
-        setMessage(data.message);
+        setMessage(data.message || "Article supprimé avec succès !");
         setTimeout(loadArticles, 2000);
       } else {
         setStatus("error");
