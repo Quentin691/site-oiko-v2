@@ -8480,6 +8480,7 @@ export async function GET(request: NextRequest) {
 ## 16.2 Fonctionnalités à finaliser
 
 - [ ] **Liens réseaux sociaux** → mettre les vrais liens (actuellement vers page connexion)
+- [ ] **Numéro de téléphone Paris** → ajouter le numéro dans `content/contact.json` (section offices → Paris)
 - [ ] **Formulaire de contact** → relier à un backend pour l'envoi d'emails
 
 ---

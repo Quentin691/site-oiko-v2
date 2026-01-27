@@ -6,6 +6,10 @@ import type { PropertyRaw } from "@/types/property";
 let cachedToken: string | null = null;
 let tokenExpiry: number | null = null;
 
+// Cache des annonces par type (L = location, V = vente)
+const adsCache: Record<string, { data: PropertyRaw[]; expiry: number }> = {};
+const ADS_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes en millisecondes
+
 // Marge de sécurité : on renouvelle le token 5 minutes avant expiration
 const EXPIRY_MARGIN = 5 * 60 * 1000; // 5 minutes en millisecondes
 
@@ -123,6 +127,14 @@ export async function getAdsList(
  * @param adType - Type de transaction : "L" (location), "V" (vente), ou undefined pour tous
  */
 export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
+  const cacheKey = adType || "all";
+
+  // Vérifier si on a des données en cache et si elles sont encore valides
+  if (adsCache[cacheKey] && Date.now() < adsCache[cacheKey].expiry) {
+    console.log(`[Ubiflow] Annonces récupérées depuis le cache (type: ${cacheKey})`);
+    return adsCache[cacheKey].data;
+  }
+
   const allAds: PropertyRaw[] = [];
   let page = 1;
   let hasMorePages = true;
@@ -142,7 +154,13 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
     }
   }
 
-  console.log(`[Ubiflow] Total récupéré: ${allAds.length} annonces`);
+  // Mettre en cache les résultats
+  adsCache[cacheKey] = {
+    data: allAds,
+    expiry: Date.now() + ADS_CACHE_DURATION,
+  };
+
+  console.log(`[Ubiflow] Total récupéré: ${allAds.length} annonces (mis en cache)`);
   return allAds;
 }
 
