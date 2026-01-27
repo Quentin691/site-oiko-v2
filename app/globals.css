@@ -10,6 +10,7 @@
   --muted: #6B7280;
   --border: #E5E7EB;
   --hover-bg: #F3F4F6;
+  --placeholder: #6B7280;
 }
 
 .dark {
@@ -22,6 +23,7 @@
   --primary-dark: #27AE60;
   --border: #374151;
   --hover-bg: #1F2937;
+  --placeholder: #9CA3AF;
 }
 
 @theme inline {
@@ -51,6 +53,14 @@ body {
 
 .dark .text-muted {
   color: #D1D5DB !important;
+}
+
+/* Placeholder pour les inputs et textareas */
+input::placeholder,
+textarea::placeholder {
+  color: var(--placeholder) !important;
+  opacity: 1;
+  transition: color 1s ease;
 }
 
 /* Transition pour les éléments principaux lors du changement de thème */
@@ -124,6 +134,28 @@ html.dark .bg-service-card.bg-service-card {
 
 html.dark .bg-metier-card.bg-metier-card {
   background-color: #0A0A0A !important;
+}
+
+/* Message de succès */
+.alert-success {
+  background-color: #D1FAE5 !important;
+  color: #065F46 !important;
+}
+
+html.dark .alert-success {
+  background-color: #064E3B !important;
+  color: #A7F3D0 !important;
+}
+
+/* Message d'erreur */
+.alert-error {
+  background-color: #FEE2E2 !important;
+  color: #991B1B !important;
+}
+
+html.dark .alert-error {
+  background-color: #7F1D1D !important;
+  color: #FECACA !important;
 }
 
 /* Mix blend mode pour le logo en mode sombre */

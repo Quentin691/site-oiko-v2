@@ -67,7 +67,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 bg-card text-card-foreground rounded-lg p-6 border border-border shadow-sm">
           {/* Titre */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
@@ -77,7 +77,7 @@ export default function AdminPage() {
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              className="w-full px-3 py-2 border border-border rounded-md bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               placeholder="Ex: 5 conseils pour investir dans l'immobilier"
               required
             />
@@ -91,7 +91,7 @@ export default function AdminPage() {
             <textarea
               value={formData.excerpt}
               onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              className="w-full px-3 py-2 border border-border rounded-md bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               rows={2}
               placeholder="Résumé de l'article en 1-2 phrases"
               required
@@ -106,7 +106,7 @@ export default function AdminPage() {
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+              className="w-full px-3 py-2 border border-border rounded-md bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
             >
               <option value="actualites">Actualités</option>
               <option value="conseils">Conseils</option>
@@ -122,7 +122,7 @@ export default function AdminPage() {
             <textarea
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground font-mono text-sm"
+              className="w-full px-3 py-2 border border-border rounded-md bg-card text-foreground font-mono text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
               rows={15}
               placeholder="Écrivez votre article ici...
 
@@ -142,9 +142,7 @@ Paragraphe de texte...
           {message && (
             <div
               className={`p-4 rounded-lg ${
-                status === "success"
-                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                  : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                status === "success" ? "alert-success" : "alert-error"
               }`}
             >
               {message}
