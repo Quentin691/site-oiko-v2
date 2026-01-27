@@ -20,8 +20,8 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service) => (
-            <Link key={service.title} href={service.link}>
-              <Card hover className="bg-service-card">
+            <Link key={service.title} href={service.link} className="h-full">
+              <Card hover className="bg-service-card h-full">
                 <h3 className="text-xl font-semibold text-foreground mb-3">
                   {service.title}
                 </h3>
