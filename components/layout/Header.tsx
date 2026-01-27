@@ -40,7 +40,7 @@ export default function Header() {
               alt="Oikogestion"
               width={200}
               height={80}
-              className="h-12 sm:h-20 w-auto"
+              className="h-10 sm:h-16 w-auto"
               priority
             />
           </div>
