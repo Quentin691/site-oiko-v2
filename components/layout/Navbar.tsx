@@ -56,13 +56,15 @@ export default function Navbar() {
           }`}
         >
           <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="Oikogestion"
-              width={100}
-              height={32}
-              className="h-8 w-auto logo-blend"
-            />
+            <div className="bg-logo-container p-1 rounded">
+              <Image
+                src="/logo.png"
+                alt="Oikogestion"
+                width={100}
+                height={32}
+                className="h-8 w-auto"
+              />
+            </div>
           </Link>
         </div>
 

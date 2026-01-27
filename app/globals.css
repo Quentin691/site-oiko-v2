@@ -173,6 +173,15 @@ html.dark .logo-blend {
   filter: brightness(1.4) contrast(1);
 }
 
+/* Fond pour le conteneur du logo */
+.bg-logo-container {
+  background-color: transparent;
+}
+
+html.dark .bg-logo-container {
+  background-color: #4B5563;
+}
+
 /* Animation fadeIn pour le scroll */
 @keyframes fadeIn {
   from {
