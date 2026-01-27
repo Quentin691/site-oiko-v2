@@ -21,11 +21,16 @@ export default function BlogPage() {
 
   return (
     <main>
-      <Section
-        title="Blog"
-        subtitle="Conseils immobiliers et actualités du marché"
-        className="bg-background"
-      >
+      <Section className="bg-background">
+        {/* En-tête */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Blog
+          </h1>
+          <p className="text-lg text-muted">
+            Conseils immobiliers et actualités du marché
+          </p>
+        </div>
         {/* Filtres par catégorie */}
         <div className="flex flex-wrap gap-2 mb-8">
           <Link href="/blog" className="px-4 py-2 bg-primary text-white rounded-full text-sm">

@@ -41,11 +41,16 @@ export default async function CategoryPage({ params }: PageProps) {
 
   return (
     <main>
-      <Section
-        title={`Catégorie : ${label}`}
-        subtitle={`${posts.length} article(s)`}
-        className="bg-background"
-      >
+      <Section className="bg-background">
+        {/* En-tête */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Catégorie : {label}
+          </h1>
+          <p className="text-lg text-muted">
+            {posts.length} article(s)
+          </p>
+        </div>
         {/* Filtres */}
         <div className="flex flex-wrap gap-2 mb-8">
           <Link href="/blog" className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-white transition-colors">
