@@ -18,12 +18,37 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-oiko-v2-tklh.vercel.app";
+
 export const metadata: Metadata = {
   title: "OIKO | Property, Asset & Project Management",
   description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers à Paris et Marseille.",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
+  },
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "OIKO | Property, Asset & Project Management",
+    description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers à Paris et Marseille.",
+    url: siteUrl,
+    siteName: "OIKO Gestion",
+    images: [
+      {
+        url: "/logo.png",
+        width: 200,
+        height: 80,
+        alt: "OIKO - Gestion immobilière",
+      },
+    ],
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OIKO | Property, Asset & Project Management",
+    description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers à Paris et Marseille.",
+    images: ["/logo.png"],
   },
 };
 
