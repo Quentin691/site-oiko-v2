@@ -26,10 +26,36 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
   // Appliquer les filtres (met à jour l'URL)
   const applyFilters = () => {
+    // Copie des filtres pour validation
+    const validatedFilters = { ...filters };
+
+    // Validation prix : inverser si min > max
+    if (validatedFilters.priceMin && validatedFilters.priceMax) {
+      const min = parseInt(validatedFilters.priceMin);
+      const max = parseInt(validatedFilters.priceMax);
+      if (min > max) {
+        validatedFilters.priceMin = max.toString();
+        validatedFilters.priceMax = min.toString();
+      }
+    }
+
+    // Validation surface : inverser si min > max
+    if (validatedFilters.surfaceMin && validatedFilters.surfaceMax) {
+      const min = parseInt(validatedFilters.surfaceMin);
+      const max = parseInt(validatedFilters.surfaceMax);
+      if (min > max) {
+        validatedFilters.surfaceMin = max.toString();
+        validatedFilters.surfaceMax = min.toString();
+      }
+    }
+
+    // Mettre à jour l'état avec les valeurs validées
+    setFilters(validatedFilters);
+
     const params = new URLSearchParams();
 
     // Ajouter seulement les filtres non vides
-    Object.entries(filters).forEach(([key, value]) => {
+    Object.entries(validatedFilters).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
       }
@@ -51,6 +77,13 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
       sort: "",
     });
     router.push(`/${type}`);
+  };
+
+  // Bloquer les caractères invalides dans les champs numériques (e, E, -, +)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["e", "E", "-", "+", "."].includes(e.key)) {
+      e.preventDefault();
+    }
   };
 
   // Gérer le changement d'un filtre
@@ -93,6 +126,8 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             type="number"
             value={filters.priceMin}
             onChange={(e) => handleChange("priceMin", e.target.value)}
+            onKeyDown={handleKeyDown}
+            min="0"
             placeholder="0"
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
           />
@@ -107,6 +142,8 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             type="number"
             value={filters.priceMax}
             onChange={(e) => handleChange("priceMax", e.target.value)}
+            onKeyDown={handleKeyDown}
+            min="0"
             placeholder="1000000"
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
           />
@@ -121,6 +158,8 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             type="number"
             value={filters.surfaceMin}
             onChange={(e) => handleChange("surfaceMin", e.target.value)}
+            onKeyDown={handleKeyDown}
+            min="0"
             placeholder="0"
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
           />
@@ -135,6 +174,8 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             type="number"
             value={filters.surfaceMax}
             onChange={(e) => handleChange("surfaceMax", e.target.value)}
+            onKeyDown={handleKeyDown}
+            min="0"
             placeholder="500"
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
           />
