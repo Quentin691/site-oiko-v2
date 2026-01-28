@@ -79,10 +79,13 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
     router.push(`/${type}`);
   };
 
-  // Bloquer les caractères invalides dans les champs numériques (e, E, -, +)
+  // Bloquer les caractères invalides et soumettre avec Entrée
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (["e", "E", "-", "+", "."].includes(e.key)) {
       e.preventDefault();
+    }
+    if (e.key === "Enter") {
+      applyFilters();
     }
   };
 

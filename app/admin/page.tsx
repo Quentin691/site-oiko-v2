@@ -63,15 +63,33 @@ export default function AdminPage() {
   };
 
   // Connexion admin
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!password.trim()) {
       setMessage("Veuillez entrer le mot de passe");
       setStatus("error");
       return;
     }
-    setIsAuthenticated(true);
-    setMessage("");
-    setStatus("idle");
+
+    setStatus("loading");
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+        setMessage("");
+        setStatus("idle");
+      } else {
+        setMessage("Mot de passe incorrect");
+        setStatus("error");
+      }
+    } catch {
+      setMessage("Erreur de connexion");
+      setStatus("error");
+    }
   };
 
   // Déconnexion admin
