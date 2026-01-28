@@ -26,8 +26,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
-| Phase 16 - Points à revoir | 3/23 (13%) | ⏳ En cours |
-| **Total** | **720/740 (97%)** | |
+| Phase 16 - Points à revoir | 5/26 (19%) | ⏳ En cours |
+| **Total** | **722/743 (97%)** | |
 
 ---
 
@@ -8485,21 +8485,24 @@ export async function GET(request: NextRequest) {
 
 ---
 
-## 16.3 Authentification utilisateur (pour plus tard)
+## 16.3 Authentification admin
 
-La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fonctionnelle.
+**Décision prise :** Pas d'espace client, uniquement des comptes admin (plusieurs personnes).
 
-**Décision à prendre :**
-- [ ] Si espace client nécessaire → implémenter l'authentification
-- [ ] Si pas d'espace client → supprimer la page `/connexion`
+**État temporaire actuel :**
+- [x] L'administration du blog est protégée par mot de passe (`/admin/login`)
+- [x] Système provisoire avec un seul mot de passe (variable `ADMIN_PASSWORD`)
+- [ ] Page `/connexion` supprimée (n'était pas utilisée)
 
-**Si implémentation nécessaire :**
-- [ ] **Système d'authentification** → NextAuth, Clerk ou autre solution
-- [ ] **Base de données** → pour stocker les comptes utilisateurs
-- [ ] **Espace propriétaires** → tableau de bord, documents, etc.
-- [ ] **Espace locataires** → accès aux informations personnelles
+**À faire - Système multi-admin :**
+- [ ] Implémenter plusieurs comptes admin
+- [ ] Options à explorer :
+  - Variables d'environnement multiples (ADMIN_USER_1, ADMIN_USER_2, etc.)
+  - Vercel Auth (protection native)
+  - Autre solution (NextAuth, etc.)
+- [ ] Traçabilité des actions (qui a fait quoi) - optionnel
 
-💡 **Note :** Actuellement, seule l'administration du blog est protégée par mot de passe (via `/admin/login`). Un système d'authentification complet pour les clients nécessitera une base de données externe.
+💡 **Note :** Le système actuel (un seul mot de passe) est temporaire. Il faut implémenter un système multi-admin.
 
 ---
 
@@ -8543,7 +8546,8 @@ La page `/connexion` existe déjà (`app/connexion/page.tsx`) mais n'est pas fon
 - [ ] Tous les contenus légaux sont validés
 - [ ] Liens réseaux sociaux fonctionnels
 - [ ] Formulaire de contact envoie des emails
-- [ ] Authentification utilisateur documentée (pour plus tard)
+- [ ] Système multi-admin implémenté
+- [ ] Page `/connexion` supprimée
 - [ ] Site testé et prêt pour la production
 
 ---

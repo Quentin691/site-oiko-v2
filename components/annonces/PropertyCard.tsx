@@ -27,8 +27,9 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
           {hasImage ? (
             <Image
               src={mainPhoto}
-              alt={property.title}
+              alt={`${property.title} - ${property.surface}m² à ${property.city}`}
               fill
+              loading="lazy"
               className="object-cover transition-transform duration-300 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />

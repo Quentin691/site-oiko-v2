@@ -25,7 +25,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
       <div className="relative aspect-video bg-surface rounded-lg overflow-hidden">
         <Image
           src={images[selectedIndex]}
-          alt={`${title} - Photo ${selectedIndex + 1}`}
+          alt={`${title} - Vue ${selectedIndex + 1} sur ${images.length}`}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -63,7 +63,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                 index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
               }`}
             >
-              <Image src={image} alt={`Miniature ${index + 1}`} fill className="object-cover" sizes="80px" />
+              <Image src={image} alt={`${title} - Miniature ${index + 1}`} fill className="object-cover" sizes="80px" loading="lazy" />
             </button>
           ))}
         </div>

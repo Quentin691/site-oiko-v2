@@ -6,7 +6,7 @@ import PropertyGallery from "@/components/annonces/PropertyGallery";
 import PropertyDetails from "@/components/annonces/PropertyDetails";
 import { getAdById } from "@/lib/ubiflow";
 import { mapApiToProperty } from "@/lib/mapProperty";
-import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
+import { PropertyJsonLd, BreadcrumbJsonLd } from "@/components/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +53,14 @@ export default async function VenteDetailPage({ params }: PageProps) {
 
   return (
     <main>
-       <PropertyJsonLd property={property} type="vente" />
+      <PropertyJsonLd property={property} type="vente" />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Accueil", url: "/" },
+          { name: "Vente", url: "/vente" },
+          { name: property.title, url: `/vente/${property.id}` },
+        ]}
+      />
       <Section className="bg-background">
         <nav className="mb-6 text-sm">
           <Link href="/" className="text-muted hover:text-primary">Accueil</Link>

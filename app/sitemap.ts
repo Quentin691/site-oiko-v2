@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllAds } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
+import { getAllPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-oiko-v2-tklh.vercel.app";
@@ -78,5 +79,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("[Sitemap] Erreur lors de la récupération des annonces:", error);
   }
 
-  return [...staticPages, ...dynamicPages];
+  // Pages dynamiques (articles de blog)
+  let blogPages: MetadataRoute.Sitemap = [];
+
+  try {
+    const posts = getAllPosts();
+    blogPages = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+  } catch (error) {
+    console.error("[Sitemap] Erreur lors de la récupération des articles:", error);
+  }
+
+  return [...staticPages, ...dynamicPages, ...blogPages];
 }

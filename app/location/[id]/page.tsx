@@ -6,7 +6,7 @@ import PropertyGallery from "@/components/annonces/PropertyGallery";
 import PropertyDetails from "@/components/annonces/PropertyDetails";
 import { getAdById } from "@/lib/ubiflow";
 import { mapApiToProperty } from "@/lib/mapProperty";
-import PropertyJsonLd from "@/components/seo/PropertyJsonLd";
+import { PropertyJsonLd, BreadcrumbJsonLd } from "@/components/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +54,13 @@ export default async function LocationDetailPage({ params }: PageProps) {
   return (
     <main>
       <PropertyJsonLd property={property} type="location" />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Accueil", url: "/" },
+          { name: "Location", url: "/location" },
+          { name: property.title, url: `/location/${property.id}` },
+        ]}
+      />
       <Section className="bg-background">
         <nav className="mb-6 text-sm">
           <Link href="/" className="text-muted hover:text-primary">Accueil</Link>

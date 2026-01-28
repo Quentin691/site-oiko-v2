@@ -29,10 +29,11 @@ export default function BlogCard({ post }: BlogCardProps) {
         <div className="relative aspect-video bg-background">
           <Image
             src={post.image || DEFAULT_BLOG_IMAGE}
-            alt={post.title}
+            alt={`Image de l'article : ${post.title}`}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading="lazy"
           />
         </div>
       </Link>
