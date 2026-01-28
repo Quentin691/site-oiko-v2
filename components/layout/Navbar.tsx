@@ -101,24 +101,34 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Menu mobile */}
-      {isMenuOpen && (
-        <div className="sm:hidden border-t border-border">
-          <ul className="flex flex-col py-4">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`block px-6 py-3 hover:bg-hover-bg transition-colors ${pathname === link.href ? "text-primary font-semibold" : ""}`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Menu mobile avec animation slide */}
+      <div
+        className={`sm:hidden border-t border-border overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <ul className="flex flex-col py-4">
+          {navLinks.map((link, index) => (
+            <li
+              key={link.href}
+              className={`transform transition-all duration-300 ${
+                isMenuOpen
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-4 opacity-0"
+              }`}
+              style={{ transitionDelay: isMenuOpen ? `${index * 50}ms` : "0ms" }}
+            >
+              <Link
+                href={link.href}
+                className={`block px-6 py-3 hover:bg-hover-bg transition-colors ${pathname === link.href ? "text-primary font-semibold" : ""}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </nav>
   );
 }

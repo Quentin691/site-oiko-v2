@@ -12,7 +12,7 @@ export default function Card({
   hover = false,
 }: CardProps) {
   const hoverStyles = hover
-    ? "hover:shadow-lg hover:scale-105 cursor-pointer"
+    ? "hover:shadow-lg hover:scale-105 cursor-pointer group"
     : "";
 
   return (

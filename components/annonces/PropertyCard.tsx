@@ -23,13 +23,13 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
     <Link href={`/${type}/${property.id}`}>
       <Card hover className="overflow-hidden h-full">
         {/* Image */}
-        <div className="relative h-48 -mx-6 -mt-6 mb-4 bg-muted/20">
+        <div className="relative h-48 -mx-6 -mt-6 mb-4 bg-muted/20 overflow-hidden">
           {hasImage ? (
             <Image
               src={mainPhoto}
               alt={property.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (

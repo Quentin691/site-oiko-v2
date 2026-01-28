@@ -1,4 +1,4 @@
-import { Section, ScrollToTop, Pagination } from "@/components/ui";
+import { Section, ScrollToTop, Pagination, AnimateOnScroll } from "@/components/ui";
 import { PropertyCard } from "@/components/annonces";
 import { getAllAds } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
@@ -68,11 +68,12 @@ export default async function LocationPage({ searchParams }: PageProps) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {paginatedProperties.map((property) => (
-                <PropertyCard
-                  key={property.id}
-                  property={property}
-                  type="location"
-                />
+                <AnimateOnScroll key={property.id}>
+                  <PropertyCard
+                    property={property}
+                    type="location"
+                  />
+                </AnimateOnScroll>
               ))}
             </div>
 

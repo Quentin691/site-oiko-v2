@@ -1,14 +1,27 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useInView } from "@/hooks/useInView";
 
-export function AnimateOnScroll({ children }: { children: React.ReactNode }) {
+interface AnimateOnScrollProps {
+    children: React.ReactNode;
+}
+
+export function AnimateOnScroll({ children }: AnimateOnScrollProps) {
     const { ref, isInView } = useInView();
+    const [shouldAnimate, setShouldAnimate] = useState(false);
+
+    useEffect(() => {
+        // Une fois visible, on déclenche l'animation et on ne revient jamais en arrière
+        if (isInView && !shouldAnimate) {
+            setShouldAnimate(true);
+        }
+    }, [isInView, shouldAnimate]);
 
     return (
         <div
             ref={ref}
-            className={isInView ? "animate-fadeIn" : "opacity-0"}
+            className={shouldAnimate ? "animate-fadeIn" : "opacity-0"}
         >
             {children}
         </div>
