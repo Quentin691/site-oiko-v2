@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { Section, ScrollToTop, Pagination, AnimateOnScroll } from "@/components/ui";
 import { PropertyCard } from "@/components/annonces";
 import { getAllAds } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
 import PropertyFilters from "@/components/annonces/PropertyFilters";
 import { filterProperties, extractCities } from "@/lib/filterProperties";
+
+export const metadata: Metadata = {
+  title: "Biens à la Location | OIKO",
+  description: "Trouvez votre bien en location à Paris et Marseille. Appartements, maisons, locaux - OIKO vous accompagne dans votre recherche locative.",
+  openGraph: {
+    title: "Biens à la Location | OIKO",
+    description: "Trouvez votre bien en location à Paris et Marseille.",
+  },
+};
 
 // Force le rendu côté serveur (pas de pré-rendu au build)
 export const dynamic = "force-dynamic";

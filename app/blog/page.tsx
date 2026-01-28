@@ -7,6 +7,10 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Blog | OIKO Gestion",
   description: "Conseils immobiliers, actualités du marché et guides pratiques.",
+  openGraph: {
+    title: "Blog | OIKO Gestion",
+    description: "Conseils immobiliers, actualités du marché et guides pratiques.",
+  },
 };
 
 export default function BlogPage() {

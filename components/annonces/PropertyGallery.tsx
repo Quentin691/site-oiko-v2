@@ -28,6 +28,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           alt={`${title} - Photo ${selectedIndex + 1}`}
           fill
           className="object-cover"
+          sizes="(max-width: 768px) 100vw, 50vw"
           priority
         />
         <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
@@ -62,7 +63,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                 index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
               }`}
             >
-              <Image src={image} alt={`Miniature ${index + 1}`} fill className="object-cover" />
+              <Image src={image} alt={`Miniature ${index + 1}`} fill className="object-cover" sizes="80px" />
             </button>
           ))}
         </div>

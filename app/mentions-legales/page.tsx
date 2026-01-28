@@ -4,6 +4,10 @@ import Section from "@/components/ui/Section";
 export const metadata: Metadata = {
   title: "Mentions Légales | OIKO",
   description: "Mentions légales du site OIKO Gestion.",
+  openGraph: {
+    title: "Mentions Légales | OIKO",
+    description: "Mentions légales du site OIKO Gestion.",
+  },
 };
 
 export default function MentionsLegalesPage() {

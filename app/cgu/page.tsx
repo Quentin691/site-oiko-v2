@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Conditions Générales d'Utilisation | OIKO",
+  description: "Consultez les conditions générales d'utilisation du site OIKO Gestion.",
+};
+
 export default function CGU() {
     return(
         <main className="min-h-screen bg-background flex items-center justify-center px-4">

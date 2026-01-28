@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Politique de Confidentialité | OIKO",
+  description: "Découvrez comment OIKO protège vos données personnelles conformément au RGPD.",
+};
+
 export default function PolitiqueRGPD() {
     return(
         <main className="min-h-screen bg-background flex items-center justify-center px-4">
