@@ -21,6 +21,7 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
     surfaceMin: searchParams.get("surfaceMin") || "",
     surfaceMax: searchParams.get("surfaceMax") || "",
     rooms: searchParams.get("rooms") || "",
+    sort: searchParams.get("sort") || "",
   });
 
   // Appliquer les filtres (met à jour l'URL)
@@ -47,6 +48,7 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
       surfaceMin: "",
       surfaceMax: "",
       rooms: "",
+      sort: "",
     });
     router.push(`/${type}`);
   };
@@ -154,6 +156,24 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             <option value="3">3 pièces</option>
             <option value="4">4 pièces</option>
             <option value="5">5 pièces et +</option>
+          </select>
+        </div>
+
+        {/* Tri */}
+        <div>
+          <label className="block text-sm font-medium text-muted mb-1">
+            Trier par
+          </label>
+          <select
+            value={filters.sort}
+            onChange={(e) => handleChange("sort", e.target.value)}
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Par défaut</option>
+            <option value="price_asc">Prix croissant</option>
+            <option value="price_desc">Prix décroissant</option>
+            <option value="surface_asc">Surface croissante</option>
+            <option value="surface_desc">Surface décroissante</option>
           </select>
         </div>
       </div>
