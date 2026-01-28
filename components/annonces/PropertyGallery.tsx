@@ -98,7 +98,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 ${
+              className={`relative w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 ${
                 index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
               }`}
             >
@@ -170,7 +170,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                 <button
                   key={index}
                   onClick={(e) => { e.stopPropagation(); setSelectedIndex(index); }}
-                  className={`relative w-16 h-16 flex-shrink-0 rounded-md overflow-hidden border-2 ${
+                  className={`relative w-16 h-16 shrink-0 rounded-md overflow-hidden border-2 ${
                     index === selectedIndex ? "border-white" : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
