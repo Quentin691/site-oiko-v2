@@ -10,6 +10,9 @@ let tokenExpiry: number | null = null;
 const adsCache: Record<string, { data: PropertyRaw[]; expiry: number }> = {};
 const ADS_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes en millisecondes
 
+// Cache par page pour pagination serveur
+const pageCache: Record<string, { data: PropertyRaw[]; total: number; expiry: number }> = {};
+
 // Marge de sécurité : on renouvelle le token 5 minutes avant expiration
 const EXPIRY_MARGIN = 5 * 60 * 1000; // 5 minutes en millisecondes
 
@@ -124,6 +127,7 @@ export async function getAdsList(
 
 /**
  * Récupère TOUTES les annonces (toutes les pages) depuis l'API Ubiflow
+ * Utilise le format Hydra pour connaître le nombre total d'items
  * @param adType - Type de transaction : "L" (location), "V" (vente), ou undefined pour tous
  */
 export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
@@ -131,27 +135,79 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
 
   // Vérifier si on a des données en cache et si elles sont encore valides
   if (adsCache[cacheKey] && Date.now() < adsCache[cacheKey].expiry) {
-    console.log(`[Ubiflow] Annonces récupérées depuis le cache (type: ${cacheKey})`);
+    console.log(`[Ubiflow] Annonces récupérées depuis le cache (type: ${cacheKey}, count: ${adsCache[cacheKey].data.length})`);
     return adsCache[cacheKey].data;
+  }
+
+  const token = await getUbiflowToken();
+  const prodId = process.env.UBIFLOW_PROD_ID;
+
+  if (!prodId) {
+    throw new Error("UBIFLOW_PROD_ID non configuré dans .env.local");
   }
 
   const allAds: PropertyRaw[] = [];
   let page = 1;
+  let totalExpected = 0;
   let hasMorePages = true;
 
   console.log(`[Ubiflow] Récupération de toutes les annonces (type: ${adType || "tous"})...`);
 
   while (hasMorePages) {
-    const ads = await getAdsList(page, adType ? { adType } : undefined);
+    // Construire l'URL
+    let url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
+    if (adType) {
+      url += `&transaction.code=${adType}`;
+    }
 
-    if (ads.length === 0) {
-      // Plus de résultats, on arrête
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/ld+json", // Format Hydra pour avoir le total
+        "X-AUTH-TOKEN": `Bearer ${token}`,
+      },
+      cache: "no-store", // Pas de cache Next.js pour avoir des données fraîches
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log(`[Ubiflow] Page ${page} non trouvée (fin des résultats)`);
+        hasMorePages = false;
+        continue;
+      }
+      throw new Error(`Échec récupération page ${page}: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    // Format Hydra: { "hydra:member": [...], "hydra:totalItems": number }
+    const ads = result["hydra:member"] || result;
+
+    // Récupérer le total attendu (seulement à la première page)
+    if (page === 1 && result["hydra:totalItems"]) {
+      totalExpected = result["hydra:totalItems"];
+      console.log(`[Ubiflow] Total attendu: ${totalExpected} annonces`);
+    }
+
+    if (!Array.isArray(ads) || ads.length === 0) {
       hasMorePages = false;
     } else {
       allAds.push(...ads);
-      console.log(`[Ubiflow] Page ${page}: ${ads.length} annonces (total: ${allAds.length})`);
+      console.log(`[Ubiflow] Page ${page}: ${ads.length} annonces (total récupéré: ${allAds.length}/${totalExpected || "?"})`);
       page++;
+
+      // Sécurité: si on a récupéré tous les items attendus, on arrête
+      if (totalExpected > 0 && allAds.length >= totalExpected) {
+        hasMorePages = false;
+      }
     }
+  }
+
+  // Vérification: ne pas cacher si on n'a pas tout récupéré
+  if (totalExpected > 0 && allAds.length < totalExpected) {
+    console.warn(`[Ubiflow] Attention: seulement ${allAds.length}/${totalExpected} annonces récupérées (pas de mise en cache)`);
+    return allAds;
   }
 
   // Mettre en cache les résultats
@@ -162,6 +218,74 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
 
   console.log(`[Ubiflow] Total récupéré: ${allAds.length} annonces (mis en cache)`);
   return allAds;
+}
+
+/**
+ * Récupère une page d'annonces avec le total (pour pagination serveur)
+ * Les résultats sont mis en cache par page
+ */
+export async function getAdsPage(
+  page: number = 1,
+  adType: "L" | "V",
+  itemsPerPage: number = 24
+): Promise<{ data: PropertyRaw[]; total: number }> {
+  const cacheKey = `${adType}-page-${page}`;
+
+  // Vérifier le cache
+  if (pageCache[cacheKey] && Date.now() < pageCache[cacheKey].expiry) {
+    console.log(`[Ubiflow] Page ${page} (${adType}) récupérée depuis le cache`);
+    return { data: pageCache[cacheKey].data, total: pageCache[cacheKey].total };
+  }
+
+  const token = await getUbiflowToken();
+  const prodId = process.env.UBIFLOW_PROD_ID;
+
+  if (!prodId) {
+    throw new Error("UBIFLOW_PROD_ID non configuré dans .env.local");
+  }
+
+  // L'API Ubiflow retourne 30 items par page par défaut
+  // On doit calculer quelle page API correspond à notre page
+  const API_ITEMS_PER_PAGE = 30;
+
+  // Pour obtenir le total, on fait une requête avec Accept: application/ld+json
+  const url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&transaction.code=${adType}&page=${page}`;
+
+  console.log(`[Ubiflow] Récupération page ${page} (type: ${adType})...`);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/ld+json",
+      "X-AUTH-TOKEN": `Bearer ${token}`,
+    },
+    next: { revalidate: 300 },
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return { data: [], total: 0 };
+    }
+    throw new Error(`Échec de la récupération des annonces: ${response.status}`);
+  }
+
+  const result = await response.json();
+
+  // Format Hydra: { "hydra:member": [...], "hydra:totalItems": number }
+  const data = result["hydra:member"] || result;
+  const total = result["hydra:totalItems"] || data.length;
+
+  console.log(`[Ubiflow] Page ${page}: ${data.length} annonces (total: ${total})`);
+
+  // Mettre en cache
+  pageCache[cacheKey] = {
+    data,
+    total,
+    expiry: Date.now() + ADS_CACHE_DURATION,
+  };
+
+  return { data, total };
 }
 
 /**

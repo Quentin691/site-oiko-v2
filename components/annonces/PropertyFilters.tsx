@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 interface PropertyFiltersProps {
   type: "location" | "vente";
   cities: string[]; // Liste des villes disponibles
+  disabled?: boolean; // Désactiver pendant le chargement
 }
 
-export default function PropertyFilters({ type, cities }: PropertyFiltersProps) {
+export default function PropertyFilters({ type, cities, disabled = false }: PropertyFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -161,9 +162,22 @@ export default function PropertyFilters({ type, cities }: PropertyFiltersProps) 
       <div className="flex gap-4 mt-6">
         <button
           onClick={applyFilters}
-          className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+          disabled={disabled}
+          title={disabled ? "Veuillez attendre que tous les biens soient chargés" : undefined}
+          className={`px-6 py-2 rounded-md transition-colors ${
+            disabled
+              ? "bg-muted/50 text-muted cursor-not-allowed"
+              : "bg-primary text-white hover:bg-primary-dark"
+          }`}
         >
-          Rechercher
+          {disabled ? (
+            <span className="flex items-center gap-2">
+              <span className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+              Chargement...
+            </span>
+          ) : (
+            "Rechercher"
+          )}
         </button>
         <button
           onClick={resetFilters}
