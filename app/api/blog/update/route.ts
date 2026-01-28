@@ -22,9 +22,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!data.slug || !data.title || !data.content || !data.excerpt) {
+    if (!data.slug?.trim() || !data.title?.trim() || !data.content?.trim() || !data.excerpt?.trim()) {
       return NextResponse.json(
-        { error: "Tous les champs sont requis" },
+        { error: "Tous les champs sont requis (titre, extrait, contenu)" },
         { status: 400 }
       );
     }

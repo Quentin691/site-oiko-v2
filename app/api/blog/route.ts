@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
 
     const data: ArticleData = await request.json();
 
-    // Validation des champs
-    if (!data.title || !data.content || !data.excerpt) {
+    // Validation des champs (avec trim pour éviter les espaces vides)
+    if (!data.title?.trim() || !data.content?.trim() || !data.excerpt?.trim()) {
       return NextResponse.json(
         { error: "Titre, extrait et contenu sont requis" },
         { status: 400 }

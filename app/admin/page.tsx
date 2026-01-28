@@ -85,6 +85,24 @@ export default function AdminPage() {
   // Créer un article
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation des champs obligatoires
+    if (!formData.title.trim()) {
+      setStatus("error");
+      setMessage("Le titre est obligatoire");
+      return;
+    }
+    if (!formData.excerpt.trim()) {
+      setStatus("error");
+      setMessage("L'extrait est obligatoire");
+      return;
+    }
+    if (!formData.content.trim()) {
+      setStatus("error");
+      setMessage("Le contenu de l'article est obligatoire");
+      return;
+    }
+
     setStatus("loading");
     setMessage("");
 
@@ -128,6 +146,24 @@ export default function AdminPage() {
   // Modifier un article
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation des champs obligatoires
+    if (!formData.title.trim()) {
+      setStatus("error");
+      setMessage("Le titre est obligatoire");
+      return;
+    }
+    if (!formData.excerpt.trim()) {
+      setStatus("error");
+      setMessage("L'extrait est obligatoire");
+      return;
+    }
+    if (!formData.content.trim()) {
+      setStatus("error");
+      setMessage("Le contenu de l'article est obligatoire");
+      return;
+    }
+
     setStatus("loading");
     setMessage("");
 
