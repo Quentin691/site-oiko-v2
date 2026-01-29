@@ -59,7 +59,7 @@ export default function Navbar() {
             <div className="bg-logo-container p-1 rounded">
               <Image
                 src="/logo.png"
-                alt="Oikogestion"
+                alt="OIKO - Gestion immobilière"
                 width={100}
                 height={32}
                 className="h-8 w-auto"
@@ -74,6 +74,7 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
+                aria-current={pathname === link.href ? "page" : undefined}
                 className={`hover:text-primary transition-colors ${pathname === link.href ? "text-primary font-semibold" : ""}`}
               >
                 {link.label}
@@ -120,6 +121,7 @@ export default function Navbar() {
             >
               <Link
                 href={link.href}
+                aria-current={pathname === link.href ? "page" : undefined}
                 className={`block px-6 py-3 hover:bg-hover-bg transition-colors ${pathname === link.href ? "text-primary font-semibold" : ""}`}
                 onClick={() => setIsMenuOpen(false)}
               >

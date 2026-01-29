@@ -103,10 +103,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Filtre par ville */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-city" className="block text-sm font-medium text-muted mb-1">
             Ville
           </label>
           <select
+            id="filter-city"
             value={filters.city}
             onChange={(e) => handleChange("city", e.target.value)}
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -122,10 +123,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
         {/* Filtre prix min */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-priceMin" className="block text-sm font-medium text-muted mb-1">
             Prix min (€)
           </label>
           <input
+            id="filter-priceMin"
             type="number"
             value={filters.priceMin}
             onChange={(e) => handleChange("priceMin", e.target.value)}
@@ -138,10 +140,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
         {/* Filtre prix max */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-priceMax" className="block text-sm font-medium text-muted mb-1">
             Prix max (€)
           </label>
           <input
+            id="filter-priceMax"
             type="number"
             value={filters.priceMax}
             onChange={(e) => handleChange("priceMax", e.target.value)}
@@ -154,10 +157,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
         {/* Filtre surface min */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-surfaceMin" className="block text-sm font-medium text-muted mb-1">
             Surface min (m²)
           </label>
           <input
+            id="filter-surfaceMin"
             type="number"
             value={filters.surfaceMin}
             onChange={(e) => handleChange("surfaceMin", e.target.value)}
@@ -170,10 +174,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
         {/* Filtre surface max */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-surfaceMax" className="block text-sm font-medium text-muted mb-1">
             Surface max (m²)
           </label>
           <input
+            id="filter-surfaceMax"
             type="number"
             value={filters.surfaceMax}
             onChange={(e) => handleChange("surfaceMax", e.target.value)}
@@ -186,10 +191,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
         {/* Filtre nombre de pièces */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-rooms" className="block text-sm font-medium text-muted mb-1">
             Nombre de pièces
           </label>
           <select
+            id="filter-rooms"
             value={filters.rooms}
             onChange={(e) => handleChange("rooms", e.target.value)}
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -205,10 +211,11 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
         {/* Tri */}
         <div>
-          <label className="block text-sm font-medium text-muted mb-1">
+          <label htmlFor="filter-sort" className="block text-sm font-medium text-muted mb-1">
             Trier par
           </label>
           <select
+            id="filter-sort"
             value={filters.sort}
             onChange={(e) => handleChange("sort", e.target.value)}
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"

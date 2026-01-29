@@ -27,7 +27,7 @@ export default function PropertyDetails({ property, type }: PropertyDetailsProps
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">{property.title}</h1>
-          <p className="text-muted mt-1">📍 {property.address}, {property.city} {property.postalCode}</p>
+          <p className="text-muted mt-1"><span aria-hidden="true">📍</span> {property.address}, {property.city} {property.postalCode}</p>
         </div>
         <div className="text-right">
           <p className="text-3xl font-bold text-primary">
@@ -43,7 +43,7 @@ export default function PropertyDetails({ property, type }: PropertyDetailsProps
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {characteristics.map((char) => (
             <div key={char.label} className="flex items-center gap-3">
-              <span className="text-2xl">{char.icon}</span>
+              <span className="text-2xl" aria-hidden="true">{char.icon}</span>
               <div>
                 <p className="text-sm text-muted">{char.label}</p>
                 <p className="font-medium text-foreground">{char.value}</p>

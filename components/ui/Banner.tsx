@@ -36,7 +36,7 @@ export function Banner({ src, alt, videoSrc }: BannerProps) {
           <source src={videoSrc} type="video/mp4" />
         </video>
       ) : src ? (
-        <img src={src} alt={alt} className="w-full h-full object-cover" />
+        <img src={src} alt={alt || "Image de bannière"} className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full bg-muted" />
       )}

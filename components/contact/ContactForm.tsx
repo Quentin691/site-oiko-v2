@@ -176,19 +176,19 @@ export default function ContactForm({ subjects }: ContactFormProps) {
             disabled={isBlocked}
           />
           {captchaError && !isBlocked && (
-            <p className="text-red-600 text-sm mt-2">
+            <p className="text-red-600 text-sm mt-2" role="alert" aria-live="polite">
               Réponse incorrecte ({attempts}/3 tentatives). Veuillez réessayer.
             </p>
           )}
           {isBlocked && (
-            <p className="text-red-600 text-sm mt-2 font-semibold">
+            <p className="text-red-600 text-sm mt-2 font-semibold" role="alert" aria-live="assertive">
               Trop de tentatives échouées. Veuillez recharger la page pour réessayer.
             </p>
           )}
         </div>
 
         {isSubmitted && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" role="status" aria-live="polite">
             Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
           </div>
         )}

@@ -42,12 +42,14 @@ export default function CookieBanner() {
           <div className="flex gap-3 shrink-0">
             <button
               onClick={refuseCookies}
+              aria-label="Refuser les cookies"
               className="px-4 py-2 text-sm border border-border rounded-md text-muted hover:bg-background transition-colors"
             >
               Refuser
             </button>
             <button
               onClick={acceptCookies}
+              aria-label="Accepter les cookies"
               className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
             >
               Accepter
