@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getAllAds } from "@/lib/ubiflow";
+import { getAdsForSitemap } from "@/lib/ubiflow";
 import { mapApiToProperties } from "@/lib/mapProperty";
 import { getAllPosts } from "@/lib/blog";
+
+// Revalider le sitemap toutes les heures
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-oiko-v2-tklh.vercel.app";
@@ -62,8 +65,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let dynamicPages: MetadataRoute.Sitemap = [];
 
   try {
-    // Récupérer toutes les annonces (toutes les pages, sans filtre de type)
-    const rawProperties = await getAllAds();
+    // Récupérer toutes les annonces pour le sitemap (avec cache)
+    const rawProperties = await getAdsForSitemap();
     const properties = mapApiToProperties(rawProperties);
 
     dynamicPages = properties.map((property) => {

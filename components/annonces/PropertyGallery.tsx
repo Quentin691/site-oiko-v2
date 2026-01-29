@@ -174,7 +174,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                     index === selectedIndex ? "border-white" : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <Image src={image} alt={`Miniature ${index + 1}`} fill className="object-cover" sizes="64px" />
+                  <Image src={image} alt={`${title} - Miniature ${index + 1}`} fill className="object-cover" sizes="64px" loading="lazy" />
                 </button>
               ))}
             </div>

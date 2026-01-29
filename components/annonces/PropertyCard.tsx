@@ -8,9 +8,19 @@ interface PropertyCardProps {
   type: "vente" | "location";
 }
 
+// Vérifie si le bien est nouveau (moins de 7 jours)
+function isNewProperty(createdAt?: string): boolean {
+  if (!createdAt) return false;
+  const created = new Date(createdAt);
+  const now = new Date();
+  const diffDays = (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
+  return diffDays <= 7;
+}
+
 export default function PropertyCard({ property, type }: PropertyCardProps) {
   const mainPhoto = property.images[0];
   const hasImage = !!mainPhoto;
+  const isNew = isNewProperty(property.createdAt);
 
   // Formater le prix
   const formattedPrice = new Intl.NumberFormat("fr-FR", {
@@ -27,7 +37,7 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
           {hasImage ? (
             <Image
               src={mainPhoto}
-              alt={`${property.title} - ${property.surface}m² à ${property.city}`}
+              alt={`${property.title} - ${type === "vente" ? "À vendre" : "À louer"} - ${property.rooms} pièces, ${property.surface}m² à ${property.city}`}
               fill
               loading="lazy"
               className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -38,10 +48,17 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
               <span className="text-4xl">🏠</span>
             </div>
           )}
-          {/* Badge type de transaction */}
-          <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">
-            {type === "vente" ? "À vendre" : "À louer"}
-          </span>
+          {/* Badges */}
+          <div className="absolute top-2 left-2 flex gap-2">
+            <span className="bg-primary text-white text-xs px-2 py-1 rounded">
+              {type === "vente" ? "À vendre" : "À louer"}
+            </span>
+            {isNew && (
+              <span className="bg-green-500 text-white text-xs px-2 py-1 rounded font-medium">
+                Nouveau
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Contenu */}

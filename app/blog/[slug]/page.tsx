@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Section from "@/components/ui/Section";
 import ShareButtons from "@/components/blog/ShareButtons";
+import { BlogPostJsonLd } from "@/components/seo";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
 
 const DEFAULT_BLOG_IMAGE = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop";
@@ -56,6 +57,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <main>
+      <BlogPostJsonLd post={post} />
       <Section className="bg-background">
         <article className="max-w-3xl mx-auto">
           {/* Fil d'Ariane */}
@@ -83,7 +85,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="relative aspect-video mb-8 rounded-lg overflow-hidden">
             <Image
               src={post.image || DEFAULT_BLOG_IMAGE}
-              alt={post.title}
+              alt={`Illustration de l'article : ${post.title} - Blog OIKO Immobilier`}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 800px"

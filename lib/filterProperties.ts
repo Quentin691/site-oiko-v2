@@ -61,6 +61,13 @@ export function filterProperties(
   // Tri
   if (filters.sort) {
     switch (filters.sort) {
+      case "date_desc":
+        filtered.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
       case "price_asc":
         filtered.sort((a, b) => a.price - b.price);
         break;

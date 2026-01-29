@@ -289,6 +289,58 @@ export async function getAdsPage(
 }
 
 /**
+ * Récupère toutes les annonces pour le sitemap (avec cache long)
+ * Utilise revalidate au lieu de no-store pour permettre la génération statique
+ */
+export async function getAdsForSitemap(): Promise<PropertyRaw[]> {
+  const token = await getUbiflowToken();
+  const prodId = process.env.UBIFLOW_PROD_ID;
+
+  if (!prodId) {
+    throw new Error("UBIFLOW_PROD_ID non configuré dans .env.local");
+  }
+
+  const allAds: PropertyRaw[] = [];
+  let page = 1;
+  let hasMorePages = true;
+
+  while (hasMorePages) {
+    const url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&page=${page}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/ld+json",
+        "X-AUTH-TOKEN": `Bearer ${token}`,
+      },
+      // Cache de 1 heure pour le sitemap
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        hasMorePages = false;
+        continue;
+      }
+      throw new Error(`Échec récupération sitemap page ${page}: ${response.status}`);
+    }
+
+    const result = await response.json();
+    const ads = result["hydra:member"] || result;
+
+    if (!Array.isArray(ads) || ads.length === 0) {
+      hasMorePages = false;
+    } else {
+      allAds.push(...ads);
+      page++;
+    }
+  }
+
+  return allAds;
+}
+
+/**
  * Récupère une annonce par son ID depuis l'API Ubiflow
  */
 export async function getAdById(id: string): Promise<unknown> {

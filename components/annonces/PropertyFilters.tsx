@@ -214,6 +214,7 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="">Par défaut</option>
+            <option value="date_desc">Plus récents</option>
             <option value="price_asc">Prix croissant</option>
             <option value="price_desc">Prix décroissant</option>
             <option value="surface_asc">Surface croissante</option>
