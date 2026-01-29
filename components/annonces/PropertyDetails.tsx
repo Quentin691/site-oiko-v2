@@ -61,15 +61,6 @@ export default function PropertyDetails({ property, type }: PropertyDetailsProps
         </p>
       </div>
 
-      {/* Bouton de contact */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <a
-          href="/contact"
-          className="flex-1 text-center px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors font-medium"
-        >
-          Nous contacter pour ce bien
-        </a>
-      </div>
     </div>
   );
 }

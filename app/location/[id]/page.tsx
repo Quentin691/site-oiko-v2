@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Section from "@/components/ui/Section";
 import PropertyGallery from "@/components/annonces/PropertyGallery";
 import PropertyDetails from "@/components/annonces/PropertyDetails";
+import PropertyMap from "@/components/annonces/PropertyMap";
 import { getAdById } from "@/lib/ubiflow";
 import { mapApiToProperty } from "@/lib/mapProperty";
 import { PropertyJsonLd, BreadcrumbJsonLd } from "@/components/seo";
@@ -71,8 +72,26 @@ export default async function LocationDetailPage({ params }: PageProps) {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <PropertyGallery images={property.images} title={property.title} />
+          <div className="space-y-6">
+            <PropertyGallery images={property.images} title={property.title} />
+            {/* Carte visible uniquement sur desktop */}
+            <div className="hidden lg:block">
+              <PropertyMap
+                address={property.address}
+                city={property.city}
+                postalCode={property.postalCode}
+              />
+            </div>
+          </div>
           <PropertyDetails property={property} type="location" />
+          {/* Carte visible uniquement sur mobile, après la description */}
+          <div className="lg:hidden">
+            <PropertyMap
+              address={property.address}
+              city={property.city}
+              postalCode={property.postalCode}
+            />
+          </div>
         </div>
       </Section>
     </main>
