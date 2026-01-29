@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 
 interface PropertyMapProps {
   address: string;
@@ -9,20 +9,22 @@ interface PropertyMapProps {
 }
 
 export default function PropertyMap({ address, city, postalCode }: PropertyMapProps) {
-  const [mapKey, setMapKey] = useState(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const fullAddress = `${address}, ${postalCode} ${city}, France`;
   const encodedAddress = encodeURIComponent(fullAddress);
 
-  // URL pour l'iframe avec zoom niveau 16 (plus proche)
-  const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&z=16&output=embed`;
+  // URL pour l'iframe avec paramètres stables
+  const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&z=16&hl=fr&output=embed`;
 
   // URL pour ouvrir dans Google Maps (nouvelle fenêtre)
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
 
   const handleRecenter = () => {
-    // Recharge l'iframe en changeant la clé
-    setMapKey((prev) => prev + 1);
+    // Recharge l'iframe en réassignant la même URL
+    if (iframeRef.current) {
+      iframeRef.current.src = mapUrl;
+    }
   };
 
   return (
@@ -31,7 +33,7 @@ export default function PropertyMap({ address, city, postalCode }: PropertyMapPr
       <div className="p-4">
         <div className="relative">
           <iframe
-            key={mapKey}
+            ref={iframeRef}
             src={mapUrl}
             width="100%"
             height="300"
