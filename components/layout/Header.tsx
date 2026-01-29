@@ -37,10 +37,11 @@ export default function Header() {
           <div className="bg-logo-container p-2 rounded">
             <Image
               src="/logo.png"
-              alt="Oikogestion"
+              alt="OIKO - Gestion immobilière"
               width={200}
               height={80}
               className="h-10 sm:h-16 w-auto"
+              sizes="(max-width: 640px) 40px, 64px"
               priority
             />
           </div>

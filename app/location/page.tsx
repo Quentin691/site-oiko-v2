@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Biens à la Location | OIKO",
     description: "Trouvez votre bien en location à Paris et Marseille.",
+    type: "website",
+    images: [{ url: "/logo.png", width: 200, height: 80, alt: "OIKO - Biens à louer" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Biens à la Location | OIKO",
+    description: "Trouvez votre bien en location à Paris et Marseille.",
+    images: ["/logo.png"],
   },
 };
 

@@ -16,6 +16,13 @@ export const metadata: Metadata = {
     title: "OIKO | Property, Asset & Project Management",
     description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers.",
     type: "website",
+    images: [{ url: "/logo.png", width: 200, height: 80, alt: "OIKO Gestion" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OIKO | Property, Asset & Project Management",
+    description: "OIKO accompagne les propriétaires et investisseurs dans la gestion de leurs actifs immobiliers.",
+    images: ["/logo.png"],
   },
 };
 

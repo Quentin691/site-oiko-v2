@@ -9,10 +9,11 @@ export default function NotFound() {
         <div className="mb-8">
           <Image
             src="/logo.png"
-            alt="OIKO"
+            alt="OIKO - Gestion immobilière"
             width={150}
             height={48}
             className="mx-auto logo-blend"
+            sizes="150px"
           />
         </div>
 

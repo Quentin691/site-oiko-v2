@@ -63,6 +63,7 @@ export default function Navbar() {
                 width={100}
                 height={32}
                 className="h-8 w-auto"
+                sizes="100px"
               />
             </div>
           </Link>

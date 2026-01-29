@@ -6,15 +6,33 @@ import type { PropertyRaw } from "@/types/property";
 let cachedToken: string | null = null;
 let tokenExpiry: number | null = null;
 
+// === CONFIGURATION DU CACHE ===
+// Durées optimisées pour l'immobilier (données peu fréquemment mises à jour)
+const CACHE_DURATIONS = {
+  LIST: 15 * 60 * 1000,       // 15 minutes pour les listes
+  DETAIL: 30 * 60 * 1000,     // 30 minutes pour les détails d'annonce
+  SITEMAP: 60 * 60 * 1000,    // 1 heure pour le sitemap
+  TOKEN_MARGIN: 5 * 60 * 1000, // Marge de renouvellement token
+};
+
 // Cache des annonces par type (L = location, V = vente)
 const adsCache: Record<string, { data: PropertyRaw[]; expiry: number }> = {};
-const ADS_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes en millisecondes
 
 // Cache par page pour pagination serveur
 const pageCache: Record<string, { data: PropertyRaw[]; total: number; expiry: number }> = {};
 
+// Cache pour les annonces individuelles
+const adDetailCache: Record<string, { data: unknown; expiry: number }> = {};
+
+// Statistiques du cache (pour monitoring)
+export const cacheStats = {
+  hits: 0,
+  misses: 0,
+  lastReset: Date.now(),
+};
+
 // Marge de sécurité : on renouvelle le token 5 minutes avant expiration
-const EXPIRY_MARGIN = 5 * 60 * 1000; // 5 minutes en millisecondes
+const EXPIRY_MARGIN = CACHE_DURATIONS.TOKEN_MARGIN;
 
 /**
  * Récupère un token valide (depuis le cache ou en demande un nouveau)
@@ -105,8 +123,8 @@ export async function getAdsList(
       "Content-Type": "application/json",
       "X-AUTH-TOKEN": `Bearer ${token}`,
     },
-    // Cache pendant 5 minutes
-    next: { revalidate: 300 },
+    // Cache Next.js de 15 minutes
+    next: { revalidate: 900 },
   });
 
   if (!response.ok) {
@@ -121,7 +139,7 @@ export async function getAdsList(
   }
 
   const data = await response.json();
-  console.log(`[Ubiflow] ${data.length} annonces récupérées`);
+  console.log(`[Ubiflow] ${data.length} annonces récupérées (page ${page})`);
   return data;
 }
 
@@ -135,9 +153,11 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
 
   // Vérifier si on a des données en cache et si elles sont encore valides
   if (adsCache[cacheKey] && Date.now() < adsCache[cacheKey].expiry) {
-    console.log(`[Ubiflow] Annonces récupérées depuis le cache (type: ${cacheKey}, count: ${adsCache[cacheKey].data.length})`);
+    cacheStats.hits++;
+    console.log(`[Ubiflow] Cache HIT - Annonces (type: ${cacheKey}, count: ${adsCache[cacheKey].data.length})`);
     return adsCache[cacheKey].data;
   }
+  cacheStats.misses++;
 
   const token = await getUbiflowToken();
   const prodId = process.env.UBIFLOW_PROD_ID;
@@ -167,7 +187,8 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
         "Accept": "application/ld+json", // Format Hydra pour avoir le total
         "X-AUTH-TOKEN": `Bearer ${token}`,
       },
-      cache: "no-store", // Pas de cache Next.js pour avoir des données fraîches
+      // Cache Next.js de 15 minutes (données immobilières peu volatiles)
+      next: { revalidate: 900 },
     });
 
     if (!response.ok) {
@@ -213,7 +234,7 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
   // Mettre en cache les résultats
   adsCache[cacheKey] = {
     data: allAds,
-    expiry: Date.now() + ADS_CACHE_DURATION,
+    expiry: Date.now() + CACHE_DURATIONS.LIST,
   };
 
   console.log(`[Ubiflow] Total récupéré: ${allAds.length} annonces (mis en cache)`);
@@ -233,9 +254,11 @@ export async function getAdsPage(
 
   // Vérifier le cache
   if (pageCache[cacheKey] && Date.now() < pageCache[cacheKey].expiry) {
-    console.log(`[Ubiflow] Page ${page} (${adType}) récupérée depuis le cache`);
+    cacheStats.hits++;
+    console.log(`[Ubiflow] Cache HIT - Page ${page} (${adType})`);
     return { data: pageCache[cacheKey].data, total: pageCache[cacheKey].total };
   }
+  cacheStats.misses++;
 
   const token = await getUbiflowToken();
   const prodId = process.env.UBIFLOW_PROD_ID;
@@ -260,7 +283,8 @@ export async function getAdsPage(
       "Accept": "application/ld+json",
       "X-AUTH-TOKEN": `Bearer ${token}`,
     },
-    next: { revalidate: 300 },
+    // Cache Next.js de 15 minutes
+    next: { revalidate: 900 },
   });
 
   if (!response.ok) {
@@ -276,13 +300,13 @@ export async function getAdsPage(
   const data = result["hydra:member"] || result;
   const total = result["hydra:totalItems"] || data.length;
 
-  console.log(`[Ubiflow] Page ${page}: ${data.length} annonces (total: ${total})`);
+  console.log(`[Ubiflow] Cache MISS - Page ${page}: ${data.length} annonces (total: ${total})`);
 
   // Mettre en cache
   pageCache[cacheKey] = {
     data,
     total,
-    expiry: Date.now() + ADS_CACHE_DURATION,
+    expiry: Date.now() + CACHE_DURATIONS.LIST,
   };
 
   return { data, total };
@@ -342,8 +366,17 @@ export async function getAdsForSitemap(): Promise<PropertyRaw[]> {
 
 /**
  * Récupère une annonce par son ID depuis l'API Ubiflow
+ * Cache en mémoire de 30 minutes + cache Next.js
  */
 export async function getAdById(id: string): Promise<unknown> {
+  // Vérifier le cache en mémoire
+  if (adDetailCache[id] && Date.now() < adDetailCache[id].expiry) {
+    cacheStats.hits++;
+    console.log(`[Ubiflow] Cache HIT - Annonce ${id}`);
+    return adDetailCache[id].data;
+  }
+  cacheStats.misses++;
+
   const token = await getUbiflowToken();
   const url = `https://api-classifieds.ubiflow.net/api/ads/${id}`;
 
@@ -353,8 +386,8 @@ export async function getAdById(id: string): Promise<unknown> {
       "Content-Type": "application/json",
       "X-AUTH-TOKEN": `Bearer ${token}`,
     },
-    // Cache pendant 5 minutes
-    next: { revalidate: 300 },
+    // Cache Next.js de 30 minutes
+    next: { revalidate: 1800 },
   });
 
   if (!response.ok) {
@@ -362,5 +395,57 @@ export async function getAdById(id: string): Promise<unknown> {
     throw new Error(`Échec récupération annonce: ${response.status}`);
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // Mettre en cache en mémoire
+  adDetailCache[id] = {
+    data,
+    expiry: Date.now() + CACHE_DURATIONS.DETAIL,
+  };
+
+  console.log(`[Ubiflow] Cache MISS - Annonce ${id}`);
+  return data;
+}
+
+/**
+ * Invalide tout le cache (à appeler depuis l'admin)
+ */
+export function invalidateCache(): void {
+  // Vider tous les caches
+  Object.keys(adsCache).forEach((key) => delete adsCache[key]);
+  Object.keys(pageCache).forEach((key) => delete pageCache[key]);
+  Object.keys(adDetailCache).forEach((key) => delete adDetailCache[key]);
+
+  // Reset des stats
+  cacheStats.hits = 0;
+  cacheStats.misses = 0;
+  cacheStats.lastReset = Date.now();
+
+  console.log("[Ubiflow] Cache invalidé");
+}
+
+/**
+ * Retourne les statistiques du cache
+ */
+export function getCacheStats(): {
+  hits: number;
+  misses: number;
+  hitRate: string;
+  lastReset: string;
+  entriesCount: { ads: number; pages: number; details: number };
+} {
+  const total = cacheStats.hits + cacheStats.misses;
+  const hitRate = total > 0 ? ((cacheStats.hits / total) * 100).toFixed(1) + "%" : "N/A";
+
+  return {
+    hits: cacheStats.hits,
+    misses: cacheStats.misses,
+    hitRate,
+    lastReset: new Date(cacheStats.lastReset).toISOString(),
+    entriesCount: {
+      ads: Object.keys(adsCache).length,
+      pages: Object.keys(pageCache).length,
+      details: Object.keys(adDetailCache).length,
+    },
+  };
 }

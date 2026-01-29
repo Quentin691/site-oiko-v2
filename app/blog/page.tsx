@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Blog | OIKO Gestion",
     description: "Conseils immobiliers, actualités du marché et guides pratiques.",
+    type: "website",
+    images: [{ url: "/logo.png", width: 200, height: 80, alt: "Blog OIKO" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | OIKO Gestion",
+    description: "Conseils immobiliers, actualités du marché et guides pratiques.",
+    images: ["/logo.png"],
   },
 };
 
