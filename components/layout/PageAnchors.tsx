@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
 interface Anchor {
   id: string;
@@ -55,8 +54,13 @@ export default function PageAnchors({ anchors }: PageAnchorsProps) {
         <ul className="flex justify-center gap-8 py-4">
           {anchors.map((anchor) => (
             <li key={anchor.id} className="shrink-0">
-              <Link
-                href={`#${anchor.id}`}
+              <button
+                onClick={() => {
+                  const element = document.getElementById(anchor.id);
+                  if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
                 className={`text-sm font-medium transition-colors ${
                   activeId === anchor.id
                     ? "text-primary border-b-2 border-primary pb-1"
@@ -64,7 +68,7 @@ export default function PageAnchors({ anchors }: PageAnchorsProps) {
                 }`}
               >
                 {anchor.label}
-              </Link>
+              </button>
             </li>
           ))}
         </ul>

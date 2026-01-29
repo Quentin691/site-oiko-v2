@@ -8541,6 +8541,39 @@ export async function GET(request: NextRequest) {
 
 ---
 
+## 16.7 Fonctionnalités localStorage (optionnel)
+
+**Objectif :** Améliorer l'expérience utilisateur avec des fonctionnalités stockées localement dans le navigateur.
+
+**⚠️ Limitation importante :** Les données localStorage sont stockées sur l'appareil du visiteur uniquement. Pas de synchronisation entre appareils (PC ≠ téléphone).
+
+### Option A - Favoris
+- [ ] Bouton coeur sur les PropertyCard pour ajouter/retirer des favoris
+- [ ] Page `/favoris` pour voir ses biens sauvegardés
+- [ ] Hook `useFavorites()` pour gérer le localStorage
+
+### Option B - Historique "Biens récemment consultés"
+- [ ] Sauvegarder les IDs des biens consultés automatiquement
+- [ ] Afficher une section "Biens récemment consultés" en bas des pages listing
+- [ ] Maximum 4-6 biens affichés (scroll horizontal sur mobile)
+- [ ] La section ne s'affiche que si l'historique n'est pas vide
+
+**Stockage prévu :**
+```javascript
+// Favoris
+localStorage.setItem("oiko-favorites", JSON.stringify(["id1", "id2"]))
+
+// Historique
+localStorage.setItem("oiko-recent", JSON.stringify([
+  { id: "123", type: "vente" },
+  { id: "456", type: "location" }
+]))
+```
+
+💡 **Décision :** À évaluer si ces fonctionnalités apportent assez de valeur pour un site vitrine.
+
+---
+
 ## ✅ Checkpoint Phase 16
 
 - [ ] Tous les contenus légaux sont validés

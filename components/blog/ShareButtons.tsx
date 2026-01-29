@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface ShareButtonsProps {
   title: string;
   path: string; // Ex: "/blog/mon-article" ou "/vente/123"
@@ -31,6 +33,7 @@ const LinkIcon = () => (
 );
 
 export default function ShareButtons({ title, path }: ShareButtonsProps) {
+  const [showToast, setShowToast] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
   const url = `${baseUrl}${path}`;
   const encodedUrl = encodeURIComponent(url);
@@ -56,11 +59,12 @@ export default function ShareButtons({ title, path }: ShareButtonsProps) {
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(url);
-    alert("Lien copié !");
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
 
   return (
-    <div className="flex gap-3">
+    <div className="relative flex gap-3">
       {shareLinks.map((link) => (
         <a
           key={link.name}
@@ -80,6 +84,15 @@ export default function ShareButtons({ title, path }: ShareButtonsProps) {
       >
         <LinkIcon />
       </button>
+
+      {/* Toast notification */}
+      <div
+        className={`absolute -top-12 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 rounded-lg text-sm font-medium shadow-lg transition-all duration-300 ${
+          showToast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
+        }`}
+      >
+        ✓ Lien copié !
+      </div>
     </div>
   );
 }
