@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           {/* Partage */}
           <div className="mt-8 pt-8 border-t border-border">
             <p className="text-sm text-muted mb-4">Partager cet article :</p>
-            <ShareButtons title={post.title} slug={post.slug} />
+            <ShareButtons title={post.title} path={`/blog/${post.slug}`} />
           </div>
 
           {/* Retour */}

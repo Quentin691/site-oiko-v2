@@ -5,6 +5,7 @@ import Section from "@/components/ui/Section";
 import PropertyGallery from "@/components/annonces/PropertyGallery";
 import PropertyDetails from "@/components/annonces/PropertyDetails";
 import PropertyMap from "@/components/annonces/PropertyMap";
+import ShareButtons from "@/components/blog/ShareButtons";
 import { getAdById } from "@/lib/ubiflow";
 import { mapApiToProperty } from "@/lib/mapProperty";
 import { PropertyJsonLd, BreadcrumbJsonLd } from "@/components/seo";
@@ -92,6 +93,12 @@ export default async function VenteDetailPage({ params }: PageProps) {
               postalCode={property.postalCode}
             />
           </div>
+        </div>
+
+        {/* Partage */}
+        <div className="mt-8 pt-8 border-t border-border">
+          <p className="text-sm text-muted mb-4">Partager ce bien :</p>
+          <ShareButtons title={property.title} path={`/vente/${property.id}`} />
         </div>
       </Section>
     </main>
