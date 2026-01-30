@@ -17,8 +17,6 @@ export default function AdminPage() {
   const [mode, setMode] = useState<Mode>("list");
   const [articles, setArticles] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
   const [formData, setFormData] = useState({
     slug: "",
     title: "",
@@ -62,49 +60,10 @@ export default function AdminPage() {
     setMessage("");
   };
 
-  // Connexion admin
-  const handleLogin = async () => {
-    if (!password.trim()) {
-      setMessage("Veuillez entrer le mot de passe");
-      setStatus("error");
-      return;
-    }
-
-    setStatus("loading");
-    try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-
-      if (response.ok) {
-        setIsAuthenticated(true);
-        setMessage("");
-        setStatus("idle");
-      } else {
-        setMessage("Mot de passe incorrect");
-        setStatus("error");
-      }
-    } catch {
-      setMessage("Erreur de connexion");
-      setStatus("error");
-    }
-  };
-
-  // Déconnexion admin
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setPassword("");
-    setMode("list");
-    resetForm();
-  };
-
   // Créer un article
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation des champs obligatoires
     if (!formData.title.trim()) {
       setStatus("error");
       setMessage("Le titre est obligatoire");
@@ -128,7 +87,7 @@ export default function AdminPage() {
       const response = await fetch("/api/blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, password }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -136,24 +95,12 @@ export default function AdminPage() {
       if (response.ok) {
         setStatus("success");
         setMessage(data.message || "Article créé avec succès !");
-        // Réinitialiser le formulaire sans effacer le message
-        setFormData({
-          slug: "",
-          title: "",
-          excerpt: "",
-          content: "",
-          category: "actualites",
-          date: "",
-        });
+        resetForm();
         setMode("list");
-        // Recharger après un délai (le fichier met du temps à apparaître)
         setTimeout(loadArticles, 2000);
       } else {
         setStatus("error");
         setMessage(data.error || "Une erreur est survenue");
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-        }
       }
     } catch {
       setStatus("error");
@@ -165,7 +112,6 @@ export default function AdminPage() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation des champs obligatoires
     if (!formData.title.trim()) {
       setStatus("error");
       setMessage("Le titre est obligatoire");
@@ -189,7 +135,7 @@ export default function AdminPage() {
       const response = await fetch("/api/blog/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, password }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -202,9 +148,6 @@ export default function AdminPage() {
       } else {
         setStatus("error");
         setMessage(data.error || "Une erreur est survenue");
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-        }
       }
     } catch {
       setStatus("error");
@@ -214,12 +157,6 @@ export default function AdminPage() {
 
   // Supprimer un article
   const handleDelete = async (slug: string) => {
-    if (!password) {
-      setMessage("Entrez le mot de passe admin d'abord");
-      setStatus("error");
-      return;
-    }
-
     if (!confirm(`Voulez-vous vraiment supprimer l'article "${slug}" ?`)) {
       return;
     }
@@ -231,7 +168,7 @@ export default function AdminPage() {
       const response = await fetch("/api/blog/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, password }),
+        body: JSON.stringify({ slug }),
       });
 
       const data = await response.json();
@@ -243,9 +180,6 @@ export default function AdminPage() {
       } else {
         setStatus("error");
         setMessage(data.error || "Une erreur est survenue");
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-        }
       }
     } catch {
       setStatus("error");
@@ -255,7 +189,6 @@ export default function AdminPage() {
 
   // Charger un article pour modification
   const handleEdit = async (article: BlogPost) => {
-    // Récupérer le contenu complet de l'article
     try {
       const response = await fetch(`/api/blog/articles?slug=${article.slug}`);
       const data = await response.json();
@@ -294,43 +227,6 @@ export default function AdminPage() {
           )}
         </div>
 
-        {/* Formulaire de connexion OU bouton déconnexion */}
-        {!isAuthenticated ? (
-          <div className="mb-6 p-6 bg-surface rounded-lg border border-border">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Connexion</h2>
-            <div className="flex gap-4 items-end">
-              <div className="flex-1 max-w-xs">
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Mot de passe admin
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground"
-                  placeholder="Entrez le mot de passe"
-                />
-              </div>
-              <button
-                onClick={handleLogin}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
-              >
-                Connexion
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="mb-6 flex justify-end">
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-            >
-              Déconnexion
-            </button>
-          </div>
-        )}
-
         {/* Message de statut */}
         {message && (
           <div
@@ -344,9 +240,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Interface admin (visible uniquement si connecté) */}
-        {isAuthenticated && (
-          <>
         {/* MODE: Liste des articles */}
         {mode === "list" && (
           <>
@@ -413,7 +306,7 @@ export default function AdminPage() {
             {/* Titre */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Titre de l'article
+                Titre de l&apos;article
               </label>
               <input
                 type="text"
@@ -484,8 +377,6 @@ export default function AdminPage() {
                 : "Enregistrer les modifications"}
             </button>
           </form>
-        )}
-          </>
         )}
       </div>
     </main>

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 interface UpdateData {
   slug: string;
@@ -7,20 +8,29 @@ interface UpdateData {
   content: string;
   category: string;
   date: string;
-  password: string;
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    const data: UpdateData = await request.json();
+  // Rate limiting admin
+  const rateLimit = checkRateLimit(request, "admin");
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Trop de requêtes" },
+      { status: 429 }
+    );
+  }
 
-    // Vérification du mot de passe admin
-    if (data.password !== process.env.ADMIN_PASSWORD) {
+  try {
+    // Vérifier l'authentification via cookie
+    const session = request.cookies.get("admin-session");
+    if (!session || session.value !== "authenticated") {
       return NextResponse.json(
-        { error: "Mot de passe incorrect" },
+        { error: "Non autorisé" },
         { status: 401 }
       );
     }
+
+    const data: UpdateData = await request.json();
 
     if (!data.slug?.trim() || !data.title?.trim() || !data.content?.trim() || !data.excerpt?.trim()) {
       return NextResponse.json(
