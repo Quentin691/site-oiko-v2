@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { BLUR_DATA_URL } from "@/lib/image-placeholder";
 
 interface PropertyGalleryProps {
   images: string[];
@@ -69,6 +70,8 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
           priority
+          placeholder="blur"
+          blurDataURL={BLUR_DATA_URL}
         />
         <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm pointer-events-none">
           {selectedIndex + 1} / {images.length}
@@ -104,7 +107,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                 index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
               }`}
             >
-              <Image src={image} alt={`${title} - Miniature ${index + 1}`} fill className="object-cover" sizes="80px" loading="lazy" />
+              <Image src={image} alt={`${title} - Miniature ${index + 1}`} fill className="object-cover" sizes="80px" loading="lazy" placeholder="blur" blurDataURL={BLUR_DATA_URL} />
             </button>
           ))}
         </div>
@@ -142,6 +145,8 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
               className="object-contain"
               sizes="90vw"
               priority
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
             />
           </div>
 
@@ -176,7 +181,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                     index === selectedIndex ? "border-white" : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <Image src={image} alt={`${title} - Miniature ${index + 1}`} fill className="object-cover" sizes="64px" loading="lazy" />
+                  <Image src={image} alt={`${title} - Miniature ${index + 1}`} fill className="object-cover" sizes="64px" loading="lazy" placeholder="blur" blurDataURL={BLUR_DATA_URL} />
                 </button>
               ))}
             </div>

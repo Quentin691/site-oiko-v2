@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Card from "@/components/ui/Card";
 import type { Property } from "@/types/property";
+import { BLUR_DATA_URL } from "@/lib/image-placeholder";
 
 interface PropertyCardProps {
   property: Property;
@@ -42,6 +43,8 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
               loading="lazy"
               className="object-cover transition-transform duration-300 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
