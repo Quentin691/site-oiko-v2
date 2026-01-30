@@ -43,6 +43,16 @@ export default function AdminPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
+  // Déconnexion
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+      window.location.href = "/admin/login";
+    } catch {
+      console.error("Erreur lors de la déconnexion");
+    }
+  };
+
   // Charger les articles
   const loadArticles = async () => {
     setLoading(true);
@@ -245,14 +255,22 @@ export default function AdminPage() {
           <h1 className="text-3xl font-bold text-foreground">
             Administration du Blog
           </h1>
-          {mode !== "list" && (
+          <div className="flex items-center gap-4">
+            {mode !== "list" && (
+              <button
+                onClick={() => { setMode("list"); resetForm(); }}
+                className="px-4 py-2 text-muted hover:text-foreground"
+              >
+                ← Retour a la liste
+              </button>
+            )}
             <button
-              onClick={() => { setMode("list"); resetForm(); }}
-              className="px-4 py-2 text-muted hover:text-foreground"
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
             >
-              ← Retour a la liste
+              Se deconnecter
             </button>
-          )}
+          </div>
         </div>
 
         {/* Message de statut */}
