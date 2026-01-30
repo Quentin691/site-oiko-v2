@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 interface ArticleData {
   title: string;
@@ -8,6 +9,15 @@ interface ArticleData {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limiting admin
+  const rateLimit = checkRateLimit(request, "admin");
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Trop de requêtes" },
+      { status: 429 }
+    );
+  }
+
   try {
     // Vérifier l'authentification via cookie
     const session = request.cookies.get("admin-session");
