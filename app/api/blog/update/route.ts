@@ -8,7 +8,14 @@ interface UpdateData {
   content: string;
   category: string;
   date: string;
+  image?: string;
+  author?: string;
 }
+
+const AUTHORS: Record<string, string> = {
+  oiko: "OIKO Gestion",
+  quentin: "Quentin",
+};
 
 export async function POST(request: NextRequest) {
   // Rate limiting admin
@@ -60,11 +67,15 @@ export async function POST(request: NextRequest) {
     const fileData = await getFileResponse.json();
 
     // Créer le nouveau contenu Markdown
+    const authorId = data.author || "oiko";
+    const authorName = AUTHORS[authorId] || "OIKO Gestion";
+    const imageField = data.image ? `\nimage: "${data.image}"` : "";
     const markdownContent = `---
 title: "${data.title}"
 excerpt: "${data.excerpt}"
 date: "${data.date}"
-author: "OIKO Gestion"
+author: "${authorName}"
+authorId: "${authorId}"${imageField}
 category: "${data.category || "actualites"}"
 ---
 

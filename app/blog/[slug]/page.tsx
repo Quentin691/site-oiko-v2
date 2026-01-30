@@ -6,6 +6,7 @@ import Section from "@/components/ui/Section";
 import ShareButtons from "@/components/blog/ShareButtons";
 import { BlogPostJsonLd } from "@/components/seo";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
+import { getAuthor } from "@/lib/authors";
 
 const DEFAULT_BLOG_IMAGE = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop";
 
@@ -81,11 +82,28 @@ export default async function BlogPostPage({ params }: PageProps) {
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               {post.title}
             </h1>
-            <div className="flex items-center gap-4 text-sm text-muted">
-              <span>Par {post.author}</span>
-              <span>•</span>
-              <time dateTime={post.date}>{formatDate(post.date)}</time>
-            </div>
+            {(() => {
+              const author = getAuthor(post.authorId || "oiko");
+              return (
+                <div className="flex items-center gap-3">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-surface">
+                    <Image
+                      src={author.avatar}
+                      alt={author.name}
+                      fill
+                      className="object-cover"
+                      sizes="40px"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{author.name}</p>
+                    <p className="text-xs text-muted">
+                      {author.role} · {formatDate(post.date)}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
           </header>
 
           {/* Image principale */}

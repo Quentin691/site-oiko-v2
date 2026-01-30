@@ -9,7 +9,20 @@ interface BlogPost {
   date: string;
   category: string;
   content?: string;
+  image?: string;
+  author?: string;
 }
+
+interface Author {
+  id: string;
+  name: string;
+  role: string;
+}
+
+const AUTHORS: Author[] = [
+  { id: "oiko", name: "OIKO Gestion", role: "Equipe OIKO" },
+  { id: "quentin", name: "Quentin", role: "Gerant" },
+];
 
 type Mode = "create" | "edit" | "list";
 
@@ -24,6 +37,8 @@ export default function AdminPage() {
     content: "",
     category: "actualites",
     date: "",
+    image: "",
+    author: "oiko",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -55,6 +70,8 @@ export default function AdminPage() {
       content: "",
       category: "actualites",
       date: "",
+      image: "",
+      author: "oiko",
     });
     setStatus("idle");
     setMessage("");
@@ -93,10 +110,19 @@ export default function AdminPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setStatus("success");
-        setMessage(data.message || "Article créé avec succès !");
-        resetForm();
+        setFormData({
+          slug: "",
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "actualites",
+          date: "",
+          image: "",
+          author: "oiko",
+        });
         setMode("list");
+        setStatus("success");
+        setMessage(data.message || "Article cree avec succes !");
         setTimeout(loadArticles, 2000);
       } else {
         setStatus("error");
@@ -142,7 +168,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         setStatus("success");
-        setMessage(data.message || "Article modifié avec succès !");
+        setMessage(data.message || "Article modifie avec succes !");
         setMode("list");
         setTimeout(loadArticles, 2000);
       } else {
@@ -175,7 +201,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         setStatus("success");
-        setMessage(data.message || "Article supprimé avec succès !");
+        setMessage(data.message || "Article supprime avec succes !");
         setTimeout(loadArticles, 2000);
       } else {
         setStatus("error");
@@ -200,6 +226,8 @@ export default function AdminPage() {
         content: data.content || "",
         category: article.category,
         date: article.date,
+        image: data.image || "",
+        author: data.author || "oiko",
       });
       setMode("edit");
       setStatus("idle");
@@ -222,7 +250,7 @@ export default function AdminPage() {
               onClick={() => { setMode("list"); resetForm(); }}
               className="px-4 py-2 text-muted hover:text-foreground"
             >
-              ← Retour à la liste
+              ← Retour a la liste
             </button>
           )}
         </div>
@@ -270,9 +298,9 @@ export default function AdminPage() {
                       <h3 className="font-medium text-foreground">{article.title}</h3>
                       <p className="text-sm text-muted mt-1">{article.excerpt}</p>
                       <div className="flex gap-4 mt-2 text-xs text-muted">
-                        <span>📅 {article.date}</span>
-                        <span>📁 {article.category}</span>
-                        <span>🔗 {article.slug}</span>
+                        <span>{article.date}</span>
+                        <span>{article.category}</span>
+                        <span>{article.slug}</span>
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
@@ -321,45 +349,82 @@ export default function AdminPage() {
             {/* Extrait */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Extrait (résumé court)
+                Extrait (resume court)
               </label>
               <textarea
                 value={formData.excerpt}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                 className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
                 rows={2}
-                placeholder="Résumé de l'article en 1-2 phrases"
+                placeholder="Resume de l'article en 1-2 phrases"
                 required
               />
             </div>
 
-            {/* Catégorie */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Catégorie */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Categorie
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+                >
+                  <option value="actualites">Actualites</option>
+                  <option value="conseils">Conseils</option>
+                  <option value="immobilier">Immobilier</option>
+                </select>
+              </div>
+
+              {/* Auteur */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Auteur
+                </label>
+                <select
+                  value={formData.author}
+                  onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
+                >
+                  {AUTHORS.map((author) => (
+                    <option key={author.id} value={author.id}>
+                      {author.name} ({author.role})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Image URL */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Catégorie
+                Image a la une (URL)
               </label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              <input
+                type="url"
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                 className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground"
-              >
-                <option value="actualites">Actualités</option>
-                <option value="conseils">Conseils</option>
-                <option value="immobilier">Immobilier</option>
-              </select>
+                placeholder="https://images.unsplash.com/photo-..."
+              />
+              <p className="text-xs text-muted mt-1">
+                Laissez vide pour utiliser l&apos;image par defaut. Utilisez Unsplash pour des images gratuites.
+              </p>
             </div>
 
             {/* Contenu */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Contenu (Markdown supporté)
+                Contenu (Markdown supporte)
               </label>
               <textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground font-mono text-sm"
                 rows={15}
-                placeholder="Écrivez votre article ici..."
+                placeholder="Ecrivez votre article ici..."
                 required
               />
             </div>

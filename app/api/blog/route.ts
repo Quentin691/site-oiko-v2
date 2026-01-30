@@ -6,7 +6,14 @@ interface ArticleData {
   excerpt: string;
   content: string;
   category: string;
+  image?: string;
+  author?: string;
 }
+
+const AUTHORS: Record<string, string> = {
+  oiko: "OIKO Gestion",
+  quentin: "Quentin",
+};
 
 export async function POST(request: NextRequest) {
   // Rate limiting admin
@@ -48,11 +55,15 @@ export async function POST(request: NextRequest) {
 
     // Créer le contenu Markdown
     const date = new Date().toISOString().split("T")[0];
+    const authorId = data.author || "oiko";
+    const authorName = AUTHORS[authorId] || "OIKO Gestion";
+    const imageField = data.image ? `\nimage: "${data.image}"` : "";
     const markdownContent = `---
 title: "${data.title}"
 excerpt: "${data.excerpt}"
 date: "${date}"
-author: "OIKO Gestion"
+author: "${authorName}"
+authorId: "${authorId}"${imageField}
 category: "${data.category || "actualites"}"
 ---
 

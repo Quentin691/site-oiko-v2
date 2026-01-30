@@ -12,6 +12,7 @@ export interface BlogPost {
   excerpt: string;
   date: string;
   author: string;
+  authorId?: string;
   category: string;
   image?: string;
   content?: string;
@@ -41,6 +42,7 @@ export function getAllPosts(): BlogPost[] {
         excerpt: data.excerpt,
         date: data.date,
         author: data.author,
+        authorId: data.authorId,
         category: data.category,
         image: data.image,
       };
@@ -71,6 +73,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     excerpt: data.excerpt,
     date: data.date,
     author: data.author,
+    authorId: data.authorId,
     category: data.category,
     image: data.image,
     content: contentHtml,
