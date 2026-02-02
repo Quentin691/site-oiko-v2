@@ -26,8 +26,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
-| Phase 16 - Points à revoir | 14/26 (54%) | ⏳ En cours |
-| **Total** | **731/743 (98%)** | |
+| Phase 16 - Points à revoir | 15/26 (58%) | ⏳ En cours |
+| **Total** | **732/743 (99%)** | |
 
 ---
 
@@ -8503,7 +8503,13 @@ export async function GET(request: NextRequest) {
 
 ## 16.4 Vérifications production
 
-- [ ] Performance Lighthouse (viser le vert)
+- [x] **Performance Lighthouse** → 100% sur toutes les catégories (accueil, location)
+  - Contraste boutons primaires corrigé (`text-gray-900`)
+  - Badge "Nouveau" avec meilleur contraste
+  - Vidéo avec piste de sous-titres (accessibilité)
+  - Refactoring boutons hardcodés vers composant `Button`
+  - Classes Tailwind canoniques
+  - Lazy loading Google Maps (placeholder avec clic)
 - [ ] Tests responsive mobile
 - [ ] Configuration domaine de production
 - [ ] Variables d'environnement configurées sur l'hébergeur
@@ -8577,7 +8583,8 @@ localStorage.setItem("oiko-recent", JSON.stringify([
 - [ ] Numéro de téléphone Paris ajouté (en attente)
 - [x] Système authentification admin sécurisé (HMAC + hash + rate limiting)
 - [x] Migration proxy.ts effectuée
-- [ ] Tests Lighthouse et responsive
+- [x] Tests Lighthouse (100% accueil et location)
+- [ ] Tests responsive mobile
 - [ ] Images des articles de blog (décision à prendre)
 
 ---
@@ -8598,5 +8605,5 @@ Félicitations ! Vous avez complété toutes les phases du projet :
 
 ---
 
-**Dernière mise à jour :** 26 janvier 2026
+**Dernière mise à jour :** 2 février 2026
 **Document créé par :** Claude Code

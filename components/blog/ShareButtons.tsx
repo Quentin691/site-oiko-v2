@@ -34,7 +34,10 @@ const LinkIcon = () => (
 
 export default function ShareButtons({ title, path }: ShareButtonsProps) {
   const [showToast, setShowToast] = useState(false);
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+  // Utilise automatiquement le domaine actuel (fonctionne sur Vercel, localhost, domaine final)
+  const baseUrl = typeof window !== "undefined"
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
   const url = `${baseUrl}${path}`;
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
