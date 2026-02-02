@@ -110,7 +110,7 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             id="filter-city"
             value={filters.city}
             onChange={(e) => handleChange("city", e.target.value)}
-            className="w-full h-9 px-3 py-1.5 pr-8 appearance-none border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent bg-no-repeat bg-[length:16px] bg-[right_8px_center] bg-[url('data:image/svg+xml,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3e%3cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3e%3c%2Fsvg%3e')]"
+            className="w-full h-9 px-3 py-1.5 pr-8 appearance-none border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent bg-no-repeat bg-size-[16px] bg-position-[right_8px_center] bg-[url('data:image/svg+xml,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3e%3cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3e%3c%2Fsvg%3e')]"
           >
             <option value="">Toutes les villes</option>
             {cities.map((city) => (
@@ -198,7 +198,7 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             id="filter-rooms"
             value={filters.rooms}
             onChange={(e) => handleChange("rooms", e.target.value)}
-            className="w-full h-9 px-3 py-1.5 pr-8 appearance-none border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent bg-no-repeat bg-[length:16px] bg-[right_8px_center] bg-[url('data:image/svg+xml,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3e%3cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3e%3c%2Fsvg%3e')]"
+            className="w-full h-9 px-3 py-1.5 pr-8 appearance-none border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent bg-no-repeat bg-size-[16px] bg-position-[right_8px_center] bg-[url('data:image/svg+xml,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3e%3cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3e%3c%2Fsvg%3e')]"
           >
             <option value="">Tous</option>
             <option value="1">1 pièce</option>
@@ -218,7 +218,7 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
             id="filter-sort"
             value={filters.sort}
             onChange={(e) => handleChange("sort", e.target.value)}
-            className="w-full h-9 px-3 py-1.5 pr-8 appearance-none border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent bg-no-repeat bg-[length:16px] bg-[right_8px_center] bg-[url('data:image/svg+xml,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3e%3cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3e%3c%2Fsvg%3e')]"
+            className="w-full h-9 px-3 py-1.5 pr-8 appearance-none border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent bg-no-repeat bg-size-[16px] bg-position-[right_8px_center] bg-[url('data:image/svg+xml,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3e%3cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3e%3c%2Fsvg%3e')]"
           >
             <option value="">Par défaut</option>
             <option value="date_desc">Plus récents</option>

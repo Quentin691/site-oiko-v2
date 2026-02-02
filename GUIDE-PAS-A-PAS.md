@@ -26,8 +26,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
-| Phase 16 - Points à revoir | 5/26 (19%) | ⏳ En cours |
-| **Total** | **722/743 (97%)** | |
+| Phase 16 - Points à revoir | 14/26 (54%) | ⏳ En cours |
+| **Total** | **731/743 (98%)** | |
 
 ---
 
@@ -8487,22 +8487,17 @@ export async function GET(request: NextRequest) {
 
 ## 16.3 Authentification admin
 
-**Décision prise :** Pas d'espace client, uniquement des comptes admin (plusieurs personnes).
+**Décision prise :** Un seul admin suffit (une seule personne gère le blog).
 
-**État temporaire actuel :**
+**Sécurité implémentée :**
 - [x] L'administration du blog est protégée par mot de passe (`/admin/login`)
-- [x] Système provisoire avec un seul mot de passe (variable `ADMIN_PASSWORD`)
-- [ ] Page `/connexion` supprimée (n'était pas utilisée)
+- [x] Mot de passe hashé avec PBKDF2 (variable `ADMIN_PASSWORD_HASH`)
+- [x] Cookies de session signés avec HMAC-SHA256 (variable `SESSION_SECRET`)
+- [x] Protection anti-brute force (rate limiting)
+- [x] Session expire après 30 minutes
+- [x] Bouton de déconnexion dans `/admin`
 
-**À faire - Système multi-admin :**
-- [ ] Implémenter plusieurs comptes admin
-- [ ] Options à explorer :
-  - Variables d'environnement multiples (ADMIN_USER_1, ADMIN_USER_2, etc.)
-  - Vercel Auth (protection native)
-  - Autre solution (NextAuth, etc.)
-- [ ] Traçabilité des actions (qui a fait quoi) - optionnel
-
-💡 **Note :** Le système actuel (un seul mot de passe) est temporaire. Il faut implémenter un système multi-admin.
+✅ **Terminé :** Système d'authentification sécurisé en place.
 
 ---
 
@@ -8576,12 +8571,14 @@ localStorage.setItem("oiko-recent", JSON.stringify([
 
 ## ✅ Checkpoint Phase 16
 
-- [ ] Tous les contenus légaux sont validés
-- [ ] Liens réseaux sociaux fonctionnels
-- [ ] Formulaire de contact envoie des emails
-- [ ] Système multi-admin implémenté
-- [ ] Page `/connexion` supprimée
-- [ ] Site testé et prêt pour la production
+- [x] Pages CGU et RGPD en placeholder (rien sur l'ancien site)
+- [ ] Page Mentions Légales complétée (en attente infos SIRET, hébergeur)
+- [ ] Liens réseaux sociaux fonctionnels (en attente des vrais liens)
+- [ ] Numéro de téléphone Paris ajouté (en attente)
+- [x] Système authentification admin sécurisé (HMAC + hash + rate limiting)
+- [x] Migration proxy.ts effectuée
+- [ ] Tests Lighthouse et responsive
+- [ ] Images des articles de blog (décision à prendre)
 
 ---
 
