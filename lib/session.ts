@@ -1,4 +1,4 @@
-import { createHmac } from "crypto";
+import { createHmac, pbkdf2Sync } from "crypto";
 
 // Clé secrète pour signer les cookies (à définir dans .env.local)
 const SESSION_SECRET = process.env.SESSION_SECRET || "fallback-secret-change-me";
@@ -46,4 +46,35 @@ export function isValidSession(cookieValue: string | undefined): boolean {
   if (!cookieValue) return false;
   const value = verifySignedValue(cookieValue);
   return value === "authenticated";
+}
+
+/**
+ * Hash un mot de passe avec PBKDF2
+ * Le salt est inclus dans le hash pour la vérification
+ */
+export function hashPassword(password: string, salt?: string): string {
+  const usedSalt = salt || SESSION_SECRET.slice(0, 16);
+  const hash = pbkdf2Sync(password, usedSalt, 10000, 32, "sha256").toString("hex");
+  return `${usedSalt}:${hash}`;
+}
+
+/**
+ * Vérifie un mot de passe contre un hash stocké
+ */
+export function verifyPassword(password: string, storedHash: string): boolean {
+  const parts = storedHash.split(":");
+  if (parts.length !== 2) return false;
+
+  const [salt, hash] = parts;
+  const computedHash = pbkdf2Sync(password, salt, 10000, 32, "sha256").toString("hex");
+
+  // Comparaison constante pour éviter les timing attacks
+  if (hash.length !== computedHash.length) return false;
+
+  let match = true;
+  for (let i = 0; i < hash.length; i++) {
+    if (hash[i] !== computedHash[i]) match = false;
+  }
+
+  return match;
 }

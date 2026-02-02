@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { signValue } from "@/lib/session";
+import { signValue, verifyPassword } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
   // Rate limiting strict pour la route de login (protection brute force)
@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json();
 
-    if (password !== process.env.ADMIN_PASSWORD) {
+    const storedHash = process.env.ADMIN_PASSWORD_HASH;
+    if (!storedHash || !verifyPassword(password, storedHash)) {
       return NextResponse.json(
         { error: "Mot de passe incorrect" },
         { status: 401 }
