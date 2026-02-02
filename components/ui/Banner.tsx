@@ -22,7 +22,7 @@ export function Banner({ src, alt, videoSrc }: BannerProps) {
   }, []);
 
   return (
-    <div className="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden relative">
+    <div className="w-full h-75 md:h-100 lg:h-125 overflow-hidden relative">
       {videoSrc ? (
         <video
           ref={videoRef}
