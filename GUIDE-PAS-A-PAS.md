@@ -8471,9 +8471,9 @@ export async function GET(request: NextRequest) {
 
 ## 16.1 Contenus légaux à compléter
 
-- [ ] **Page CGU** (`app/cgu/page.tsx`) → ajouter le contenu réel
-- [ ] **Page RGPD** (`app/politique-rgpd/page.tsx`) → ajouter le contenu réel
-- [ ] **Page Mentions Légales** (`app/mentions-legales/page.tsx`) → vérifier les infos (SIRET, hébergeur...)
+- [x] **Page CGU** (`app/cgu/page.tsx`) → laissé en placeholder (rien sur l'ancien site)
+- [x] **Page RGPD** (`app/politique-rgpd/page.tsx`) → laissé en placeholder (rien sur l'ancien site)
+- [ ] **Page Mentions Légales** (`app/mentions-legales/page.tsx`) → en attente des infos (SIRET, hébergeur...)
 
 ---
 

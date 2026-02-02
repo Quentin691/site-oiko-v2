@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { signValue } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
   // Rate limiting strict pour la route de login (protection brute force)
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Créer la réponse avec le cookie de session
     const response = NextResponse.json({ success: true });
 
-    response.cookies.set("admin-session", "authenticated", {
+    response.cookies.set("admin-session", signValue("authenticated"), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
