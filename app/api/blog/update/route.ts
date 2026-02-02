@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { isValidSession } from "@/lib/session";
 
 interface UpdateData {
   slug: string;
@@ -28,9 +29,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Vérifier l'authentification via cookie
+    // Vérifier l'authentification via cookie signé
     const session = request.cookies.get("admin-session");
-    if (!session || session.value !== "authenticated") {
+    if (!isValidSession(session?.value)) {
       return NextResponse.json(
         { error: "Non autorisé" },
         { status: 401 }

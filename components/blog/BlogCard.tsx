@@ -7,7 +7,16 @@ interface BlogCardProps {
   post: BlogPost;
 }
 
-const DEFAULT_BLOG_IMAGE = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop";
+// Images par défaut selon la catégorie
+const DEFAULT_BLOG_IMAGES: Record<string, string> = {
+  actualites: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=450&fit=crop", // Journal/News
+  conseils: "https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=800&h=450&fit=crop", // Discussion/Conseil
+  immobilier: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop", // Maison/Immobilier
+};
+
+const getDefaultImage = (category: string): string => {
+  return DEFAULT_BLOG_IMAGES[category] || DEFAULT_BLOG_IMAGES.immobilier;
+};
 
 export default function BlogCard({ post }: BlogCardProps) {
   const formatDate = (dateString: string) => {
@@ -29,7 +38,7 @@ export default function BlogCard({ post }: BlogCardProps) {
       <Link href={`/blog/${post.slug}`}>
         <div className="relative aspect-video bg-background">
           <Image
-            src={post.image || DEFAULT_BLOG_IMAGE}
+            src={post.image || getDefaultImage(post.category)}
             alt={`Image de l'article : ${post.title}`}
             fill
             className="object-cover"
