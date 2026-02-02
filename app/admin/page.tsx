@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Button from "@/components/ui/Button";
 
 interface BlogPost {
   slug: string;
@@ -293,12 +294,13 @@ export default function AdminPage() {
               <h2 className="text-xl font-semibold text-foreground">
                 Articles existants ({articles.length})
               </h2>
-              <button
+              <Button
                 onClick={() => { setMode("create"); resetForm(); }}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+                variant="primary"
+                className="px-4! py-2!"
               >
                 + Nouvel article
-              </button>
+              </Button>
             </div>
 
             {loading ? (
@@ -448,17 +450,18 @@ export default function AdminPage() {
             </div>
 
             {/* Bouton submit */}
-            <button
+            <Button
               type="submit"
               disabled={status === "loading"}
-              className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+              variant="primary"
+              className="w-full"
             >
               {status === "loading"
                 ? "En cours..."
                 : mode === "create"
                 ? "Publier l'article"
                 : "Enregistrer les modifications"}
-            </button>
+            </Button>
           </form>
         )}
       </div>

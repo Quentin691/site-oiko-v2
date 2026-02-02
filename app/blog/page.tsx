@@ -45,14 +45,14 @@ export default function BlogPage() {
         </div>
         {/* Filtres par catégorie */}
         <div className="flex flex-wrap gap-2 mb-8">
-          <Link href="/blog" className="px-4 py-2 bg-primary text-white rounded-full text-sm">
+          <Link href="/blog" className="px-4 py-2 bg-primary text-gray-900 rounded-full text-sm">
             Tous
           </Link>
           {categories.map((category) => (
             <Link
               key={category}
               href={`/blog/categorie/${category}`}
-              className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-white transition-colors"
+              className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-gray-900 transition-colors"
             >
               {categoryLabels[category] || category}
             </Link>

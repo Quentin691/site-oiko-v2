@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
@@ -60,13 +61,14 @@ export default function AdminLoginPage() {
               <p className="text-red-500 text-sm">{error}</p>
             )}
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+              variant="primary"
+              className="w-full"
             >
               {loading ? "Connexion..." : "Se connecter"}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

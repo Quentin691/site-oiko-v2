@@ -14,13 +14,13 @@ interface ButtonProps {
 const getVariantStyles = (variant: "primary" | "secondary" | "outline") => {
   switch (variant) {
     case "primary":
-      return "bg-primary hover:bg-primary-dark text-white";
+      return "bg-primary hover:bg-primary-dark text-gray-900";
     case "secondary":
       return "bg-card text-foreground border border-border hover:bg-hover-bg";
     case "outline":
       return "bg-transparent text-foreground border border-foreground hover:bg-foreground hover:text-background";
     default:
-      return "bg-primary hover:bg-primary-dark text-white";
+      return "bg-primary hover:bg-primary-dark text-gray-900";
   }
 };
 

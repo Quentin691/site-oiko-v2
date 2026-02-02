@@ -45,7 +45,7 @@ export default function ScrollToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-8 right-8 bg-primary hover:bg-primary-dark text-white p-4 rounded-full shadow-lg transition-all duration-200 z-50"
+      className="fixed bottom-8 right-8 bg-primary hover:bg-primary-dark text-gray-900 p-4 rounded-full shadow-lg transition-all duration-200 z-50"
       aria-label="Retour en haut"
     >
       {/* Icône flèche vers le haut */}

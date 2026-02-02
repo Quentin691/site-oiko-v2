@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import Button from "@/components/ui/Button";
 
 export default function NotFound() {
   return (
@@ -29,12 +29,9 @@ export default function NotFound() {
         </p>
 
         {/* Bouton retour */}
-        <Link
-          href="/"
-          className="inline-block bg-primary hover:bg-primary-dark text-white font-medium px-6 py-3 rounded transition-colors"
-        >
+        <Button href="/" variant="primary">
           Retour à l&apos;accueil
-        </Link>
+        </Button>
       </div>
     </main>
   );

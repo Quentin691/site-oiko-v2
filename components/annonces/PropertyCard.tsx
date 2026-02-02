@@ -53,7 +53,7 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
           )}
           {/* Badges */}
           <div className="absolute top-2 left-2 flex gap-2">
-            <span className="bg-primary text-white text-xs px-2 py-1 rounded">
+            <span className="bg-primary text-gray-900 text-xs px-2 py-1 rounded">
               {type === "vente" ? "À vendre" : "À louer"}
             </span>
             {isNew && (

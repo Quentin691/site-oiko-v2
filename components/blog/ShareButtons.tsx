@@ -71,7 +71,7 @@ export default function ShareButtons({ title, path }: ShareButtonsProps) {
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted hover:bg-primary hover:text-white hover:border-primary transition-colors"
+          className="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted hover:bg-primary hover:text-gray-900 hover:border-primary transition-colors"
           aria-label={`Partager sur ${link.name}`}
         >
           {link.icon}
@@ -79,7 +79,7 @@ export default function ShareButtons({ title, path }: ShareButtonsProps) {
       ))}
       <button
         onClick={copyToClipboard}
-        className="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted hover:bg-primary hover:text-white hover:border-primary transition-colors"
+        className="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted hover:bg-primary hover:text-gray-900 hover:border-primary transition-colors"
         aria-label="Copier le lien"
       >
         <LinkIcon />

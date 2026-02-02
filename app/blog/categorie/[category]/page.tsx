@@ -53,7 +53,7 @@ export default async function CategoryPage({ params }: PageProps) {
         </div>
         {/* Filtres */}
         <div className="flex flex-wrap gap-2 mb-8">
-          <Link href="/blog" className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-white transition-colors">
+          <Link href="/blog" className="px-4 py-2 bg-surface text-muted rounded-full text-sm hover:bg-primary hover:text-gray-900 transition-colors">
             Tous
           </Link>
           {allCategories.map((cat) => (
@@ -62,8 +62,8 @@ export default async function CategoryPage({ params }: PageProps) {
               href={`/blog/categorie/${cat}`}
               className={`px-4 py-2 rounded-full text-sm transition-colors ${
                 cat === category
-                  ? "bg-primary text-white"
-                  : "bg-surface text-muted hover:bg-primary hover:text-white"
+                  ? "bg-primary text-gray-900"
+                  : "bg-surface text-muted hover:bg-primary hover:text-gray-900"
               }`}
             >
               {categoryLabels[cat] || cat}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Button from "./Button";
 
 export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
@@ -40,20 +41,20 @@ export default function CookieBanner() {
           </div>
 
           <div className="flex gap-3 shrink-0">
-            <button
+            <Button
               onClick={refuseCookies}
-              aria-label="Refuser les cookies"
-              className="px-4 py-2 text-sm border border-border rounded-md text-muted hover:bg-background transition-colors"
+              variant="secondary"
+              className="px-4! py-2! text-sm"
             >
               Refuser
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={acceptCookies}
-              aria-label="Accepter les cookies"
-              className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+              variant="primary"
+              className="px-4! py-2! text-sm"
             >
               Accepter
-            </button>
+            </Button>
           </div>
         </div>
       </div>

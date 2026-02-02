@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Button from "@/components/ui/Button";
 
 interface PropertyFiltersProps {
   type: "location" | "vente";
@@ -232,31 +233,24 @@ export default function PropertyFilters({ type, cities, disabled = false }: Prop
 
       {/* Boutons d'action */}
       <div className="flex gap-4 mt-6">
-        <button
+        <Button
           onClick={applyFilters}
           disabled={disabled}
-          title={disabled ? "Veuillez attendre que tous les biens soient chargés" : undefined}
-          className={`px-6 py-2 rounded-md transition-colors ${
-            disabled
-              ? "bg-muted/50 text-muted cursor-not-allowed"
-              : "bg-primary text-white hover:bg-primary-dark"
-          }`}
+          variant="primary"
+          className="px-6! py-2!"
         >
           {disabled ? (
             <span className="flex items-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" />
               Chargement...
             </span>
           ) : (
             "Rechercher"
           )}
-        </button>
-        <button
-          onClick={resetFilters}
-          className="px-6 py-2 border border-border text-muted rounded-md hover:bg-surface transition-colors"
-        >
+        </Button>
+        <Button onClick={resetFilters} variant="secondary" className="px-6! py-2!">
           Réinitialiser
-        </button>
+        </Button>
       </div>
     </div>
   );

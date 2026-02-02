@@ -69,7 +69,7 @@ export default function Pagination({
               href={buildUrl(page as number)}
               className={`px-4 py-2 rounded-md ${
                 currentPage === page
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-gray-900"
                   : "border border-border text-foreground hover:bg-surface"
               }`}
             >

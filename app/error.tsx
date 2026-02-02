@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
+import Button from "@/components/ui/Button";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -43,18 +44,12 @@ export default function Error({ error, reset }: ErrorProps) {
 
         {/* Boutons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={reset}
-            className="inline-block bg-primary hover:bg-primary-dark text-white font-medium px-6 py-3 rounded transition-colors"
-          >
+          <Button onClick={reset} variant="primary">
             Réessayer
-          </button>
-          <a
-            href="/"
-            className="inline-block bg-surface hover:bg-muted/20 text-foreground font-medium px-6 py-3 rounded border border-border transition-colors"
-          >
+          </Button>
+          <Button href="/" variant="secondary">
             Retour à l&apos;accueil
-          </a>
+          </Button>
         </div>
       </div>
     </main>
