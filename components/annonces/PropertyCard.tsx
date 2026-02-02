@@ -57,7 +57,7 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
               {type === "vente" ? "À vendre" : "À louer"}
             </span>
             {isNew && (
-              <span className="bg-green-500 text-white text-xs px-2 py-1 rounded font-medium">
+              <span className="bg-green-500 text-gray-900 text-xs px-2 py-1 rounded font-medium">
                 Nouveau
               </span>
             )}
