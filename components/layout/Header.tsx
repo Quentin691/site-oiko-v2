@@ -38,10 +38,10 @@ export default function Header() {
             <Image
               src="/logo.png"
               alt="OIKO - Gestion immobilière"
-              width={200}
-              height={80}
+              width={400}
+              height={134}
               className="h-10 sm:h-16 w-auto"
-              sizes="(max-width: 640px) 40px, 64px"
+              unoptimized
               priority
             />
           </div>

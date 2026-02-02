@@ -60,10 +60,10 @@ export default function Navbar() {
               <Image
                 src="/logo.png"
                 alt="OIKO - Gestion immobilière"
-                width={100}
-                height={32}
+                width={300}
+                height={100}
                 className="h-8 w-auto"
-                sizes="100px"
+                unoptimized
               />
             </div>
           </Link>
