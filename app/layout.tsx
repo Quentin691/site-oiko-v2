@@ -23,6 +23,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://site-oiko-v2-tklh.v
 export const metadata: Metadata = {
   title: "OIKO | Property, Asset & Project Management",
   description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers à Paris et Marseille.",
+  manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",

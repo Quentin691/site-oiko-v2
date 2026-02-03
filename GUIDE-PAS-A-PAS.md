@@ -26,9 +26,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 17 phase
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
-| Phase 16 - Points à revoir | 17/26 (65%) | ⏳ En cours |
+| Phase 16 - Points à revoir | 18/26 (69%) | ⏳ En cours |
 | Phase 17 - Formulaire contact biens | 35/38 (92%) | ⏳ Attente DNS |
-| **Total** | **769/781 (99%)** | |
+| **Total** | **770/781 (99%)** | |
 
 ---
 
@@ -8511,7 +8511,7 @@ export async function GET(request: NextRequest) {
   - Refactoring boutons hardcodés vers composant `Button`
   - Classes Tailwind canoniques
   - Lazy loading Google Maps (placeholder avec clic)
-- [ ] Tests responsive mobile
+- [x] Tests responsive mobile (navbar, pagination, admin corrigés)
 - [ ] Configuration domaine de production
 - [ ] Variables d'environnement configurées sur l'hébergeur
 
@@ -8584,7 +8584,7 @@ localStorage.setItem("oiko-recent", JSON.stringify([
 - [x] Système authentification admin sécurisé (HMAC + hash + rate limiting)
 - [x] Migration proxy.ts effectuée
 - [x] Tests Lighthouse (100% accueil et location)
-- [ ] Tests responsive mobile
+- [x] Tests responsive mobile (navbar, pagination, admin corrigés)
 - [x] Images des articles de blog (images par défaut par catégorie)
 
 ---
