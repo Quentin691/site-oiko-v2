@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
-  ContactForm,
   AddressCard,
   ContactInfo,
 } from "@/components/contact";
@@ -28,7 +28,7 @@ export default function ContactPage() {
             {contactContent.hero.title}
           </h1>
           <p className="text-xl text-muted">
-            {contactContent.hero.subtitle}
+            Retrouvez toutes nos coordonnées ci-dessous.
           </p>
         </div>
 
@@ -40,12 +40,28 @@ export default function ContactPage() {
           />
         </div>
 
-        {/* Formulaire */}
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
-            Envoyez-nous un message
+        {/* Message pour les biens */}
+        <div className="max-w-2xl mx-auto text-center bg-primary/5 border border-primary/20 rounded-lg p-8">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            Vous souhaitez nous contacter pour un bien ?
           </h2>
-          <ContactForm subjects={["Demande d'information", "Demande de devis", "Réclamation", "Autre"]} />
+          <p className="text-muted mb-6">
+            Pour nous contacter concernant un bien immobilier, rendez-vous sur la page du bien et cliquez sur &quot;Contacter pour ce bien&quot;.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/location"
+              className="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            >
+              Voir les locations
+            </Link>
+            <Link
+              href="/vente"
+              className="inline-flex items-center justify-center gap-2 bg-surface text-foreground border border-border px-6 py-3 rounded-lg font-medium hover:bg-muted/10 transition-colors"
+            >
+              Voir les ventes
+            </Link>
+          </div>
         </div>
       </Section>
       </AnimateOnScroll>

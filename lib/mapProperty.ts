@@ -39,6 +39,8 @@ export function mapApiToProperty(raw: any): Property {
     bedrooms: Number(getDataValue(data, "nombre_de_chambres")) || undefined,
     bathrooms: Number(getDataValue(data, "nb_salles_de_bain")) || undefined,
     images: (raw.mediaSupports?.pictures || []).map((p: any) => p?.url).filter(Boolean),
+    // Email de contact du bien
+    contactEmail: String(getDataValue(data, "email_a_afficher") || "") || undefined,
   };
 }
 

@@ -64,6 +64,8 @@ export interface Property extends PropertyRaw {
   bedrooms?: number;
   bathrooms?: number;
   images: string[];
+  // Email de contact du bien (extrait de data)
+  contactEmail?: string;
 }
 
 /**

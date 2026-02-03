@@ -17,6 +17,11 @@ export const RATE_LIMIT_CONFIG = {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 30, // 30 requêtes/minute
   },
+  // Formulaire de contact : modéré (éviter le spam)
+  contact: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 5, // 5 requêtes/minute
+  },
 } as const;
 
 type RateLimitType = keyof typeof RATE_LIMIT_CONFIG;

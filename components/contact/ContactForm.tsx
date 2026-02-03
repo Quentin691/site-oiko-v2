@@ -5,17 +5,32 @@ import { Card, Button } from "@/components/ui";
 import FormField from "./FormField";
 
 interface ContactFormProps {
-  subjects: string[];
+  subjects?: string[];
+  // Props optionnels pour le contact d'un bien
+  propertyId?: string;
+  propertyTitle?: string;
+  propertyReference?: string;
+  contactEmail?: string;
 }
 
-export default function ContactForm({ subjects }: ContactFormProps) {
+export default function ContactForm({
+  subjects,
+  propertyId,
+  propertyTitle,
+  propertyReference,
+  contactEmail,
+}: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [captchaError, setCaptchaError] = useState(false);
   const [captcha, setCaptcha] = useState({ a: 0, b: 0 });
   const [attempts, setAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Déterminer si c'est un formulaire pour un bien
+  const isPropertyContact = !!propertyId;
 
   // Générer un nouveau captcha et vider le champ
   const generateCaptcha = () => {
@@ -37,6 +52,7 @@ export default function ContactForm({ subjects }: ContactFormProps) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCaptchaError(false);
+    setSubmitError(null);
 
     // Bloquer si trop de tentatives
     if (isBlocked) {
@@ -52,14 +68,14 @@ export default function ContactForm({ subjects }: ContactFormProps) {
       // Vérifier que le numéro contient uniquement des caractères autorisés
       const validCharsRegex = /^[0-9\s\-\(\)\+]+$/;
       if (!validCharsRegex.test(phone)) {
-        alert("Le numéro de téléphone contient des caractères non autorisés. Utilisez uniquement des chiffres, espaces, tirets, parenthèses ou +.");
+        setSubmitError("Le numéro de téléphone contient des caractères non autorisés.");
         return;
       }
 
       // Compter le nombre de chiffres
       const digitCount = phone.replace(/\D/g, "").length;
       if (digitCount < 10) {
-        alert("Le numéro de téléphone doit contenir au moins 10 chiffres.");
+        setSubmitError("Le numéro de téléphone doit contenir au moins 10 chiffres.");
         return;
       }
     }
@@ -82,24 +98,72 @@ export default function ContactForm({ subjects }: ContactFormProps) {
 
     setIsSubmitting(true);
 
-    // Simulation d'envoi (à remplacer par vraie API plus tard)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Préparer les données pour l'API
+      const requestData = {
+        firstName: formData.get("firstName"),
+        lastName: formData.get("lastName"),
+        email: formData.get("email"),
+        phone: formData.get("phone") || "",
+        message: formData.get("message"),
+        subject: formData.get("subject") || "",
+        // Données du bien (si présentes)
+        propertyId,
+        propertyTitle,
+        propertyReference,
+        recipientEmail: contactEmail,
+      };
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+      // Appel à l'API
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
 
-    // Réinitialiser après 3 secondes
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setAttempts(0); // Reset du compteur d'essais
-      generateCaptcha(); // Nouveau captcha après envoi
-      (e.target as HTMLFormElement).reset();
-    }, 3000);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Erreur lors de l'envoi");
+      }
+
+      setIsSubmitted(true);
+
+      // Réinitialiser après 5 secondes
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setAttempts(0);
+        generateCaptcha();
+        formRef.current?.reset();
+      }, 5000);
+    } catch (error) {
+      console.error("Erreur envoi formulaire:", error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Une erreur est survenue. Veuillez réessayer."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <Card>
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+        {/* Afficher les infos du bien si c'est un contact pour un bien */}
+        {isPropertyContact && (
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-6">
+            <p className="text-sm text-muted mb-1">Vous contactez pour le bien :</p>
+            <p className="font-semibold text-foreground">{propertyTitle}</p>
+            {propertyReference && (
+              <p className="text-sm text-muted">Réf : {propertyReference}</p>
+            )}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             label="Prénom"
@@ -133,13 +197,16 @@ export default function ContactForm({ subjects }: ContactFormProps) {
           />
         </div>
 
-        <FormField
-          label="Objet"
-          name="subject"
-          type="select"
-          options={subjects}
-          required
-        />
+        {/* Afficher le champ Objet seulement si ce n'est pas pour un bien */}
+        {!isPropertyContact && subjects && subjects.length > 0 && (
+          <FormField
+            label="Objet"
+            name="subject"
+            type="select"
+            options={subjects}
+            required
+          />
+        )}
 
         <FormField
           label="Message"
@@ -162,7 +229,7 @@ export default function ContactForm({ subjects }: ContactFormProps) {
           type="checkbox"
           required
         >
-          J'accepte la <a href="/politique-rgpd" className="text-foreground underline">politique de confidentialité</a> et le traitement de mes données personnelles.
+          J&apos;accepte la <a href="/politique-rgpd" className="text-foreground underline">politique de confidentialité</a> et le traitement de mes données personnelles.
         </FormField>
 
         {/* Captcha simple */}
@@ -187,13 +254,21 @@ export default function ContactForm({ subjects }: ContactFormProps) {
           )}
         </div>
 
+        {/* Message d'erreur */}
+        {submitError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+            {submitError}
+          </div>
+        )}
+
+        {/* Message de succès */}
         {isSubmitted && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" role="status" aria-live="polite">
             Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
           </div>
         )}
 
-        <Button type="submit" variant="primary" disabled={isBlocked}>
+        <Button type="submit" variant="primary" disabled={isBlocked || isSubmitting}>
           {isSubmitting ? "Envoi en cours..." : "Envoyer le message"}
         </Button>
       </form>

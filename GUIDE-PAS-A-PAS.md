@@ -1,9 +1,9 @@
 # Guide pas-à-pas - OIKO v2
 
-**Phases couvertes :** 1 à 16
-**Dernière mise à jour :** 27 janvier 2026
+**Phases couvertes :** 1 à 17
+**Dernière mise à jour :** 3 février 2026
 
-Ce guide contient toutes les étapes détaillées pour implémenter les 16 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
+Ce guide contient toutes les étapes détaillées pour implémenter les 17 phases du projet OIKO v2. Chaque tâche est découpée en micro-étapes à suivre dans l'ordre.
 
 ---
 
@@ -27,7 +27,8 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 16 phase
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
 | Phase 16 - Points à revoir | 15/26 (58%) | ⏳ En cours |
-| **Total** | **732/743 (99%)** | |
+| Phase 17 - Formulaire contact biens | 35/38 (92%) | ⏳ Attente DNS |
+| **Total** | **767/781 (98%)** | |
 
 ---
 
@@ -8589,6 +8590,236 @@ localStorage.setItem("oiko-recent", JSON.stringify([
 
 ---
 
+# Phase 17 - Formulaire de contact pour les biens
+
+**Objectif :** Permettre aux visiteurs de contacter l'agence directement depuis chaque bien immobilier, avec envoi d'email au bon destinataire.
+
+**Prérequis :**
+- Phase 16 en cours
+- Compte Resend créé (service d'envoi d'email)
+
+---
+
+## 17.1 Prérequis : Configuration Resend
+
+### Étape 17.1.1 : Créer un compte Resend
+- [x] Aller sur https://resend.com
+- [x] Créer un compte gratuit (3000 emails/mois)
+- [x] Confirmer l'email de vérification
+
+### Étape 17.1.2 : Récupérer la clé API
+- [x] Dans le dashboard Resend, aller dans "API Keys"
+- [x] Créer une nouvelle clé API
+- [x] Copier la clé (format : `re_xxxxxxxx`)
+
+### Étape 17.1.3 : Configurer les variables d'environnement
+- [x] Ajouter dans `.env.local` :
+```
+RESEND_API_KEY=re_xxxxxxxx
+```
+- [x] Ajouter dans Vercel (Settings > Environment Variables) :
+  - Name: `RESEND_API_KEY`
+  - Value: `re_xxxxxxxx`
+
+### Étape 17.1.4 : Installer Resend
+- [x] Exécuter : `npm install resend`
+- [x] Vérifier que le package est dans `package.json`
+
+---
+
+## 17.2 Modification des types Property
+
+### Étape 17.2.1 : Ajouter le champ contactEmail
+- [x] Ouvrir `types/property.ts`
+- [x] Ajouter dans l'interface `Property` :
+```typescript
+// Email de contact du bien (extrait de data)
+contactEmail?: string;      // email_a_afficher
+```
+
+---
+
+## 17.3 Extraction de l'email de contact
+
+### Étape 17.3.1 : Modifier mapProperty.ts
+- [x] Ouvrir `lib/mapProperty.ts`
+- [x] Ajouter l'extraction de l'email dans `mapApiToProperty` :
+```typescript
+contactEmail: String(getDataValue(data, "email_a_afficher") || "") || undefined,
+```
+
+---
+
+## 17.4 Création de l'API d'envoi d'email
+
+### Étape 17.4.1 : Créer le fichier route
+- [x] Créer le dossier `app/api/contact/`
+- [x] Créer le fichier `app/api/contact/route.ts`
+
+### Étape 17.4.2 : Implémenter l'API
+- [x] Importer les dépendances (NextRequest, NextResponse, Resend, checkRateLimit)
+- [x] Initialiser Resend avec la clé API
+- [x] Définir l'email par défaut : `contact@oikogestion.fr`
+- [x] Créer la fonction POST avec :
+  - Rate limiting
+  - Validation des champs requis (firstName, lastName, email, message)
+  - Détermination du destinataire (email_a_afficher ou défaut)
+  - Envoi de l'email via Resend
+  - Gestion des erreurs
+
+### Étape 17.4.3 : Format de l'email
+- [x] Sujet : "Demande de contact - [Titre du bien]"
+- [x] Corps HTML avec :
+  - Bien concerné (titre, ID)
+  - Coordonnées du visiteur (nom, email, téléphone)
+  - Message
+- [x] Reply-To : email du visiteur
+
+---
+
+## 17.5 Modification du composant ContactForm existant
+
+### Étape 17.5.1 : Ajouter les props pour les biens
+- [x] Ouvrir `components/contact/ContactForm.tsx`
+- [x] Modifier l'interface des props pour accepter les infos du bien :
+```typescript
+interface ContactFormProps {
+  subjects?: string[];
+  // Props optionnels pour le contact d'un bien
+  propertyId?: string;
+  propertyTitle?: string;
+  propertyReference?: string;
+  contactEmail?: string;  // Email destinataire (ou défaut si absent)
+}
+```
+
+### Étape 17.5.2 : Modifier la soumission du formulaire
+- [x] Remplacer la simulation d'envoi par un appel à `/api/contact`
+- [x] Envoyer les données du formulaire + infos du bien si présentes
+- [x] Gérer les erreurs de l'API
+
+### Étape 17.5.3 : Afficher les infos du bien (si présentes)
+- [x] Ajouter en haut du formulaire un encadré avec le titre et référence du bien
+- [x] Ne s'affiche que si `propertyId` est défini
+
+---
+
+## 17.6 Création de la page contact-bien
+
+### Étape 17.6.1 : Créer la structure
+- [x] Créer le dossier `app/contact-bien/[id]/`
+- [x] Créer le fichier `app/contact-bien/[id]/page.tsx`
+
+### Étape 17.6.2 : Implémenter la page
+- [x] Récupérer l'ID depuis les params
+- [x] Appeler `getAdById(id)` pour récupérer le bien
+- [x] Transformer avec `mapApiToProperty`
+- [x] Gérer le cas bien non trouvé (notFound())
+
+### Étape 17.6.3 : Afficher le contenu
+- [x] Section héros avec titre "Contacter pour ce bien"
+- [x] Résumé du bien : image principale, titre, prix, ville
+- [x] Composant ContactForm avec les props du bien
+- [x] Lien retour vers la page du bien
+
+### Étape 17.6.4 : Métadonnées dynamiques
+- [x] Implémenter `generateMetadata` pour le SEO
+- [x] Title : "Contact - [Titre du bien] | OIKO"
+
+---
+
+## 17.7 Ajout du bouton "Contacter" sur les pages de biens
+
+### Étape 17.7.1 : Modifier la page location
+- [x] Ouvrir `app/location/[id]/page.tsx`
+- [x] Importer Link de next/link
+- [x] Ajouter un bouton "Contacter pour ce bien" qui redirige vers `/contact-bien/[id]`
+- [x] Placer le bouton de manière visible (après les détails du bien)
+
+### Étape 17.7.2 : Modifier la page vente
+- [x] Ouvrir `app/vente/[id]/page.tsx`
+- [x] Ajouter le même bouton "Contacter pour ce bien"
+
+---
+
+## 17.8 Modification de la page Contact existante
+
+### Étape 17.8.1 : Simplifier la page
+- [x] Ouvrir `app/contactez-nous/page.tsx`
+- [x] Supprimer l'import et l'utilisation de `ContactForm`
+- [x] Garder : Section titre, ContactInfo, AddressCard
+
+### Étape 17.8.2 : Ajouter un message explicatif
+- [x] Ajouter un texte : "Pour nous contacter concernant un bien, rendez-vous sur la page du bien et cliquez sur 'Contacter'"
+- [x] Ajouter des liens vers `/location` et `/vente`
+
+---
+
+## 17.9 Tests et vérification
+
+### Étape 17.9.1 : Test de compilation
+- [x] Exécuter `npm run build`
+- [x] Vérifier qu'il n'y a pas d'erreurs TypeScript
+
+### Étape 17.9.2 : Test du flux complet
+- [x] Aller sur `/location/[id]` (un bien existant)
+- [x] Vérifier que le bouton "Contacter" est visible
+- [x] Cliquer sur le bouton
+- [x] Vérifier que `/contact-bien/[id]` affiche bien le formulaire
+- [x] Vérifier que les infos du bien sont affichées
+
+### Étape 17.9.3 : Test d'envoi d'email
+- [x] Remplir le formulaire avec des données de test
+- [x] Soumettre le formulaire
+- [x] Vérifier que l'email est reçu (testé en mode test vers email personnel)
+- [x] Vérifier le contenu de l'email
+
+⚠️ **Note :** Pour envoyer aux vraies adresses (`contact@oikogestion.fr`, etc.), il faut vérifier le domaine dans Resend (voir section 17.10).
+
+### Étape 17.9.4 : Test page contact
+- [x] Aller sur `/contactez-nous`
+- [x] Vérifier que le formulaire n'est plus affiché
+- [x] Vérifier que les infos de contact sont toujours présentes
+
+---
+
+## 17.10 Vérification du domaine (pour production)
+
+⚠️ **Cette étape est nécessaire pour envoyer des emails aux vraies adresses.**
+
+### Étape 17.10.1 : Ajouter le domaine dans Resend
+- [ ] Se connecter sur https://resend.com
+- [ ] Aller dans "Domains" → "Add Domain"
+- [ ] Entrer `oikogestion.fr`
+
+### Étape 17.10.2 : Configurer les DNS
+- [ ] Ajouter les enregistrements DNS fournis par Resend dans le gestionnaire de domaine (OVH, Gandi, etc.)
+- [ ] Attendre la propagation DNS (peut prendre quelques heures)
+- [ ] Cliquer sur "Verify" dans Resend
+
+### Étape 17.10.3 : Mettre à jour le code
+- [ ] Dans `app/api/contact/route.ts`, changer le `from` :
+  - De : `"OIKO Gestion <onboarding@resend.dev>"`
+  - Vers : `"OIKO Gestion <noreply@oikogestion.fr>"`
+
+---
+
+## ✅ Checkpoint Phase 17
+
+- [x] Compte Resend créé et configuré
+- [x] Clé API ajoutée dans `.env.local` et Vercel
+- [x] Type Property mis à jour avec contactEmail
+- [x] mapProperty extrait l'email de contact
+- [x] API `/api/contact` fonctionnelle avec rate limiting
+- [x] ContactForm modifié pour supporter les biens
+- [x] Page `/contact-bien/[id]` créée
+- [x] Bouton "Contacter" sur pages location et vente
+- [x] Page `/contactez-nous` simplifiée (garde infos contact)
+- [x] Tests d'envoi d'email réussis (mode test)
+- [ ] Vérification du domaine Resend (pour production)
+
+---
+
 ## 🎉 Projet OIKO v2 complet !
 
 Félicitations ! Vous avez complété toutes les phases du projet :
@@ -8602,8 +8833,9 @@ Félicitations ! Vous avez complété toutes les phases du projet :
 - ✅ Phase 14 : Blog (optionnel)
 - ✅ Phase 15 : Gestion des articles (Admin)
 - ✅ Phase 16 : Points à revoir
+- ✅ Phase 17 : Formulaire contact biens
 
 ---
 
-**Dernière mise à jour :** 2 février 2026
+**Dernière mise à jour :** 3 février 2026
 **Document créé par :** Claude Code
