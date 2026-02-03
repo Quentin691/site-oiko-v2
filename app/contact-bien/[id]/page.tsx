@@ -87,7 +87,7 @@ export default async function ContactBienPage({ params }: PageProps) {
           <div className="bg-surface rounded-lg overflow-hidden shadow-sm mb-8">
             <div className="flex flex-col md:flex-row">
               {/* Image */}
-              <div className="relative w-full md:w-64 h-48 md:h-auto flex-shrink-0">
+              <div className="relative w-full md:w-64 h-48 md:h-auto shrink-0">
                 {property.images && property.images.length > 0 ? (
                   <Image
                     src={property.images[0]}
