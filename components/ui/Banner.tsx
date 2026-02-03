@@ -16,7 +16,6 @@ export function Banner({ src, alt, videoSrc }: BannerProps) {
     if (videoRef.current) {
       videoRef.current.play().catch(() => {
         // Ignorer l'erreur si autoplay bloqué
-        console.log("Autoplay bloqué par le navigateur");
       });
     }
   }, []);
