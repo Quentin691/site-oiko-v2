@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   AddressCard,
   ContactInfo,
 } from "@/components/contact";
-import { Section, ScrollToTop, AnimateOnScroll } from "@/components/ui";
+import { Section, ScrollToTop, AnimateOnScroll, Button } from "@/components/ui";
 import contactContent from "@/content/contact.json";
 
 export const metadata: Metadata = {
@@ -49,18 +48,12 @@ export default function ContactPage() {
             Pour nous contacter concernant un bien immobilier, rendez-vous sur la page du bien et cliquez sur &quot;Contacter pour ce bien&quot;.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/location"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
-            >
+            <Button href="/location" variant="primary">
               Voir les locations
-            </Link>
-            <Link
-              href="/vente"
-              className="inline-flex items-center justify-center gap-2 bg-surface text-foreground border border-border px-6 py-3 rounded-lg font-medium hover:bg-muted/10 transition-colors"
-            >
+            </Button>
+            <Button href="/vente" variant="secondary">
               Voir les ventes
-            </Link>
+            </Button>
           </div>
         </div>
       </Section>

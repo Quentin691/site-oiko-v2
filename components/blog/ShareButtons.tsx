@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ShareButtonsProps {
   title: string;
@@ -40,10 +40,15 @@ const LinkIcon = () => (
 
 export default function ShareButtons({ title, path }: ShareButtonsProps) {
   const [showToast, setShowToast] = useState(false);
-  // Utilise automatiquement le domaine actuel (fonctionne sur Vercel, localhost, domaine final)
-  const baseUrl = typeof window !== "undefined"
-    ? window.location.origin
-    : process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+  // URL de base stable pour éviter les erreurs d'hydratation
+  const fallbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oiko-gestion.fr";
+  const [baseUrl, setBaseUrl] = useState(fallbackUrl);
+
+  // Mettre à jour avec l'URL réelle côté client après le montage
+  useEffect(() => {
+    setBaseUrl(window.location.origin);
+  }, []);
+
   const url = `${baseUrl}${path}`;
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);

@@ -258,19 +258,21 @@ export default function AdminPage() {
           </h1>
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
             {mode !== "list" && (
-              <button
+              <Button
                 onClick={() => { setMode("list"); resetForm(); }}
-                className="px-3 py-1 sm:px-4 sm:py-2 text-sm text-muted hover:text-foreground"
+                variant="ghost"
+                size="sm"
               >
                 ← Retour
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               onClick={handleLogout}
-              className="px-3 py-1 sm:px-4 sm:py-2 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+              variant="danger"
+              size="sm"
             >
               Déconnexion
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -324,18 +326,20 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div className="flex gap-2 shrink-0">
-                        <button
+                        <Button
                           onClick={() => handleEdit(article)}
-                          className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200"
+                          variant="info"
+                          size="sm"
                         >
                           Modifier
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => handleDelete(article.slug)}
-                          className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200 dark:bg-red-900 dark:text-red-200"
+                          variant="danger"
+                          size="sm"
                         >
                           Supprimer
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>

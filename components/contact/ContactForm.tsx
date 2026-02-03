@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, FormEvent } from "react";
-import { Card, Button } from "@/components/ui";
+import { Card, Button, Alert } from "@/components/ui";
 import FormField from "./FormField";
 
 interface ContactFormProps {
@@ -256,16 +256,16 @@ export default function ContactForm({
 
         {/* Message d'erreur */}
         {submitError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+          <Alert variant="error">
             {submitError}
-          </div>
+          </Alert>
         )}
 
         {/* Message de succès */}
         {isSubmitted && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" role="status" aria-live="polite">
+          <Alert variant="success">
             Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
-          </div>
+          </Alert>
         )}
 
         <Button type="submit" variant="primary" disabled={isBlocked || isSubmitting}>

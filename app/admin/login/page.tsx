@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
@@ -37,7 +38,7 @@ export default function AdminLoginPage() {
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="bg-surface border border-border rounded-lg p-8">
+        <Card className="p-8">
           <h1 className="text-2xl font-bold text-foreground text-center mb-6">
             Administration
           </h1>
@@ -70,7 +71,7 @@ export default function AdminLoginPage() {
               {loading ? "Connexion..." : "Se connecter"}
             </Button>
           </form>
-        </div>
+        </Card>
       </div>
     </main>
   );

@@ -1,6 +1,7 @@
 export { default as Button } from "./Button";
 export { default as Section } from "./Section";
 export { default as Card } from "./Card";
+export { default as Alert } from "./Alert";
 export { default as Stats } from "./Stats";
 export { default as ScrollToTop } from "./ScrollToTop";
 export { default as ThemeToggle } from "./ThemeToggle";

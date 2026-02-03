@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Section from "@/components/ui/Section";
+import Button from "@/components/ui/Button";
 import PropertyGallery from "@/components/annonces/PropertyGallery";
 import PropertyDetails from "@/components/annonces/PropertyDetails";
 import PropertyMap from "@/components/annonces/PropertyMap";
@@ -103,9 +104,10 @@ export default async function LocationDetailPage({ params }: PageProps) {
 
         {/* Bouton Contacter */}
         <div className="mt-8 pt-8 border-t border-border">
-          <Link
+          <Button
             href={`/contact-bien/${property.id}`}
-            className="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            variant="primary"
+            className="inline-flex items-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -121,7 +123,7 @@ export default async function LocationDetailPage({ params }: PageProps) {
               />
             </svg>
             Contacter pour ce bien
-          </Link>
+          </Button>
         </div>
 
         {/* Partage */}
