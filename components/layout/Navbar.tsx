@@ -86,7 +86,7 @@ export default function Navbar() {
 
         {/* Bouton hamburger - visible sur mobile */}
         <button
-          className="sm:hidden p-2 text-muted hover:text-foreground"
+          className="sm:hidden p-2 text-muted hover:text-foreground ml-auto"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={isMenuOpen}

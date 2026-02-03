@@ -26,9 +26,9 @@ Ce guide contient toutes les étapes détaillées pour implémenter les 17 phase
 | Phase 13 - Contenus Légaux | 24/24 (100%) | ✅ Terminée |
 | Phase 14 - Blog (optionnel) | 87/87 (100%) | ✅ Terminée |
 | Phase 15 - Gestion articles admin | 45/45 (100%) | ✅ Terminée |
-| Phase 16 - Points à revoir | 15/26 (58%) | ⏳ En cours |
+| Phase 16 - Points à revoir | 17/26 (65%) | ⏳ En cours |
 | Phase 17 - Formulaire contact biens | 35/38 (92%) | ⏳ Attente DNS |
-| **Total** | **767/781 (98%)** | |
+| **Total** | **769/781 (99%)** | |
 
 ---
 
@@ -8482,7 +8482,7 @@ export async function GET(request: NextRequest) {
 
 - [ ] **Liens réseaux sociaux** → mettre les vrais liens (actuellement vers page connexion)
 - [ ] **Numéro de téléphone Paris** → ajouter le numéro dans `content/contact.json` (section offices → Paris)
-- [ ] **Formulaire de contact** → relier à un backend pour l'envoi d'emails
+- [x] **Formulaire de contact** → ✅ Implémenté avec Resend (Phase 17)
 
 ---
 
@@ -8531,15 +8531,14 @@ export async function GET(request: NextRequest) {
 
 ## 16.6 Images des articles de blog
 
-**Décision à prendre :** Comment gérer les images personnalisées pour chaque article ?
+**Décision prise :** Images par défaut par catégorie.
 
-**Options possibles :**
-- [ ] **Option 1 - Upload sur GitHub** : Stocker les images dans `public/images/blog/` via l'API GitHub (repo plus lourd)
-- [ ] **Option 2 - Service externe** : Utiliser Cloudinary, Imgur ou autre pour héberger les images
-- [ ] **Option 3 - URL manuelle** : Ajouter un champ URL dans le formulaire admin (images Unsplash, etc.)
-- [ ] **Option 4 - Image par défaut uniquement** : Garder la même image pour tous les articles
+✅ **Implémenté :** Chaque catégorie de blog a maintenant sa propre image par défaut :
+- `actualites` → Image actualités/journaux
+- `conseils` → Image conseils/ampoule
+- `immobilier` → Image immobilier (par défaut)
 
-💡 **État actuel :** Une image par défaut Unsplash est utilisée quand aucune image n'est définie.
+**Fichier modifié :** `components/blog/BlogCard.tsx`
 
 ---
 
@@ -8586,7 +8585,7 @@ localStorage.setItem("oiko-recent", JSON.stringify([
 - [x] Migration proxy.ts effectuée
 - [x] Tests Lighthouse (100% accueil et location)
 - [ ] Tests responsive mobile
-- [ ] Images des articles de blog (décision à prendre)
+- [x] Images des articles de blog (images par défaut par catégorie)
 
 ---
 

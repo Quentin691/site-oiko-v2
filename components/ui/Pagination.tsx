@@ -45,29 +45,31 @@ export default function Pagination({
   };
 
   return (
-    <nav className="flex justify-center items-center gap-2 mt-8">
+    <nav className="flex flex-wrap justify-center items-center gap-2 mt-8 px-4">
       {currentPage > 1 ? (
         <Link
           href={buildUrl(currentPage - 1)}
-          className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-surface"
+          className="px-3 py-2 text-sm sm:px-4 sm:text-base border border-border rounded-md text-foreground hover:bg-surface"
         >
-          ← Précédent
+          <span className="sm:hidden">←</span>
+          <span className="hidden sm:inline">← Précédent</span>
         </Link>
       ) : (
-        <span className="px-4 py-2 border border-border rounded-md text-muted cursor-not-allowed">
-          ← Précédent
+        <span className="px-3 py-2 text-sm sm:px-4 sm:text-base border border-border rounded-md text-muted cursor-not-allowed">
+          <span className="sm:hidden">←</span>
+          <span className="hidden sm:inline">← Précédent</span>
         </span>
       )}
 
       <div className="flex gap-1">
         {getPageNumbers().map((page, index) =>
           page === "..." ? (
-            <span key={`ellipsis-${index}`} className="px-3 py-2 text-muted">...</span>
+            <span key={`ellipsis-${index}`} className="px-2 py-2 text-sm sm:px-3 sm:text-base text-muted">...</span>
           ) : (
             <Link
               key={page}
               href={buildUrl(page as number)}
-              className={`px-4 py-2 rounded-md ${
+              className={`px-3 py-2 text-sm sm:px-4 sm:text-base rounded-md ${
                 currentPage === page
                   ? "bg-primary text-gray-900"
                   : "border border-border text-foreground hover:bg-surface"
@@ -82,13 +84,15 @@ export default function Pagination({
       {currentPage < totalPages ? (
         <Link
           href={buildUrl(currentPage + 1)}
-          className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-surface"
+          className="px-3 py-2 text-sm sm:px-4 sm:text-base border border-border rounded-md text-foreground hover:bg-surface"
         >
-          Suivant →
+          <span className="sm:hidden">→</span>
+          <span className="hidden sm:inline">Suivant →</span>
         </Link>
       ) : (
-        <span className="px-4 py-2 border border-border rounded-md text-muted cursor-not-allowed">
-          Suivant →
+        <span className="px-3 py-2 text-sm sm:px-4 sm:text-base border border-border rounded-md text-muted cursor-not-allowed">
+          <span className="sm:hidden">→</span>
+          <span className="hidden sm:inline">Suivant →</span>
         </span>
       )}
     </nav>
