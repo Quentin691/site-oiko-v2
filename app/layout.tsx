@@ -25,8 +25,13 @@ export const metadata: Metadata = {
   description: "OIKO accompagne les propriétaires et investisseurs dans la gestion, la valorisation et la transaction de leurs actifs immobiliers à Paris et Marseille.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: [
+      { url: "/icon.png", sizes: "any" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon.png", sizes: "180x180" },
+    ],
   },
   metadataBase: new URL(siteUrl),
   openGraph: {
