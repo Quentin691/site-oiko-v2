@@ -81,14 +81,14 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
             <button
               onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
               aria-label="Image précédente"
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/80 z-20"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/80 z-20 text-sm sm:text-base"
             >
               ←
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); goToNext(); }}
               aria-label="Image suivante"
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/80 z-20"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/80 z-20 text-sm sm:text-base"
             >
               →
             </button>

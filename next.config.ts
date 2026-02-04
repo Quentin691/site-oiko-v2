@@ -26,6 +26,11 @@ const securityHeaders = [
     value: "camera=(), microphone=(), geolocation=()",
   },
   {
+    // Désactive l'ancien filtre XSS des navigateurs (CSP le remplace, ce filtre peut créer des failles)
+    key: "X-XSS-Protection",
+    value: "0",
+  },
+  {
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
@@ -43,6 +48,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Masque le header "X-Powered-By: Next.js" (évite de révéler la techno utilisée)
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {

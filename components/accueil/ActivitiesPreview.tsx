@@ -37,7 +37,7 @@ export default function ActivitiesPreview({
   ctaLink,
 }: ActivitiesPreviewProps) {
   return (
-    <section className="bg-card py-16 px-6">
+    <section className="bg-card py-12 sm:py-16 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -48,7 +48,7 @@ export default function ActivitiesPreview({
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-8">
           {stats.map((stat) => {
             const { number, suffix } = parseStatValue(stat.value);
             return (

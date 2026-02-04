@@ -80,7 +80,7 @@ export default function ActivitySection({
 
         {/* Stats */}
         {stats.length > 0 && (
-          <div className="flex justify-center gap-16">
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-10 md:gap-16">
             {stats.map((stat, index) => (
               <Stats key={index} value={stat.number} label={stat.label} />
             ))}

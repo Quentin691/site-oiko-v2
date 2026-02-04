@@ -40,7 +40,7 @@ export default function PropertyDetails({ property, type }: PropertyDetailsProps
       {/* Caractéristiques */}
       <div className="bg-surface rounded-lg p-6">
         <h2 className="text-lg font-semibold text-foreground mb-4">Caractéristiques</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {characteristics.map((char) => (
             <div key={char.label} className="flex items-center gap-3">
               <span className="text-2xl" aria-hidden="true">{char.icon}</span>

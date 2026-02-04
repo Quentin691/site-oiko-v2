@@ -66,7 +66,7 @@ export default function PropertyCard({ property, type }: PropertyCardProps) {
 
         {/* Contenu */}
         <div>
-          <h3 className="font-semibold text-foreground text-lg mb-1 line-clamp-1">
+          <h3 className="font-semibold text-foreground text-base sm:text-lg mb-1 line-clamp-1">
             {property.title}
           </h3>
           <p className="text-muted text-sm mb-2">

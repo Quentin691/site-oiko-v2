@@ -58,7 +58,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           <span className="text-muted">{formatDate(post.date)}</span>
         </div>
 
-        <h2 className="text-xl font-semibold text-foreground mb-2 line-clamp-2">
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
           <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
             {post.title}
           </Link>
