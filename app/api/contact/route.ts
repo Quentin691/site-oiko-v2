@@ -97,8 +97,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[Contact API] Email envoyé à ${to} pour le bien ${propertyId || "général"}`);
-
     return NextResponse.json({
       success: true,
       message: "Votre message a été envoyé avec succès !",

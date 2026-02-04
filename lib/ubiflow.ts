@@ -40,12 +40,8 @@ const EXPIRY_MARGIN = CACHE_DURATIONS.TOKEN_MARGIN;
 export async function getUbiflowToken(): Promise<string> {
   // Si on a un token en cache et qu'il est encore valide
   if (cachedToken && tokenExpiry && Date.now() < tokenExpiry - EXPIRY_MARGIN) {
-    console.log("[Ubiflow] Token récupéré depuis le cache");
     return cachedToken;
   }
-
-  // Sinon, on demande un nouveau token
-  console.log("[Ubiflow] Demande d'un nouveau token...");
 
   const response = await fetch("https://auth.ubiflow.net/api/login_check", {
     method: "POST",
@@ -70,8 +66,6 @@ export async function getUbiflowToken(): Promise<string> {
   // Le token expire dans 1h, on stocke l'heure d'expiration
   // (1h = 3600 secondes = 3600000 millisecondes)
   tokenExpiry = Date.now() + 60 * 60 * 1000;
-
-  console.log("[Ubiflow] Nouveau token obtenu et mis en cache");
 
   return cachedToken as string;
 }
@@ -104,8 +98,6 @@ export async function getAdsList(
     url += `&transaction.code=${adType}`;
   }
 
-  console.log(`[Ubiflow] Récupération des annonces (page ${page}, type: ${adType || "tous"})...`);
-
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -119,7 +111,6 @@ export async function getAdsList(
   if (!response.ok) {
     // Si 404, c'est qu'on a dépassé le nombre de pages disponibles
     if (response.status === 404) {
-      console.log(`[Ubiflow] Page ${page} non trouvée (fin des résultats)`);
       return [];
     }
     const errorText = await response.text();
@@ -128,7 +119,6 @@ export async function getAdsList(
   }
 
   const data = await response.json();
-  console.log(`[Ubiflow] ${data.length} annonces récupérées (page ${page})`);
   return data;
 }
 
@@ -143,7 +133,6 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
   // Vérifier si on a des données en cache et si elles sont encore valides
   if (adsCache[cacheKey] && Date.now() < adsCache[cacheKey].expiry) {
     cacheStats.hits++;
-    console.log(`[Ubiflow] Cache HIT - Annonces (type: ${cacheKey}, count: ${adsCache[cacheKey].data.length})`);
     return adsCache[cacheKey].data;
   }
   cacheStats.misses++;
@@ -159,8 +148,6 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
   let page = 1;
   let totalExpected = 0;
   let hasMorePages = true;
-
-  console.log(`[Ubiflow] Récupération de toutes les annonces (type: ${adType || "tous"})...`);
 
   while (hasMorePages) {
     // Construire l'URL
@@ -182,7 +169,6 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
 
     if (!response.ok) {
       if (response.status === 404) {
-        console.log(`[Ubiflow] Page ${page} non trouvée (fin des résultats)`);
         hasMorePages = false;
         continue;
       }
@@ -197,14 +183,12 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
     // Récupérer le total attendu (seulement à la première page)
     if (page === 1 && result["hydra:totalItems"]) {
       totalExpected = result["hydra:totalItems"];
-      console.log(`[Ubiflow] Total attendu: ${totalExpected} annonces`);
     }
 
     if (!Array.isArray(ads) || ads.length === 0) {
       hasMorePages = false;
     } else {
       allAds.push(...ads);
-      console.log(`[Ubiflow] Page ${page}: ${ads.length} annonces (total récupéré: ${allAds.length}/${totalExpected || "?"})`);
       page++;
 
       // Sécurité: si on a récupéré tous les items attendus, on arrête
@@ -226,7 +210,6 @@ export async function getAllAds(adType?: "L" | "V"): Promise<PropertyRaw[]> {
     expiry: Date.now() + CACHE_DURATIONS.LIST,
   };
 
-  console.log(`[Ubiflow] Total récupéré: ${allAds.length} annonces (mis en cache)`);
   return allAds;
 }
 
@@ -243,7 +226,6 @@ export async function getAdsPage(
   // Vérifier le cache
   if (pageCache[cacheKey] && Date.now() < pageCache[cacheKey].expiry) {
     cacheStats.hits++;
-    console.log(`[Ubiflow] Cache HIT - Page ${page} (${adType})`);
     return { data: pageCache[cacheKey].data, total: pageCache[cacheKey].total };
   }
   cacheStats.misses++;
@@ -257,8 +239,6 @@ export async function getAdsPage(
 
   // Pour obtenir le total, on fait une requête avec Accept: application/ld+json
   const url = `https://api-classifieds.ubiflow.net/api/ads?advertiser.code=${prodId}&transaction.code=${adType}&page=${page}`;
-
-  console.log(`[Ubiflow] Récupération page ${page} (type: ${adType})...`);
 
   const response = await fetch(url, {
     method: "GET",
@@ -283,8 +263,6 @@ export async function getAdsPage(
   // Format Hydra: { "hydra:member": [...], "hydra:totalItems": number }
   const data = result["hydra:member"] || result;
   const total = result["hydra:totalItems"] || data.length;
-
-  console.log(`[Ubiflow] Cache MISS - Page ${page}: ${data.length} annonces (total: ${total})`);
 
   // Mettre en cache
   pageCache[cacheKey] = {
@@ -356,7 +334,6 @@ export async function getAdById(id: string): Promise<unknown> {
   // Vérifier le cache en mémoire
   if (adDetailCache[id] && Date.now() < adDetailCache[id].expiry) {
     cacheStats.hits++;
-    console.log(`[Ubiflow] Cache HIT - Annonce ${id}`);
     return adDetailCache[id].data;
   }
   cacheStats.misses++;
@@ -387,7 +364,6 @@ export async function getAdById(id: string): Promise<unknown> {
     expiry: Date.now() + CACHE_DURATIONS.DETAIL,
   };
 
-  console.log(`[Ubiflow] Cache MISS - Annonce ${id}`);
   return data;
 }
 
@@ -404,8 +380,6 @@ export function invalidateCache(): void {
   cacheStats.hits = 0;
   cacheStats.misses = 0;
   cacheStats.lastReset = Date.now();
-
-  console.log("[Ubiflow] Cache invalidé");
 }
 
 /**
