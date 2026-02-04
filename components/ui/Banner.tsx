@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import Image from "next/image";
 
 interface BannerProps {
   src?: string;
@@ -36,7 +37,14 @@ export function Banner({ src, alt, videoSrc }: BannerProps) {
           <track kind="captions" srcLang="fr" src="/captions.vtt" default />
         </video>
       ) : src ? (
-        <img src={src} alt={alt || "Image de bannière"} className="w-full h-full object-cover" />
+        <Image
+            src={src}
+            alt={alt || "Image de bannière"}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
       ) : (
         <div className="w-full h-full bg-muted" />
       )}

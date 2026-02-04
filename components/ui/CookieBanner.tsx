@@ -28,7 +28,11 @@ export default function CookieBanner() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border shadow-lg">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border shadow-lg"
+      role="status"
+      aria-live="polite"
+    >
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-muted">
