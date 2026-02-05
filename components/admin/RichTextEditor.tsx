@@ -420,42 +420,57 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         .ProseMirror {
           min-height: 300px;
           padding: 1rem;
+          color: var(--foreground);
         }
         .ProseMirror:focus {
           outline: none;
         }
         .ProseMirror h1 {
-          font-size: 1.875rem;
+          font-size: 2.25rem;
           font-weight: 700;
           margin-bottom: 1rem;
+          color: var(--foreground);
         }
         .ProseMirror h2 {
-          font-size: 1.5rem;
+          font-size: 1.75rem;
           font-weight: 600;
           margin-bottom: 0.75rem;
+          color: var(--foreground);
         }
         .ProseMirror h3 {
-          font-size: 1.25rem;
+          font-size: 1.35rem;
           font-weight: 600;
           margin-bottom: 0.5rem;
+          color: var(--foreground);
         }
         .ProseMirror p {
           margin-bottom: 0.75rem;
+          color: var(--foreground);
         }
         .ProseMirror ul,
         .ProseMirror ol {
           padding-left: 1.5rem;
           margin-bottom: 0.75rem;
+          color: var(--foreground);
         }
         .ProseMirror li {
           margin-bottom: 0.25rem;
+          color: var(--foreground);
         }
         .ProseMirror blockquote {
-          border-left: 4px solid var(--primary, #d4af37);
+          border-left: 4px solid var(--primary, #2ECC71);
           padding-left: 1rem;
           margin: 1rem 0;
           font-style: italic;
-          color: var(--muted, #6b7280);
+          color: var(--muted);
+        }
+        .ProseMirror strong {
+          font-weight: 700;
+          color: var(--foreground);
+        }
+        .ProseMirror a {
+          color: var(--primary);
+          text-decoration: underline;
         }
         .ProseMirror table {
           border-collapse: collapse;
@@ -466,10 +481,12 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         .ProseMirror td {
           border: 1px solid var(--border, #e5e7eb);
           padding: 0.5rem;
+          color: var(--foreground);
         }
         .ProseMirror th {
           background: var(--surface, #f9fafb);
           font-weight: 600;
+          color: var(--foreground);
         }
         .ProseMirror img {
           max-width: 100%;
