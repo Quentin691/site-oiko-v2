@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.19",
     "@tiptap/extension-image": "^3.19.0",
     "@tiptap/extension-link": "^3.19.0",
     "@tiptap/extension-placeholder": "^3.19.0",

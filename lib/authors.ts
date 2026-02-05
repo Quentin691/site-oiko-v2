@@ -17,9 +17,9 @@ export const AUTHORS: Record<string, Author> = {
   quentin: {
     id: "quentin",
     name: "Quentin",
-    role: "Gerant",
-    avatar: "/authors/quentin.jpg",
-    bio: "Fondateur et gerant d'OIKO Gestion.",
+    role: "Gérant",
+    avatar: "", // Ajouter /authors/quentin.jpg quand la photo sera disponible
+    bio: "Fondateur et gérant d'OIKO Gestion.",
   },
 };
 

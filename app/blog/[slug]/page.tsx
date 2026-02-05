@@ -84,16 +84,21 @@ export default async function BlogPostPage({ params }: PageProps) {
             </h1>
             {(() => {
               const author = getAuthor(post.authorId || "oiko");
+              const initials = author.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
               return (
                 <div className="flex items-center gap-3">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-surface">
-                    <Image
-                      src={author.avatar}
-                      alt={author.name}
-                      fill
-                      className="object-cover"
-                      sizes="40px"
-                    />
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-primary flex items-center justify-center">
+                    {author.avatar ? (
+                      <Image
+                        src={author.avatar}
+                        alt={author.name}
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                      />
+                    ) : (
+                      <span className="text-white text-sm font-semibold">{initials}</span>
+                    )}
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{author.name}</p>
