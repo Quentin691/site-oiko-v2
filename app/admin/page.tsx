@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Button from "@/components/ui/Button";
+
+// Chargement dynamique de l'éditeur (évite les erreurs SSR)
+const RichTextEditor = dynamic(() => import("@/components/admin/RichTextEditor"), {
+  ssr: false,
+  loading: () => <div className="border border-border rounded-lg p-4 bg-surface h-[350px] flex items-center justify-center text-muted">Chargement de l&apos;éditeur...</div>,
+});
 
 interface BlogPost {
   slug: string;
@@ -439,19 +446,18 @@ export default function AdminPage() {
               </p>
             </div>
 
-            {/* Contenu */}
+            {/* Contenu - Éditeur visuel */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Contenu (Markdown supporte)
+                Contenu de l&apos;article
               </label>
-              <textarea
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full px-4 py-2 border border-border rounded-lg bg-surface text-foreground font-mono text-sm"
-                rows={15}
-                placeholder="Ecrivez votre article ici..."
-                required
+              <RichTextEditor
+                content={formData.content}
+                onChange={(content) => setFormData({ ...formData, content })}
               />
+              <p className="text-xs text-muted mt-2">
+                Utilisez la barre d&apos;outils pour formater le texte, ajouter des images ou des tableaux.
+              </p>
             </div>
 
             {/* Bouton submit */}

@@ -52,6 +52,14 @@ export function getAllPosts(): BlogPost[] {
 }
 
 /**
+ * Vérifie si le contenu est déjà du HTML (créé avec l'éditeur visuel)
+ */
+function isHtmlContent(content: string): boolean {
+  const trimmed = content.trim();
+  return trimmed.startsWith("<") || trimmed.includes("</p>") || trimmed.includes("</h");
+}
+
+/**
  * Récupère un article par son slug
  */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -64,8 +72,15 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
-  const processedContent = await remark().use(html).process(content);
-  const contentHtml = processedContent.toString();
+  // Si le contenu est déjà du HTML (éditeur visuel), on le garde tel quel
+  // Sinon, on convertit le Markdown en HTML (anciens articles)
+  let contentHtml: string;
+  if (isHtmlContent(content)) {
+    contentHtml = content;
+  } else {
+    const processedContent = await remark().use(html).process(content);
+    contentHtml = processedContent.toString();
+  }
 
   return {
     slug,

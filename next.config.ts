@@ -37,7 +37,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://*.ubiflow.net https://images.unsplash.com https://*.google.com https://*.googleapis.com https://*.gstatic.com",
+      "img-src 'self' data: blob: https://*.ubiflow.net https://images.unsplash.com https://*.google.com https://*.googleapis.com https://*.gstatic.com https://res.cloudinary.com",
       "connect-src 'self' https://*.ubiflow.net",
       "frame-src https://www.google.com https://maps.google.com",
       "frame-ancestors 'self'",
@@ -63,6 +63,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
       },
     ],
     // Formats modernes pour de meilleures performances
